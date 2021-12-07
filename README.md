@@ -34,3 +34,7 @@ The start signal is HIGH just for one second
 ## Switch
 
 6 Switch can be configurated as output or input, in near future I will implement olso pwm signal.
+
+
+
+The software was made with Arduino IDE and ported subsequently to Platformio for better management
