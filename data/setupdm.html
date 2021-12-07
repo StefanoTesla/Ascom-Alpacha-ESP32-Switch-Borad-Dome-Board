@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="src/bootstrap.min.css" rel="stylesheet">
+
+    <title>TeslaDome</title>
+	
+	<style>
+	body {
+		background-color: #353535;
+	}
+	p,h1,h2,h3,h4,h5,h6 {
+		color: #F9F8F8;
+	}
+	
+</style>
+
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">StefanoTesla</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" aria-current="page" href="/">Home</a>
+        <a class="nav-link active" href="#">Impostazioni</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="row">
+ 
+      <h1 class="text-center">Impostazioni</h1>
+</div>
+<div class="row mt-5">
+	<div class="col-md-4">
+	<p>Tempo di apertura del tetto:</p>
+	</div>
+	<div class="col">
+	<div class="input-group input-group-lg col-4">
+		<span class="input-group-text" id="inputGroup-sizing-lg">Sec.</span>
+		<input type="number" class="form-control" id="dometimeout" value="0" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+	</div>
+    </div>
+</div>
+<div class="d-grid gap-4 col-4 mx-auto mt-5">
+  <button class="btn btn-success" type="button" onclick="SaveData()">Salva</button>
+</div>
+
+<script src="src/bootstrap.bundle.min.js"></script>
+
+<script>
+	window.onload = function() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+		  if (this.readyState == 4 && this.status == 200) {
+		  var txt = this.responseText;
+		  var obj = JSON.parse(txt); 
+			document.getElementById("dometimeout").value = obj.dometmout;
+		  }  
+		};
+	   xhttp.open("GET", "/getdomesetup", true);
+	   xhttp.send();
+	};
+	
+function SaveData() {
+var xhttp = new XMLHttpRequest();
+	var domeTimeOut = document.getElementById("dometimeout").value; 
+		var jsonFormInfo = JSON.stringify({
+			dometmout:domeTimeOut, 
+		});   
+	xhttp.open("POST", "/storedomedata");
+	xhttp.setRequestHeader('Content-type', 'application/json');
+	xhttp.send(jsonFormInfo);
+}
+</script>
+</div>
+  </body>
+</html>
