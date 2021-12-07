@@ -10,6 +10,7 @@ Dome is already tested with Ascom device hub
 
 It's a work in progess, but it's already tested with great stability!
 
+WiFi Manager for first connection or connection to WiFi fail, automatic reconnection in case of disconnection (hoping for a router restart)
 
 ## Dome
 
