@@ -10,11 +10,6 @@ Dome is already tested with Ascom device hub
 
 It's a work in progess, but it's already tested with great stability!
 
-In the future I will get:
-
-- Automatic setup of pwm output
-- Better alpacha error messages
-
 
 ## Dome
 
@@ -42,3 +37,11 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 #### Changelog
 
 1.0.0 First GitHub deploy :grinning:
+
+
+### ToDo List:
+
+- Automatic setup of pwm output
+- Better alpacha error messages
+- Make Switch OOP
+- Webbrowser Switch setup at the moment can only change Name and Description, can be useful change olso input/output/pwm with min and max selection?? idk..
