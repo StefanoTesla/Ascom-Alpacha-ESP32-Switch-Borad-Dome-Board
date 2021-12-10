@@ -1,0 +1,174 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-gray-900">
+  <header>
+		<!-- Navbar goes here -->
+		<nav class="bg-gray-800">
+			<div class="max-w-6xl mx-auto px-4">
+				<div class="flex justify-between">
+					<div class="flex">
+						<div class="self-center">
+							<!-- Website Logo -->
+								<span class="font-semibold text-lg">StefanoTesla</span>
+						</div>
+						<!-- Primary Navbar items -->
+						<div class="hidden md:flex items-center space-x-1">
+							<a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
+							<a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
+						</div>
+					</div>
+
+					<!-- Mobile menu button -->
+					<div class="md:hidden flex items-center h-14">
+						<button class="outline-none mobile-menu-button">
+						<svg class=" w-6 h-6 text-gray-500 hover:text-green-500 "
+							x-show="!showMenu"
+							fill="none"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path d="M4 6h16M4 12h16M4 18h16"></path>
+						</svg>
+					</button>
+					</div>
+				</div>
+			</div>
+			<!-- mobile menu -->
+			<div class="hidden mobile-menu">
+				<ul class="">
+					<li class="active"><a href="index.html" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
+					<li><a href="#services" class="block text-sm  px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
+				</ul>
+			</div>
+		</nav>
+  </header>
+
+<div class="container mx-auto px-2">
+
+	<h1 class="text-center text-3xl">TeslaSwitch Setup</h1>
+	<p class=" text-xl pt-2">Switch 0:</p>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Nome</p></div>
+		<input type="text" id="swtchname0" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Desc.</p></div>
+		<input type="text" id="swtchdesc0" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+
+	<p class=" text-xl pt-2">Switch 1:</p>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Nome</p></div>
+		<input type="text" id="swtchname1" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Desc.</p></div>
+		<input type="text" id="swtchdesc1" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<p class=" text-xl pt-2">Switch 2:</p>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Nome</p></div>
+		<input type="text" id="swtchname2" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Desc.</p></div>
+		<input type="text" id="swtchdesc2" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<p class=" text-xl pt-2">Switch 3:</p>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Nome</p></div>
+		<input type="text" id="swtchname3" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Desc.</p></div>
+		<input type="text" id="swtchdesc3" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<p class=" text-xl pt-2">Switch 4:</p>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Nome</p></div>
+		<input type="text" id="swtchname4" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Desc.</p></div>
+		<input type="text" id="swtchdesc4" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<p class=" text-xl pt-2">Switch 5:</p>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Nome</p></div>
+		<input type="text" id="swtchname5" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+	<div class="flex h-14 w-5/6 py-1">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Desc.</p></div>
+		<input type="text" id="swtchdesc5" class="bg-gray-100 p-2 text-gray-500 h-full w-full">
+	</div>
+
+
+	<button class="my-6 px-12 py-2 bg-green-600" type="button" onclick="SwitchSaveData()">Salva</button>
+</div>
+
+	<script>
+ 	const btn = document.querySelector("button.mobile-menu-button");
+	const menu = document.querySelector(".mobile-menu");
+    const namePrefix = "swtchname";
+	const descPrefix = "swtchdesc";
+
+    /* menu */
+	btn.addEventListener("click", () => {
+		menu.classList.toggle("hidden");
+	});
+    
+    /* switch name and description only in startup */
+	window.onload = function() {
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			let count = 0;
+			const obj = JSON.parse(this.responseText);
+			for(key in obj.Switch) {
+
+				if(obj.Switch.hasOwnProperty(key)) {
+
+				document.getElementById(namePrefix + count).value  =  obj.Switch[count].name;
+				document.getElementById(descPrefix + count).innerText  = obj.Switch[count].description;
+				
+				count++;
+				}
+			}
+		};
+	}
+	xhttp.open("GET", "/getswitchname", true);
+	xhttp.send();
+	};
+	
+
+	/* Save Data */
+	function SwitchSaveData() {
+		let xhttp = new XMLHttpRequest();
+		let SWarr = [];
+		const count = document.querySelectorAll('[id^="swtchname"]').length;
+
+		for (let i = 0; i < count; i++) {
+			SWarr.push({
+				name: document.getElementById(namePrefix + i).value,
+				description: document.getElementById(descPrefix + i).value,
+			});
+		}
+
+		const jsonFormInfo = (JSON.stringify({ Switch: [SWarr] }));
+
+		xhttp.open("POST", "/storeswdata");
+		xhttp.setRequestHeader('Content-type', 'application/json');
+		xhttp.send(jsonFormInfo);
+	}
+	</script>
+      
+	</body>
+</html>

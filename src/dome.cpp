@@ -86,6 +86,7 @@ void setup()
     });
   }
 
+
   Alpserver.onNotFound(notFound);
   /*** MANAGE AREA ***/
   Alpserver.on("/management/apiversions",                                                 HTTP_GET, ManApiversion);
@@ -180,9 +181,18 @@ void setup()
     request->send(SPIFFS, "/index.html", "text/html");
   });
 
-  server.on("/setup", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/setup.html", "text/html");
+  server.on("/dome", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/dome.html", "text/html");
   });
+
+  server.on("/switch", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/switch.html", "text/html");
+  });
+
+  server.on("/swsetup", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/switchsetup.html", "text/html");
+  });
+
 
   server.on("/getdomestate",              HTTP_GET, DomWSState);
   server.on("/getswitchname",             HTTP_GET, SwtSWName);
@@ -207,7 +217,6 @@ void setup()
   });
   server.addHandler(domehandler);
 
-
  AsyncCallbackJsonWebHandler *switchhandler = new AsyncCallbackJsonWebHandler("/storeswdata", [](AsyncWebServerRequest * request, JsonVariant & json) {
   StaticJsonDocument<1000> data;
   int i=0;
@@ -219,11 +228,9 @@ void setup()
   {
     data = json.as<JsonObject>();
   }
-
   for (JsonObject elem : data["Switch"][0].as<JsonArray>()) {
-
-  const char* name = elem["name"]; // "Switch 1", "Switch 2", "Switch 3", "Switch 4", "Switch 5", "Switch ...
-  const char* description = elem["description"]; // "Switch 1", "Switch 2", "Switch 3", "Switch 4", ...
+  const char* name = elem["name"];
+  const char* description = elem["description"];
   Switch[i].Name = name;
   Switch[i].Description = description;
   i++;

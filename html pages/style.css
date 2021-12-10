@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+
+body {
+    @apply bg-gray-900 text-gray-100
+}
+
+h1,h2,h3,h4,h5,h6
+{
+  @apply  text-center;
+}
+
+h1
+{
+  @apply text-4xl py-4 font-bold;
+}
+
+h2
+{
+  @apply pt-10 pb-4 text-3xl font-bold;
+}
+
+h3,h4,h5,h6
+{
+  @apply pt-10 pb-4 text-2xl font-bold;
+}
+
+}

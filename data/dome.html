@@ -1,0 +1,141 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/assets/style.b5cb12cc.css">
+</head>
+<body class="bg-gray-900">
+  <header>
+		<!-- Navbar goes here -->
+		<nav class="bg-gray-800">
+			<div class="max-w-6xl mx-auto px-4">
+				<div class="flex justify-between">
+					<div class="flex">
+						<div class="self-center">
+							<!-- Website Logo -->
+								<span class="font-semibold text-lg">StefanoTesla</span>
+						</div>
+						<!-- Primary Navbar items -->
+						<div class="hidden md:flex items-center space-x-1">
+							<a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
+							<a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
+						</div>
+					</div>
+
+					<!-- Mobile menu button -->
+					<div class="md:hidden flex items-center h-14">
+						<button class="outline-none mobile-menu-button">
+						<svg class=" w-6 h-6 text-gray-500 hover:text-green-500 "
+							x-show="!showMenu"
+							fill="none"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path d="M4 6h16M4 12h16M4 18h16"></path>
+						</svg>
+					</button>
+					</div>
+				</div>
+			</div>
+			<!-- mobile menu -->
+			<div class="hidden mobile-menu">
+				<ul class="">
+					<li class="active"><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
+					<li><a href="/switch" class="block text-sm  px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
+				</ul>
+			</div>
+		</nav>
+  </header>
+
+<div class="container mx-auto px-2">
+
+	<h1 class="text-center text-3xl">TeslaDome</h1>
+
+	<p class=" text-xl pt-6">Stato del tetto: <span id="DomePos"></span></p>
+	<p class=" text-xl">Ultimo Comando: <span id="DomeLstCmd"></span></p>
+
+	<h2 class="text-center text-2xl pt-6">Comandi Manuali</h2>
+
+
+	<div class="grid grid-flow-row grid-rows-3 mx-auto gap-10 pt-6">
+	<div>
+		<button class="px-12 py-2 bg-green-600 w-full" type="button" onclick="OpenReq()">Apri</button></div>
+	<div><button class="px-12 py-2 bg-red-600 w-full" type="button" onclick="CloseReq()">Chiudi</button></div>
+	<div><button class="text-black font-bold px-12 py-2 bg-yellow-300 w-full" type="button" onclick="HaltReq()">HALT</button></div>
+	</div>
+
+	<h2 class="text-center text-2xl pt-6">Impostazioni:</h2>
+
+	<p class=" text-xl pt-2">Timeout:</p>
+	<div class="flex h-14">
+		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Sec.</p></div>
+		<form class="h-full"><input type="number" id="DomeTimeout" class="bg-gray-100 p-2 text-gray-500 h-full"></form>
+		<button class="ml-2 px-12 py-2 bg-green-600" type="button" onclick="DomeSaveFnc()">Salva</button>
+	</div>
+
+</div>
+
+	<script>
+ 	const btn = document.querySelector("button.mobile-menu-button");
+	const menu = document.querySelector(".mobile-menu");
+
+	btn.addEventListener("click", () => {
+		menu.classList.toggle("hidden");
+	});         
+	
+	window.onload = function() {
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			let obj = JSON.parse( this.responseText); 
+
+			if ( obj.domepos == 4 ){
+				document.getElementById("DomePos").innerHTML = 'In Errore';
+				}
+			else if ( obj.domepos == 3 ){
+				document.getElementById("DomePos").innerHTML = 'In Chiusura';
+				}
+			else if ( obj.domepos == 2 ){
+				document.getElementById("DomePos").innerHTML = 'In Apertura';
+				}
+			else if ( obj.domepos == 1 ){
+				document.getElementById("DomePos").innerHTML = 'Chiuso';
+				}
+			else if ( obj.domepos == 0 ){
+				document.getElementById("DomePos").innerHTML = 'Aperto';
+				}				
+			document.getElementById("DomeLstCmd").innerHTML = obj.domelstcmd;
+			document.getElementById("DomeTimeout").value = obj.dometimeout;
+			}
+		}
+		xhttp.open("GET", "/getdomestate", true);
+		xhttp.send();
+	};
+
+
+	function OpenReq(){
+
+	}
+	function CloseReq(){
+
+	}
+	function HaltReq(){
+
+	}
+	function DomeSaveFnc(){
+	let xhttp = new XMLHttpRequest();
+	const jsonFormInfo = JSON.stringify({
+			dometmout:document.getElementById("DomeTimeout").value, 
+		});   
+	xhttp.open("POST", "/storedomedata");
+	xhttp.setRequestHeader('Content-type', 'application/json');
+	xhttp.send(jsonFormInfo);
+	}
+	</script>
+      
+	</body>
+</html>

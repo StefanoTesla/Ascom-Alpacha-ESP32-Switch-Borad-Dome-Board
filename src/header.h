@@ -18,7 +18,6 @@ enum ShInEnum {
   ShOnlyOpen,
   ShInAll,
 };
-
 enum ShStEnum {
   ShOpen,
   ShClose,
@@ -47,8 +46,8 @@ struct SwtichStruct
   String Name;
   String Description;
   int pin;
-  int minValue;
-  int maxValue;
+  int minValue = 0;
+  int maxValue = 1;
   bool CanSet = true;
   int Step = 1;
   bool analog = false;
@@ -108,7 +107,6 @@ Serial.println(datasetup);
   file = SPIFFS.open("/setup.txt", FILE_WRITE);
   
   if (!file) {
-    InserNewMessage(1,"Errore Salvataggio");
     Serial.println("Error writing file");
   }
 

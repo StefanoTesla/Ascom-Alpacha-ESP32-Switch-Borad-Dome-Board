@@ -4,6 +4,7 @@
 #include "domehandler.h"
 
 
+
 DynamicJsonDocument  JDome(200);
 String JDomeAnsw;
 
@@ -223,6 +224,7 @@ void DomWSState (AsyncWebServerRequest *request) {
   DynamicJsonDocument doc(capacity);
   doc["domepos"]   = ShutterState;
   doc["domelstcmd"]  = "nietca";
+  doc["dometimeout"] = MovingTimeOut;
  
   serializeJson(doc, domestatus);
   request->send(200, "application/json", domestatus);

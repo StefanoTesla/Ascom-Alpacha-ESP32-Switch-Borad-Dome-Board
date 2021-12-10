@@ -73,10 +73,8 @@ if (ShCyIndex != OldShCyIndex){
             if (ShutterCommand == CmdOpen) {
               if (ShutterInputState != ShOnlyOpen) {
                 ShutterState = ShOpening;
-                InserNewMessage(2,"Apertura tetto in Corso...");
                 ShCyIndex = 10;
               } else {
-                InserNewMessage(1,"Tetto già aperto");
                 ShutterState = ShOpen;
                 ShutterCommand = Idle;
               }
@@ -84,11 +82,9 @@ if (ShCyIndex != OldShCyIndex){
 
             if (ShutterCommand == CmdClose) {
               if (ShutterInputState != ShOnlyClose) {
-                InserNewMessage(2,"Chiusura tetto in Corso...");
                 ShCyIndex = 10;
                 ShutterState = ShClosing;
               } else {
-                InserNewMessage(1,"Tetto già chiuso");
                 ShutterCommand = Idle;
                 ShutterState = ShClose;
               }
@@ -122,7 +118,6 @@ if (ShCyIndex != OldShCyIndex){
             if (ShutterCommand == CmdOpen) {
               if (ShutterInputState == ShOnlyClose) { //OMG wrong direction!
                 if (MoveRetry == false) {
-                  InserNewMessage(2,"Tetto chiuso ma volevo aprire, pingpong");
                   MoveRetry = true; // just one retry
                   ShCyIndex = 20;
                 } else {
@@ -131,7 +126,6 @@ if (ShCyIndex != OldShCyIndex){
               }
               if (ShutterInputState == ShOnlyOpen) { //As aspected direction!
                 ShutterState = ShOpen;
-                InserNewMessage(3,"Tetto aperto");
                 ShCyIndex++;
               }
             }
@@ -143,7 +137,6 @@ if (ShCyIndex != OldShCyIndex){
             if (ShutterCommand == CmdClose) { //OMG wrong direction!
               if (ShutterInputState == ShOnlyOpen) {
                 if (MoveRetry == false) {
-                  InserNewMessage(2,"Tetto aperto ma volevo chiudere, pingpong");
                   MoveRetry = true; // just one retry
                   ShCyIndex = 20;
                 } else {
@@ -153,7 +146,6 @@ if (ShCyIndex != OldShCyIndex){
               if (ShutterInputState == ShOnlyClose) { //As aspected direction!
                 ShutterState = ShClose;
                 ShCyIndex++;
-                InserNewMessage(3,"Tetto chiuso");
               }
             }
             // FINE CHECK CHIUSURA
@@ -168,8 +160,7 @@ if (ShCyIndex != OldShCyIndex){
 
 
 //PING PONG - HALT ASPETTO E RIBADISCO LO START
-    case 20: InserNewMessage(1,"Ping Pong");
-            ShMoveTimeOutAck = millis();
+    case 20:ShMoveTimeOutAck = millis();
             digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);   //I need just a pulse for start roof motor
             digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
             ShCyIndex++;
@@ -193,7 +184,6 @@ if (ShCyIndex != OldShCyIndex){
 
     /* HALT CYCLE */
     case 100: //halt command for 1sec
-            InserNewMessage(1,"HALT");
             ShMoveTimeOutAck = millis();
             digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);   //I need just a pulse for start roof motor
             digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
