@@ -60,16 +60,12 @@ if (ShCyIndex != OldShCyIndex){
   switch (ShCyIndex)
   {
     case 0:
-            if (ShutterInputState == ShOnlyClose) {
-              ShutterState = ShClose;
-            } else if (ShutterInputState == ShOnlyOpen) {
-              ShutterState = ShOpen;
-            } else {
-              ShutterState = ShError;
-            }
-            
             MoveRetry = false;
-
+            
+            if (ShutterInputState == ShOnlyClose) {       ShutterState = ShClose;
+            } else if (ShutterInputState == ShOnlyOpen) { ShutterState = ShOpen;
+            } else {                                      ShutterState = ShError; }
+            
             if (ShutterCommand == CmdOpen) {
               if (ShutterInputState != ShOnlyOpen) {
                 ShutterState = ShOpening;
@@ -116,6 +112,11 @@ if (ShCyIndex != OldShCyIndex){
     case 12:  //Sensor Reached
             // INIZIO CHECK APERTUA
             if (ShutterCommand == CmdOpen) {
+                if (ShutterInputState == ShOnlyOpen) { //As aspected direction!
+                ShutterState = ShOpen;
+                ShCyIndex++;
+                break;
+              }
               if (ShutterInputState == ShOnlyClose) { //OMG wrong direction!
                 if (MoveRetry == false) {
                   MoveRetry = true; // just one retry
@@ -123,11 +124,8 @@ if (ShCyIndex != OldShCyIndex){
                 } else {
                   ShCyIndex = 100;  //no ping pong all day, HALT
                 }
-              }
-              if (ShutterInputState == ShOnlyOpen) { //As aspected direction!
-                ShutterState = ShOpen;
-                ShCyIndex++;
-              }
+              } 
+
             }
 
             // FINE CHECK APERTUA
@@ -213,7 +211,6 @@ if (ShCyIndex != OldShCyIndex){
 
 
 }
-
 
 
 #endif

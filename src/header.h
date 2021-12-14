@@ -1,11 +1,16 @@
-/* ALPACA COMMON DATA */
 bool StoreData;
 
+/* ALPACA COMMON DATA */
 uint32_t ClientTransactionID;
 uint32_t AlpServerID = 0;
 uint32_t ClientID;
-int Int_ID;
-int Int_Value;
+int Alp_Int_ID;               /* used for switch ID */
+bool Alp_state;               /* used for setswitch */
+int Alp_Int_Value;            /* used for setswitchvalue */
+String Alp_Name;              /* used for set switch name */
+bool Alp_idcheck;
+bool Alp_value_ex;
+
 
 bool boConnect;
 /*END ALPACA COMMON DATA */

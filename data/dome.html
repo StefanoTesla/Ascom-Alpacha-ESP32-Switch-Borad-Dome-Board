@@ -3,7 +3,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="/assets/style.b5cb12cc.css">
+  
+  <link rel="stylesheet" href="/assets/style.3fa08644.css">
 </head>
 <body class="bg-gray-900">
   <header>
@@ -44,7 +45,7 @@
 			<!-- mobile menu -->
 			<div class="hidden mobile-menu">
 				<ul class="">
-					<li class="active"><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
+					<li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
 					<li><a href="/switch" class="block text-sm  px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
 				</ul>
 			</div>
@@ -91,8 +92,10 @@
 		let xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-			let obj = JSON.parse( this.responseText); 
-
+			var count = 0;
+			var txt = this.responseText;
+			var obj = JSON.parse(txt); 
+			obj.domepos;
 			if ( obj.domepos == 4 ){
 				document.getElementById("DomePos").innerHTML = 'In Errore';
 				}
@@ -109,7 +112,6 @@
 				document.getElementById("DomePos").innerHTML = 'Aperto';
 				}				
 			document.getElementById("DomeLstCmd").innerHTML = obj.domelstcmd;
-			document.getElementById("DomeTimeout").value = obj.dometimeout;
 			}
 		}
 		xhttp.open("GET", "/getdomestate", true);
@@ -128,8 +130,10 @@
 	}
 	function DomeSaveFnc(){
 	let xhttp = new XMLHttpRequest();
+	let domeTimeOut = document.getElementById("DomeTimeout").value;
+	domeTimeOut *= 1000;
 	const jsonFormInfo = JSON.stringify({
-			dometmout:document.getElementById("DomeTimeout").value, 
+			dometmout:domeTimeOut, 
 		});   
 	xhttp.open("POST", "/storedomedata");
 	xhttp.setRequestHeader('Content-type', 'application/json');

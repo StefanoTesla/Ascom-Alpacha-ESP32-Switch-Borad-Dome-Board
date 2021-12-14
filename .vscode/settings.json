@@ -1,0 +1,9 @@
+{
+    "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "string": "cpp",
+        "functional": "cpp",
+        "*.tcc": "cpp",
+        "vector": "cpp"
+    }
+}

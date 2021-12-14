@@ -10,8 +10,10 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
   ClientID = 0;
   ClientTransactionID = 0;
   boConnect = false;
-  Int_ID = 0;
-  Int_Value = 0;
+  Alp_Int_Value = 0;
+  Alp_Int_ID = -1;
+  Alp_idcheck = false;
+  Alp_value_ex = true;
   int paramsNr = request->params();
   String parameter;
   AlpServerID++;
@@ -36,11 +38,20 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
       }
     }
     if (parameter == "id") {
-      Int_ID = p->value().toInt();
+      Alp_Int_ID = p->value().toInt();
+      Alp_Int_ID >= 0 && Alp_Int_ID < _MAX_SWTICH_ID_ ? Alp_idcheck = true : Alp_idcheck = false;
     }
     if (parameter == "value") {
-      Int_Value = p->value().toInt();
+      Alp_Int_Value = p->value().toInt();
+      Alp_value_ex = true;
     }
+    if (parameter == "name") {
+      Alp_Name = p->value();
+    }
+    if (parameter == "state") {
+      Alp_state = p->value().toInt();
+    }    
+    
   }
 }
 
