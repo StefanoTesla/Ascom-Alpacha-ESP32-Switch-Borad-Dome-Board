@@ -1,4 +1,4 @@
-# Ascom Alpacha Switch and Dome Board
+# Ascom Alpacha Switch and Dome Board ESP32
 
 
 Hello everyone, I use this firmware to open and close my Dome roof and is used olso for handle 6 switch.
@@ -31,18 +31,23 @@ The start signal is HIGH just for one second
 
 6 Switch can be configurated as output or input, in near future I will implement olso pwm signal.
 
-### History
+Error sended to ascom alpaca:
 
+- "The Switch x doesn't exist", where x is the switch number, if x= -1 the parameters was not in the ascom alpaca request
+- "The Value X is out of range MIN: Y MAX: Z" is coming if we are setting a value X outside the min and max value of that switch (ex. value 2 to a digital output)
+- "The Value was not provided from ASCOM" in the coming request is missing value parameter
+
+### History
 The software was made with Arduino IDE and ported subsequently to Platformio for better management
 
 #### Changelog
 
+1.1.0 Switch Error have a better expletation of the problem
 1.0.0 First GitHub deploy :grinning:
 
 
 ### ToDo List:
 
 - Automatic setup of pwm output
-- Better alpacha error messages
 - Make Switch OOP
-- Webbrowser Switch setup at the moment can only change Name and Description, can be useful change olso input/output/pwm with min and max selection?? idk..
+- Webrowser have some bugs
