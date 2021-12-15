@@ -51,3 +51,9 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 - Automatic setup of pwm output
 - Make Switch OOP
 - Webrowser have some bugs
+
+
+
+## html_pages directory
+
+This page contain a vite project with web browser pages, in this way I can have a clean and powerfull css by Taliwind 3.
