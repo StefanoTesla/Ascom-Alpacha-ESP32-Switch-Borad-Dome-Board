@@ -110,6 +110,7 @@
 
 <div class="my-5 ml-2">
 		<a href="/swsetup"><button class="bg-slate-500 py-2 px-4 rounded-full">SWITCH SETTING</button></a>
+		<button class="bg-slate-500 py-2 px-4 rounded-full" onclick="Test()">TEST</button>
 </div>
 	</div>
 
@@ -140,7 +141,6 @@
 				document.getElementById(descPrefix + count).innerHTML = obj.Switch[count].description;
 				document.getElementById(valuePrefix + count).min = obj.Switch[count].min;
 				document.getElementById(valuePrefix + count).max = obj.Switch[count].max;
-				document.getElementById(valuePrefix + count).value = obj.Switch[count].value;
 				count++;
 				}
 			}
@@ -150,28 +150,19 @@
 	xhttp.send();
 	
 	};
-	
-
 
 	function getSWstate() {
-		var let = new XMLHttpRequest();
+		let = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-			let count = 0;
 			const txt = this.responseText;
 			let obj = JSON.parse(txt);
-				for(key in obj.Switchval) {
-					if(obj.Switchval.hasOwnProperty(key)) {
-						if (obj.Switchval[count].value == 0){
-							document.getElementById(valuePrefix + count).checked  = false;
-							document.getElementById(spanValuePrefix + count).innerHTML = "OFF";
-						} else {
-							document.getElementById(valuePrefix + count).checked  = true;
-							document.getElementById(spanValuePrefix + count).innerHTML = "ON";
-						}			
-					count++;
-					}
-				}
+			let i = 0;
+			obj.State.forEach(element => {
+				document.getElementById(valuePrefix + i).value = element;
+				i++;
+
+			});
 			}
 		};
 		xhttp.open("GET", "/getswitchstate", true);
@@ -179,13 +170,14 @@
 	}
 
 
+ 	setInterval(getSWstate, 500);
 
     setInterval(function() {
         for(let i=0; i<6;i++) {
             document.getElementById(spanValuePrefix + i).innerHTML = document.getElementById(valuePrefix + i).value;
 				}
 			},       
-     500); // Wait 1000ms before running again
+     500);
 	</script>
       
 	</body>

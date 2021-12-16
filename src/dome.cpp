@@ -31,6 +31,12 @@ void notFound(AsyncWebServerRequest *request) {
   Serial.println(request->url());
 }
 
+void ServernotFound(AsyncWebServerRequest *request) {
+  request->send(404, "text/plain", "Not found");
+  Serial.println("404");
+  Serial.println(request->url());
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -77,28 +83,26 @@ void setup()
   AlpacaDome();
   SwitchAlpaca();
 
-  /** END COMMON OPERATION **/
-  server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=31536000");
+
   server.onNotFound(notFound);
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/index.html", "text/html");
-  });
-
-  server.on("/dome", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/dome.html", "text/html");
-  });
-
-  server.on("/switch", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/switch.html", "text/html");
-  });
-
-  server.on("/swsetup", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/switchsetup.html", "text/html");
-  });
 
   server.on("/getdomestate",              HTTP_GET, DomWSState);
   server.on("/getswitchname",             HTTP_GET, SwtSWName);
-  server.on("/getswitchstate",            HTTP_GET, SwtSWState);  
+  server.on("/getswitchstate",            HTTP_GET, [](AsyncWebServerRequest *request) {
+    int i;
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    response->print("{ \"State\": [");
+
+    for (i=0;i<_MAX_SWTICH_ID_;i++){
+        Switch[i].analog ? response->printf("%d",Switch[i].anaValue) : response->printf("%d",digitalRead(Switch[i].pin));
+        if (i != _MAX_SWTICH_ID_ -1){
+          response->printf(", ");
+        }
+    }
+    response->print("]}");
+    request->send(response);
+});
+
 
   AsyncCallbackJsonWebHandler *domehandler = new AsyncCallbackJsonWebHandler("/storedomedata", [](AsyncWebServerRequest * request, JsonVariant & json) {
     const size_t capacity = JSON_OBJECT_SIZE(200);
@@ -144,6 +148,27 @@ void setup()
   StoreData = true;
   });
   server.addHandler(switchhandler);
+
+  /** END COMMON OPERATION **/
+ server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
+  server.onNotFound(notFound);
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/index.html", "text/html");
+  });
+
+  server.on("/dome", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/dome.html", "text/html");
+  });
+
+  server.on("/switch", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/switch.html", "text/html");
+  });
+
+  server.on("/swsetup", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/switchsetup.html", "text/html");
+  });
+
+
 
   /** END SWITCH SPECIFIC METHODS **/
   Alpserver.begin();

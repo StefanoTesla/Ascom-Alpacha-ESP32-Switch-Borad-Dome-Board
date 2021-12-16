@@ -96,11 +96,4 @@ void SwtSWName(AsyncWebServerRequest *request) {
 }
 
 
-void SwtSWState(AsyncWebServerRequest *request) {
-
-;
- 
-}
-
-
 #endif

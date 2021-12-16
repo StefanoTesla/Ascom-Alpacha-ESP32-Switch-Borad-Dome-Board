@@ -62,10 +62,7 @@ void ManApiversion(AsyncWebServerRequest *request) {
   DynamicJsonDocument JMan(capacity);
   JsonArray Value = JMan.createNestedArray("Value");
   Value.add(1);
-  if (request->hasParam("ClientTransactionID"))    {
-    ManClientTransactionID = request->getParam("ClientTransactionID")->value().toInt();
-    JMan["ClientTransactionID"] = ManClientTransactionID;
-  }
+  JMan["ClientTransactionID"] = ClientTransactionID;
   JMan["ServerTransactionID"] = AlpServerID;
   JManAnsw = "";
   serializeJson(JMan, JManAnsw);
@@ -81,7 +78,7 @@ void ManDescription(AsyncWebServerRequest *request) {
   JsonObject Value = JMan.createNestedObject("Value");
   Value["ServerName"] = "Tesla Alpaca Device";
   Value["Manufacturer"] = "The Big Tesla Company";
-  Value["ManufacturerVersion"] = "v1.0.0";
+  Value["ManufacturerVersion"] = "v1.2.0";
   Value["Location"] = "Cerreto Guidi, IT";
   if (request->hasParam("ClientTransactionID"))    {
     ManClientTransactionID = request->getParam("ClientTransactionID")->value().toInt();

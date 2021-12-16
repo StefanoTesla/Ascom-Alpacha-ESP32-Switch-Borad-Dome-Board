@@ -42,8 +42,6 @@ Alpserver.on("/api/v1/switch/0/setswitchvalue",                                 
   }
   response->print(" }");
   request->send(response);
-
-
 });
 
 Alpserver.on("/api/v1/switch/0/maxswitch",                                              HTTP_GET, [](AsyncWebServerRequest *request) {
