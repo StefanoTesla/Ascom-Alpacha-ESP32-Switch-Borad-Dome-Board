@@ -31,7 +31,7 @@ void notFound(AsyncWebServerRequest *request) {
   Serial.println(request->url());
 }
 
-void ServernotFound(AsyncWebServerRequest *request) {
+void ServerNotFound(AsyncWebServerRequest *request) {
   request->send(404, "text/plain", "Not found");
   Serial.println("404");
   Serial.println(request->url());
