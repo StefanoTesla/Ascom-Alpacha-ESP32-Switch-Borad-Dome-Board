@@ -68,7 +68,8 @@ Knowed browser bugs:
 - :white_check_mark: Saving Switch Name and Descriptions [1.1.0]
 - :x: Actual time-out setting time is not showed in Dome page
 - :x: From WebServer we cannot change switch Value
-- :x: Actually Dome time-out is multiplied * 1000 from webbrowser before store it 
+- :x: Actually Dome time-out is multiplied * 1000 from webbrowser before store it
+- :x: Actually Dome Open Close Halt buttom from browser do nothing, need to add olso error message.
 
 
 
