@@ -60,19 +60,19 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 - Automatic setup of pwm output
 - Make Switch OOP
 - Webrowser have some bugs
-- 
+
 Knowed browser bugs:
 
 - :white_check_mark: Updating switch actual value [1.2.1]
-- :x: Show last command to the dome, at the moment is "nietca" an Italian words meaning "nothing"
+- :white_check_mark: Show last command to the dome, at the moment is "nietca" an Italian words meaning "nothing" [1.2.1]
 - :white_check_mark: Saving Switch Name and Descriptions [1.1.0]
-- :x: Actual time-out setting time is not showed in Dome page
+- :x: Actual time-out setting time is not showed in Dome page [1.2.2]
 - :x: From WebServer we cannot change switch Value
-- :x: Actually Dome time-out is multiplied * 1000 from webbrowser before store it
-- :x: Actually Dome Open Close Halt buttom from browser do nothing, need to add olso error message.
+- :white_check_mark: Actually Dome time-out is multiplied * 1000 from webbrowser before store it [1.2.2]
+- :white_check_mark: Actually Dome Open Close Halt buttom from browser do nothing, need to add olso error message. [1.2.2]
 
 
 
 ## html_pages directory
 
-This page contain a vite project with web browser pages, in this way I can have a clean and powerfull css by Taliwind 3.
+This folder contain a vite project with web browser pages, in this way I can have a clean and powerfull css by Taliwind 3.
