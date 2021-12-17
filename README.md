@@ -20,16 +20,16 @@ Actually Ascom Dome function is tested with:
 
 My dome is R.O.R rolling roof, I used a gate motor, so I use just two output and two input:
 
--Start
--Halt
--Open Input
--Close Input
+- Start
+- Halt
+- Open Input
+- Close Input
 
 The start signal is HIGH just for one second
 
--If everything work as expected roof will open/close correcty
--In case of Worng direction (you want open but it going to close) the board send another Start signal (only one time avoiding ping pong), this can happen in case of shoutdown during roof is moving
--A timer look for a moviment timeout, if timeout occurred HALT signal is HIGH for 3 second.
+- If everything work as expected roof will open/close correcty
+- In case of Worng direction (you want open but it going to close) the board send another Start signal (only one time avoiding ping pong), this can happen in case of shoutdown during roof is moving
+- A timer look for a moviment timeout, if timeout occurred HALT signal is HIGH for 3 second.
 
 ## Switch
 
