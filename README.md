@@ -50,8 +50,12 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 
 #### Changelog
 
+1.2.2 Dome web page should be ok now 💥
+
 1.2.1 Solved bug that cause a slow response from api server port 80
+
 1.1.0 Switch Error have a better expletation of the problem
+
 1.0.0 First GitHub deploy :grinning:
 
 
