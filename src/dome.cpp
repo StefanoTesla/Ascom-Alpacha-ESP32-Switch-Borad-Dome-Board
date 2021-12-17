@@ -102,7 +102,33 @@ void setup()
     response->print("]}");
     request->send(response);
 });
+  server.on("/domecmd",              HTTP_POST, [](AsyncWebServerRequest *request) {
+    int cmd = -1;
+    if (request->hasParam("cmd")){
+      cmd = request->getParam("cmd")->value().toInt();
+    }
+    if (cmd <1){
+      ShutterCommand = CmdHalt;
+      ShCyIndex = 100;
+      request->send(200, "text/html", "HALT");
 
+    } else {
+
+    if (ShutterCommand == Idle){
+      if (cmd ==1){
+          if(ShutterState != ShOpen){
+            ShutterCommand = CmdOpen;
+            request->send(200, "text/html", "ok");
+          } else { request->send(200, "text/html", "Shutter is Already Open"); }
+      } else if (cmd == 2){
+          if(ShutterState != ShClose){
+            ShutterCommand = CmdClose;
+            request->send(200, "text/html", "ok");
+          } else { request->send(200, "text/html", "Shutter is Already Closed"); }}
+    } else { request->send(200, "text/html", "Shutter is already moving"); }
+    
+    }
+});
 
   AsyncCallbackJsonWebHandler *domehandler = new AsyncCallbackJsonWebHandler("/storedomedata", [](AsyncWebServerRequest * request, JsonVariant & json) {
     const size_t capacity = JSON_OBJECT_SIZE(200);
@@ -150,8 +176,9 @@ void setup()
   server.addHandler(switchhandler);
 
   /** END COMMON OPERATION **/
- server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
   server.onNotFound(notFound);
+  server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
+
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/index.html", "text/html");
   });

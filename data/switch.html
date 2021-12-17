@@ -4,15 +4,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <link rel="stylesheet" href="/assets/style.3fa08644.css">
+  <link rel="stylesheet" href="/assets/style.10c8a192.css">
 </head>
 <body class="bg-gray-900">
-  <header>
+	<header>
 		<!-- Navbar goes here -->
 		<nav class="bg-gray-800">
 			<div class="max-w-6xl mx-auto px-4">
 				<div class="flex justify-between">
-					<div class="flex">
 						<div class="self-center">
 							<!-- Website Logo -->
 								<span class="font-semibold text-lg">StefanoTesla</span>
@@ -22,7 +21,7 @@
 							<a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
 							<a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
 						</div>
-					</div>
+
 
 					<!-- Mobile menu button -->
 					<div class="md:hidden flex items-center h-14">
@@ -46,12 +45,11 @@
 			<div class="hidden mobile-menu">
 				<ul class="">
 					<li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
-					<li><a href="/switch" class="block text-sm  px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
+					<li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
 				</ul>
 			</div>
 		</nav>
   </header>
-
 <div class="container mx-auto px-2">
 
 	<h1 class="text-center text-3xl">TeslaSwitch</h1>
@@ -111,73 +109,75 @@
 
 <div class="my-5 ml-2">
 		<a href="/swsetup"><button class="bg-slate-500 py-2 px-4 rounded-full">SWITCH SETTING</button></a>
+		<button class="bg-slate-500 py-2 px-4 rounded-full" onclick="Test()">TEST</button>
 </div>
 	</div>
 
 
 	<script>
-		const btn = document.querySelector("button.mobile-menu-button");
-	   const menu = document.querySelector(".mobile-menu");
-	   const namePrefix = "swtchname";
-	   const descPrefix = "swtchdesc";
-	   const valuePrefix = "swtchvalue";
-	   const spanValuePrefix = "switchst";
-   
-	   /* menu */
-	   btn.addEventListener("click", () => {
-		   menu.classList.toggle("hidden");
-	   });
-	   
-	   /* switch name and description only in startup */
-	   window.onload = function() {
-		   let xhttp = new XMLHttpRequest();
-		   xhttp.onreadystatechange = function() {
-			   if (this.readyState == 4 && this.status == 200) {
-			   let count = 0;
-			   let obj = JSON.parse(this.responseText);
-			   for(key in obj.Switch) {
-				   if(obj.Switch.hasOwnProperty(key)) {
-				   document.getElementById(namePrefix + count).innerHTML = obj.Switch[count].name;
-				   document.getElementById(descPrefix + count).innerHTML = obj.Switch[count].description;
-				   document.getElementById(valuePrefix + count).min = obj.Switch[count].min;
-				   document.getElementById(valuePrefix + count).max = obj.Switch[count].max;
-				   count++;
-				   }
-			   }
-		   };
-	   }
-	   xhttp.open("GET", "/getswitchname", true);
-	   xhttp.send();
-	   
-	   };
-   
-	   function getSWstate() {
-		   let xhttp = new XMLHttpRequest();
-		   xhttp.onreadystatechange = function() {
-			   if (this.readyState == 4 && this.status == 200) {
-			   const txt = this.responseText;
-			   let obj = JSON.parse(txt);
-			   let i = 0;
-			   obj.State.forEach(element => {
-				   document.getElementById(valuePrefix + i).value = element;
-				   i++;
-   
-			   });
-			   }
-		   };
-		   xhttp.open("GET", "/getswitchstate", true);
-		   xhttp.send();
-	   }
-   
-   
-		setInterval(getSWstate, 5000);
-   
-	   setInterval(function() {
-		   for(let i=0; i<6;i++) {
-			   document.getElementById(spanValuePrefix + i).innerHTML = document.getElementById(valuePrefix + i).value;
-				   }
-			   },       
-		500);
-	   </script>
+ 	const btn = document.querySelector("button.mobile-menu-button");
+	const menu = document.querySelector(".mobile-menu");
+    const namePrefix = "swtchname";
+	const descPrefix = "swtchdesc";
+    const valuePrefix = "swtchvalue";
+	const spanValuePrefix = "switchst";
+
+    /* menu */
+	btn.addEventListener("click", () => {
+		menu.classList.toggle("hidden");
+	});
+    
+    /* switch name and description only in startup */
+	window.onload = function() {
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			let count = 0;
+			let obj = JSON.parse(this.responseText);
+			for(key in obj.Switch) {
+				if(obj.Switch.hasOwnProperty(key)) {
+				document.getElementById(namePrefix + count).innerHTML = obj.Switch[count].name;
+				document.getElementById(descPrefix + count).innerHTML = obj.Switch[count].description;
+				document.getElementById(valuePrefix + count).min = obj.Switch[count].min;
+				document.getElementById(valuePrefix + count).max = obj.Switch[count].max;
+				count++;
+				}
+			}
+		};
+	}
+	xhttp.open("GET", "/getswitchname", true);
+	xhttp.send();
+	
+	};
+
+	function getSWstate() {
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			const txt = this.responseText;
+			let obj = JSON.parse(txt);
+			let i = 0;
+			obj.State.forEach(element => {
+				document.getElementById(valuePrefix + i).value = element;
+				i++;
+
+			});
+			}
+		};
+		xhttp.open("GET", "/getswitchstate", true);
+		xhttp.send();
+	}
+
+
+ 	setInterval(getSWstate, 3000);
+
+    setInterval(function() {
+        for(let i=0; i<6;i++) {
+            document.getElementById(spanValuePrefix + i).innerHTML = document.getElementById(valuePrefix + i).value;
+				}
+			},       
+     500);
+	</script>
+      
 	</body>
 </html>

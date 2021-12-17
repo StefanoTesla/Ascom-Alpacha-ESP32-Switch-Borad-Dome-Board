@@ -37,18 +37,21 @@ void domeInputState(){
       ShutterInputState = ShInNoOne;
     }
 }
-
+void LastDomeCommandExe(){
+  if (ShutterCommand != Idle) {
+    LastDomeCommand = ShutterCommand;
+  }
+}
 
 void domehandlerloop() {
   ShMoveTimeOut = MovingTimeOut *1000;
   domeInputState();
-
-if (ShCyIndex != OldShCyIndex){
-  Serial.println(ShCyIndex);
-  OldShCyIndex=ShCyIndex;
-}
+  LastDomeCommandExe();
   
-  //Ciclo apertura/chiusura shutter
+  if (ShCyIndex != OldShCyIndex){
+    Serial.println(ShCyIndex);
+    OldShCyIndex=ShCyIndex;
+  }
 
   // TIMEOUT MOVIMENTAZIONE
   if (ShCyIndex >= 11 && ShCyIndex <= 12) {
@@ -183,14 +186,15 @@ if (ShCyIndex != OldShCyIndex){
     /* HALT CYCLE */
     case 100: //halt command for 1sec
             ShMoveTimeOutAck = millis();
-            digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);   //I need just a pulse for start roof motor
+            ShutterState = ShError;
+            digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);
             digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
             ShCyIndex++;
             break;
 
     case 101: //halt command for 1sec
-            if ((millis() - ShMoveTimeOutAck) > 1000) { //Setting Open Output for?
-              digitalWrite(SHUTTER_HALT_OUTPUT, LOW);   //I need just a pulse for start roof motor
+            if ((millis() - ShMoveTimeOutAck) > 1000) { //Setting Output for 1sec
+              digitalWrite(SHUTTER_HALT_OUTPUT, LOW);   
               digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
               ShCyIndex++;
             }
@@ -198,7 +202,6 @@ if (ShCyIndex != OldShCyIndex){
 
     case 102: 
             ShutterCommand = Idle;
-            ShutterState = ShError;
             ShCyIndex = 0;
             MoveRetry = false;
             break;

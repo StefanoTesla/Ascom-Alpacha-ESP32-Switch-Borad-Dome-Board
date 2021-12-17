@@ -217,7 +217,7 @@ void DomWSState (AsyncWebServerRequest *request) {
   String domestatus;
   DynamicJsonDocument doc(capacity);
   doc["domepos"]   = ShutterState;
-  doc["domelstcmd"]  = "nietca";
+  doc["domelstcmd"]  = LastDomeCommand;
   doc["dometimeout"] = MovingTimeOut;
  
   serializeJson(doc, domestatus);

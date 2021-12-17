@@ -10,13 +10,11 @@ int Alp_Int_Value;            /* used for setswitchvalue */
 String Alp_Name;              /* used for set switch name */
 bool Alp_idcheck;
 bool Alp_value_ex;
-
-
 bool boConnect;
 /*END ALPACA COMMON DATA */
 
 /**DOME DATA**/
-
+unsigned int LastDomeCommand =0;
 enum ShInEnum {
   ShInNoOne,
   ShOnlyClose,
