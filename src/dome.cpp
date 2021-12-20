@@ -102,6 +102,7 @@ void setup()
     response->print("]}");
     request->send(response);
 });
+
   server.on("/domecmd",              HTTP_POST, [](AsyncWebServerRequest *request) {
     int cmd = -1;
     if (request->hasParam("cmd")){
@@ -128,6 +129,31 @@ void setup()
     } else { request->send(200, "text/html", "Shutter is already moving"); }
     
     }
+});
+
+  server.on("/setsw",              HTTP_POST, [](AsyncWebServerRequest *request) {
+    int sw = -1;
+    int value = -1;
+    if (request->hasParam("sw")){ sw = request->getParam("sw")->value().toInt();
+    } else { request->send(200, "text/html", "No switch selected");
+      return;
+    }
+    if (request->hasParam("value")){ value = request->getParam("value")->value().toInt();
+    } else { request->send(200, "text/html", "No value passed");
+      return;
+    }
+    if (sw >= _MAX_SWTICH_ID_){ request->send(200, "text/html", "Switch ID Out of range"); return;}
+    if (!Switch[sw].CanSet){ request->send(200, "text/html", "Switch cannot be setted"); return;}
+    if (value < Switch[sw].minValue || value > Switch[sw].maxValue){ request->send(200, "text/html", "Value outside limits"); return;}
+
+    if (Switch[sw].analog){
+      Switch[sw].anaValue = value;
+      ledcWrite(Switch[sw].pwmChannel, Switch[sw].anaValue);
+    } else {
+          value == 1 ? digitalWrite(Switch[sw].pin, HIGH) : digitalWrite(Switch[sw].pin, LOW);
+    }
+    request->send(200, "text/html", "ok");
+   
 });
 
   AsyncCallbackJsonWebHandler *domehandler = new AsyncCallbackJsonWebHandler("/storedomedata", [](AsyncWebServerRequest * request, JsonVariant & json) {
@@ -177,7 +203,6 @@ void setup()
 
   /** END COMMON OPERATION **/
   server.onNotFound(notFound);
-  server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/index.html", "text/html");
@@ -195,7 +220,7 @@ void setup()
     request->send(SPIFFS, "/switchsetup.html", "text/html");
   });
 
-
+  server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
   /** END SWITCH SPECIFIC METHODS **/
   Alpserver.begin();

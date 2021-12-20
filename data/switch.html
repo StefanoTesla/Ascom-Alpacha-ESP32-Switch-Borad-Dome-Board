@@ -59,49 +59,55 @@
         <div class="bg-gray-700 inline-grid">
             <div class="self-center">
                 <p id="swtchname0" class="py-2">Nome Switch</p>
-                <input type="range" min="0" max="100" value="0" class="py-2" id="swtchvalue0" oninput="">
+                <input type="range" min="0" max="1" value="0" class="py-2" id="swtchvalue0" oninput="setSWstate(0)">
                 <p>Valore: <span id="switchst0"></span></p>
                 <p id="swtchdesc0" class="py-2">Descrizione</p>
+                <p id="swtcherror0" class="py-2 bg-red-600 hidden"></p>
             </div>
         </div>
         <div class="bg-gray-800 inline-grid">
             <div class="self-center">
                 <p id="swtchname1" class="py-2">Nome Switch</p>
-                <input type="range" min="0" max="100" value="0" class="py-2" id="swtchvalue1" oninput="">
+                <input type="range" min="0" max="1" value="0" class="py-2" id="swtchvalue1" oninput="setSWstate(1)">
                 <p>Valore: <span id="switchst1"></span></p>
                 <p id="swtchdesc1" class="py-2">Descrizione</p>
+				<p id="swtcherror1" class="py-2 bg-red-600 hidden"></p>
             </div>
         </div>
         <div class="bg-gray-700 inline-grid">
             <div class="self-center">
                 <p id="swtchname2" class="py-2">Nome Switch</p>
-                <input type="range" min="0" max="100" value="0" class="py-2" id="swtchvalue2" oninput="">
+                <input type="range" min="0" max="1" value="0" class="py-2" id="swtchvalue2" oninput="setSWstate(2)">
                 <p>Valore: <span id="switchst2"></span></p>
                 <p id="swtchdesc2" class="py-2">Descrizione</p>
+				<p id="swtcherror2" class="py-2 bg-red-600 hidden"></p>
             </div>
         </div>
         <div class="bg-gray-800 inline-grid">
             <div class="self-center">
                 <p id="swtchname3" class="py-2">Nome Switch</p>
-                <input type="range" min="0" max="100" value="0" class="py-2" id="swtchvalue3" oninput="">
+                <input type="range" min="0" max="1" value="0" class="py-2" id="swtchvalue3" oninput="setSWstate(3)">
                 <p>Valore: <span id="switchst3"></span></p>
                 <p id="swtchdesc3" class="py-2">Descrizione</p>
+				<p id="swtcherror3" class="py-2 bg-red-600 hidden"></p>
             </div>
         </div>
         <div class="bg-gray-700 inline-grid">
             <div class="self-center">
                 <p id="swtchname4" class="py-2">Nome Switch</p>
-                <input type="range" min="0" max="100" value="0" class="py-2" id="swtchvalue4" oninput="">
+                <input type="range" min="0" max="1" value="0" class="py-2" id="swtchvalue4" oninput="setSWstate(4)">
                 <p>Valore: <span id="switchst4"></span></p>
                 <p id="swtchdesc4" class="py-2">Descrizione</p>
+				<p id="swtcherror4" class="py-2 bg-red-600 hidden"></p>
             </div>
         </div>
         <div class="bg-gray-800 inline-grid">
             <div class="self-center">
                 <p id="swtchname5" class="py-2">Nome Switch</p>
-                <input type="range" min="0" max="100" value="0" class="py-2" id="swtchvalue5" oninput="">
+                <input type="range" min="0" max="1" value="0" class="py-2" id="swtchvalue5" oninput="setSWstate(5)">
                 <p>Valore: <span id="switchst5"></span></p>
                 <p id="swtchdesc5" class="py-2">Descrizione</p>
+				<p id="swtcherror5" class="py-2 bg-red-600 hidden"></p>
             </div>
         </div>
 
@@ -109,7 +115,6 @@
 
 <div class="my-5 ml-2">
 		<a href="/swsetup"><button class="bg-slate-500 py-2 px-4 rounded-full">SWITCH SETTING</button></a>
-		<button class="bg-slate-500 py-2 px-4 rounded-full" onclick="Test()">TEST</button>
 </div>
 	</div>
 
@@ -120,6 +125,7 @@
     const namePrefix = "swtchname";
 	const descPrefix = "swtchdesc";
     const valuePrefix = "swtchvalue";
+    const errorPrefix = "swtcherror";
 	const spanValuePrefix = "switchst";
 
     /* menu */
@@ -168,6 +174,31 @@
 		xhttp.send();
 	}
 
+
+	function setSWstate(sw){
+		const value = document.getElementById(valuePrefix + sw).value;
+		let http = new XMLHttpRequest();
+		let params = 'sw=' + sw +'&value=' + value;
+		const errdiv = document.getElementById(errorPrefix + sw);
+		// setting value, if not ok will overwrited after from getswitchstate and hide error div
+		document.getElementById(valuePrefix + sw).value = value;
+		errdiv.classList.add("hidden");
+
+		http.open('POST', "/setsw?"+ params, true);
+		//Send the proper header information along with the request
+		http.setRequestHeader('Content-type', 'application/json');
+
+		http.onreadystatechange = function() {//Call a function when the state changes.
+			if(http.readyState == 4 && http.status == 200) {
+				if(http.responseText === "ok"){
+				} else {
+					document.getElementById(errorPrefix + sw).innerHTML = http.responseText;
+					errdiv.classList.remove("hidden");
+				}
+			}
+		}
+		http.send(params);
+	}
 
  	setInterval(getSWstate, 3000);
 

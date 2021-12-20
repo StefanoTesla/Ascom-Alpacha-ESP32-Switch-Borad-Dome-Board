@@ -20,6 +20,7 @@ void switchsetup() {
 */
 
   Switch[0].pin = 2;
+  Switch[0].CanSet = false;
 
   Switch[1].pin = 4;
 
