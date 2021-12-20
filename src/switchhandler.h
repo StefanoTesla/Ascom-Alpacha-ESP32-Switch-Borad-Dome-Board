@@ -20,23 +20,27 @@ void switchsetup() {
   analog -> Default is false, if true this switch is PWM
   pwmChannel -> Default -1, the value can be 0..15 according to esp32 pwm channels
 
+
+Please refer to this page to understand wich output/input you can use without problems:
+https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
 */
 
 // Input Example
-  Switch[0].pin = 5;
+  Switch[0].pin = 34; //dome shutter close input
   Switch[0].CanSet = false;
 
+  Switch[1].pin = 35; //dome shutter open input
+  Switch[1].CanSet = false;
+
 // Output Example
-  Switch[1].pin = 4;
+  Switch[2].pin = 4; // Halt Signal to Dome
 
-  Switch[2].pin = 16;
+  Switch[3].pin = 16; // Start Signal to the Dome
 
-  Switch[3].pin = 17;
-
-  Switch[4].pin = 18;
+  Switch[4].pin = 18; //output you wanna use as switch
 
 // PWM Output Example
-  Switch[5].pin = 2;
+  Switch[5].pin = 2;  //on board esp32 blue led, dummy example
   Switch[5].analog = true;
 
 

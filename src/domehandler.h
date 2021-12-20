@@ -1,10 +1,10 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
-#define SHUTTER_OPEN_INPUT    13
-#define SHUTTER_CLOSE_INPUT   12
-#define SHUTTER_CMD_OUTPUT    2
-#define SHUTTER_HALT_OUTPUT   5
+#define SHUTTER_OPEN_INPUT    34
+#define SHUTTER_CLOSE_INPUT   35
+#define SHUTTER_CMD_OUTPUT    16
+#define SHUTTER_HALT_OUTPUT   4
 
 unsigned long onesecack;
 unsigned long ShMoveTimeOut;

@@ -46,9 +46,9 @@ void setup()
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   if (!SPIFFS.exists("/setup.txt")) { StoreDataFileSPIFFS(); } else { ReadDataFileSPIFFS(); }
  
-  domehandlersetup();
   switchsetup();
-
+  domehandlersetup();
+  
   JDomeAnsw.reserve(300);
   
   AsyncWiFiManager wifiManager(&server,&dns);
