@@ -50,6 +50,8 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 
 #### Changelog
 
+1.2.3 Switch web page should be ok now 💥
+
 1.2.2 Dome web page should be ok now 💥
 
 1.2.1 Solved bug that cause a slow response from api server port 80
@@ -71,10 +73,9 @@ Knowed browser bugs:
 - :white_check_mark: Show last command to the dome, at the moment is "nietca" an Italian words meaning "nothing" [1.2.1]
 - :white_check_mark: Saving Switch Name and Descriptions [1.1.0]
 - :white_check_mark: Actual time-out setting time is not showed in Dome page [1.2.2]
-- :x: From WebServer we cannot change switch Value
+- :white_check_mark: From WebServer we cannot change switch Value [1.2.3]
 - :white_check_mark: Actually Dome time-out is multiplied * 1000 from webbrowser before store it [1.2.2]
 - :white_check_mark: Actually Dome Open Close Halt buttom from browser do nothing, need to add olso error message. [1.2.2]
-
 
 
 ## html_pages directory
