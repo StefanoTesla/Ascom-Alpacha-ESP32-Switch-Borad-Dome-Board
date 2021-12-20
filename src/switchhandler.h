@@ -1,6 +1,9 @@
 #ifndef SWITCH_HAND
 #define SWITCH_HAND
 
+
+
+
 void switchsetup() {
   int i=0;
 
@@ -19,9 +22,11 @@ void switchsetup() {
 
 */
 
-  Switch[0].pin = 2;
+// Input Example
+  Switch[0].pin = 5;
   Switch[0].CanSet = false;
 
+// Output Example
   Switch[1].pin = 4;
 
   Switch[2].pin = 16;
@@ -30,7 +35,9 @@ void switchsetup() {
 
   Switch[4].pin = 18;
 
-  Switch[5].pin = 19;
+// PWM Output Example
+  Switch[5].pin = 2;
+  Switch[5].analog = true;
 
 
 /* automatic setup for Switch */
@@ -43,7 +50,14 @@ void switchsetup() {
         pinMode(Switch[i].pin, OUTPUT);
         Switch[i].Step = 1;
         Switch[i].maxValue = 1;
-      }    
+      }  else {
+          ledcSetup(pwmchannles, 5000, 10);
+          ledcAttachPin(Switch[i].pin, pwmchannles);
+          Switch[i].pwmChannel = pwmchannles;
+          Switch[i].minValue = 0;
+          Switch[i].maxValue = 1024;
+          pwmchannles++;
+      }  
     }
   }
 }

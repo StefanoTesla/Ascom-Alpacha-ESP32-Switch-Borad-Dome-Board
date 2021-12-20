@@ -1,67 +1,117 @@
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-  <header>
-		<!-- Navbar goes here -->
-		<nav class="bg-gray-800">
-			<div class="max-w-6xl mx-auto px-4">
-				<div class="flex justify-between">
-						<div class="self-center">
-							<!-- Website Logo -->
-								<span class="font-semibold text-lg">StefanoTesla</span>
-						</div>
-						<!-- Primary Navbar items -->
-						<div class="hidden md:flex items-center space-x-1">
-							<a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
-							<a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
-						</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
+    <link rel="stylesheet" href="/assets/style.10c8a192.css" />
+  </head>
+  <body>
+    <header>
+      <!-- Navbar goes here -->
+      <nav class="bg-gray-800">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="flex justify-between">
+            <div class="self-center">
+              <!-- Website Logo -->
+              <span class="font-semibold text-lg">StefanoTesla</span>
+            </div>
+            <!-- Primary Navbar items -->
+            <div class="hidden md:flex items-center space-x-1">
+              <a
+                href="/dome"
+                class="
+                  py-4
+                  px-2
+                  font-semibold
+                  hover:text-green-500
+                  transition
+                  duration-300
+                "
+                >Dome</a
+              >
+              <a
+                href="/switch"
+                class="
+                  py-4
+                  px-2
+                  font-semibold
+                  hover:text-green-500
+                  transition
+                  duration-300
+                "
+                >Switch</a
+              >
+            </div>
 
-					<!-- Mobile menu button -->
-					<div class="md:hidden flex items-center h-14">
-						<button class="outline-none mobile-menu-button">
-						<svg class=" w-6 h-6 text-gray-500 hover:text-green-500 "
-							x-show="!showMenu"
-							fill="none"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path d="M4 6h16M4 12h16M4 18h16"></path>
-						</svg>
-					</button>
-					</div>
-				</div>
-			</div>
-			<!-- mobile menu -->
-			<div class="hidden mobile-menu">
-				<ul class="">
-					<li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
-					<li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
-				</ul>
-			</div>
-		</nav>
-  </header>
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center h-14">
+              <button class="outline-none mobile-menu-button">
+                <svg
+                  class="w-6 h-6 text-gray-500 hover:text-green-500"
+                  x-show="!showMenu"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- mobile menu -->
+        <div class="hidden mobile-menu">
+          <ul class="">
+            <li>
+              <a
+                href="/dome"
+                class="
+                  block
+                  text-sm
+                  px-2
+                  py-4
+                  hover:bg-green-500
+                  transition
+                  duration-300
+                "
+                >Dome</a
+              >
+            </li>
+            <li>
+              <a
+                href="/switch"
+                class="
+                  block
+                  text-sm
+                  px-2
+                  py-4
+                  hover:bg-green-500
+                  transition
+                  duration-300
+                "
+                >Switch</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
 
-<div class="container mx-auto px-2">
-<h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
-</div>
+    <div class="container mx-auto px-2">
+      <h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
+    </div>
 
-      <script>
- 				const btn = document.querySelector("button.mobile-menu-button");
-				const menu = document.querySelector(".mobile-menu");
+    <script>
+      const btn = document.querySelector("button.mobile-menu-button");
+      const menu = document.querySelector(".mobile-menu");
 
-				btn.addEventListener("click", () => {
-					menu.classList.toggle("hidden");
-				});         
-      </script>
-      
+      btn.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
+    </script>
   </body>
 </html>

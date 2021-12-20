@@ -1,166 +1,276 @@
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  
-  <link rel="stylesheet" href="/assets/style.10c8a192.css">
-</head>
-<body class="bg-gray-900">
-	<header>
-		<!-- Navbar goes here -->
-		<nav class="bg-gray-800">
-			<div class="max-w-6xl mx-auto px-4">
-				<div class="flex justify-between">
-						<div class="self-center">
-							<!-- Website Logo -->
-								<span class="font-semibold text-lg">StefanoTesla</span>
-						</div>
-						<!-- Primary Navbar items -->
-						<div class="hidden md:flex items-center space-x-1">
-							<a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
-							<a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
-						</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
+    <link rel="stylesheet" href="/assets/style.10c8a192.css" />
+  </head>
+  <body class="bg-gray-900">
+    <header>
+      <!-- Navbar goes here -->
+      <nav class="bg-gray-800">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="flex justify-between">
+            <div class="self-center">
+              <!-- Website Logo -->
+              <span class="font-semibold text-lg">StefanoTesla</span>
+            </div>
+            <!-- Primary Navbar items -->
+            <div class="hidden md:flex items-center space-x-1">
+              <a
+                href="/dome"
+                class="
+                  py-4
+                  px-2
+                  font-semibold
+                  hover:text-green-500
+                  transition
+                  duration-300
+                "
+                >Dome</a
+              >
+              <a
+                href="/switch"
+                class="
+                  py-4
+                  px-2
+                  font-semibold
+                  hover:text-green-500
+                  transition
+                  duration-300
+                "
+                >Switch</a
+              >
+            </div>
 
-					<!-- Mobile menu button -->
-					<div class="md:hidden flex items-center h-14">
-						<button class="outline-none mobile-menu-button">
-						<svg class=" w-6 h-6 text-gray-500 hover:text-green-500 "
-							x-show="!showMenu"
-							fill="none"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path d="M4 6h16M4 12h16M4 18h16"></path>
-						</svg>
-					</button>
-					</div>
-				</div>
-			</div>
-			<!-- mobile menu -->
-			<div class="hidden mobile-menu">
-				<ul class="">
-					<li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
-					<li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
-				</ul>
-			</div>
-		</nav>
-  </header>
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center h-14">
+              <button class="outline-none mobile-menu-button">
+                <svg
+                  class="w-6 h-6 text-gray-500 hover:text-green-500"
+                  x-show="!showMenu"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- mobile menu -->
+        <div class="hidden mobile-menu">
+          <ul class="">
+            <li>
+              <a
+                href="/dome"
+                class="
+                  block
+                  text-sm
+                  px-2
+                  py-4
+                  hover:bg-green-500
+                  transition
+                  duration-300
+                "
+                >Dome</a
+              >
+            </li>
+            <li>
+              <a
+                href="/switch"
+                class="
+                  block
+                  text-sm
+                  px-2
+                  py-4
+                  hover:bg-green-500
+                  transition
+                  duration-300
+                "
+                >Switch</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
 
-<div class="container mx-auto px-2">
+    <div class="container mx-auto px-2">
+      <h1 class="text-center text-3xl">TeslaDome</h1>
 
-	<h1 class="text-center text-3xl">TeslaDome</h1>
+      <p class="text-xl pt-6">Roof State: <span id="DomePos"></span></p>
+      <p class="text-xl">Last Command: <span id="DomeLstCmd"></span></p>
 
-	<p class=" text-xl pt-6">Roof State: <span id="DomePos"></span></p>
-	<p class=" text-xl">Last Command: <span id="DomeLstCmd"></span></p>
+      <h2 class="text-center text-2xl pt-6">Manual Commands</h2>
 
-	<h2 class="text-center text-2xl pt-6">Manual Commands</h2>
+      <div class="grid grid-flow-row grid-rows-3 mx-auto gap-10 pt-6">
+        <div>
+          <button
+            class="px-12 py-2 bg-green-600 w-full"
+            type="button"
+            onclick="CmdReq(1)"
+          >
+            Apri
+          </button>
+        </div>
+        <div>
+          <button
+            class="px-12 py-2 bg-red-600 w-full"
+            type="button"
+            onclick="CmdReq(2)"
+          >
+            Chiudi
+          </button>
+        </div>
+        <div>
+          <button
+            class="text-black font-bold px-12 py-2 bg-yellow-300 w-full"
+            type="button"
+            onclick="CmdReq(0)"
+          >
+            HALT
+          </button>
+        </div>
+      </div>
+      <div
+        class="
+          message-ok
+          hidden
+          w-full
+          border-2 border-green-600
+          bg-green-200
+          rounded-lg
+          mt-10
+          py-3
+          px-3
+          text-green-600
+        "
+      >
+        Command Send Succesfully!!
+      </div>
+      <div
+        class="
+          message-err
+          hidden
+          w-full
+          border-2 border-red-600
+          bg-red-200
+          rounded-lg
+          mt-10
+          py-3
+          px-3
+          text-red-600
+        "
+      >
+        <p id="cmdansw"></p>
+      </div>
+      <h2 class="text-center text-2xl mt-10">Setting:</h2>
 
+      <p class="text-xl pt-2">Timeout:</p>
+      <div class="flex h-14">
+        <div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Sec.</p></div>
+        <form class="h-full">
+          <input
+            type="number"
+            id="DomeTimeout"
+            class="bg-gray-100 p-2 text-gray-500 h-full"
+          />
+        </form>
+        <button
+          class="ml-2 px-12 py-2 bg-green-600 font-bold"
+          type="button"
+          onclick="DomeSaveFnc()"
+        >
+          SAVE
+        </button>
+      </div>
+    </div>
 
-	<div class="grid grid-flow-row grid-rows-3 mx-auto gap-10 pt-6">
-	<div>
-	<button class="px-12 py-2 bg-green-600 w-full" type="button" onclick="CmdReq(1)">Apri</button></div>
-	<div><button class="px-12 py-2 bg-red-600 w-full" type="button" onclick="CmdReq(2)">Chiudi</button></div>
-	<div><button class="text-black font-bold px-12 py-2 bg-yellow-300 w-full" type="button" onclick="CmdReq(0)">HALT</button></div>
-	</div>
-	<div class="message-ok hidden w-full border-2 border-green-600 bg-green-200 rounded-lg mt-10 py-3 px-3 text-green-600">
-		Command Send Succesfully!!
-	</div>
-	<div class="message-err hidden w-full border-2 border-red-600 bg-red-200 rounded-lg mt-10 py-3 px-3 text-red-600">
-		<p id="cmdansw"></p>
-	</div>
-	<h2 class="text-center text-2xl mt-10">Setting:</h2>
+    <script>
+      const btn = document.querySelector("button.mobile-menu-button");
+      const menu = document.querySelector(".mobile-menu");
+      const mok = document.querySelector(".message-ok");
+      const mer = document.querySelector(".message-err");
+      const DomeState = ["Open", "Close", "Opening", "Closing", "In Error"];
+      const DomeCmd = ["No operation", "Opening", "Closing", "Halt"];
 
-	<p class=" text-xl pt-2">Timeout:</p>
-	<div class="flex h-14">
-		<div class="bg-gray-500 px-4 rounded-tl rounded-bl"><p>Sec.</p></div>
-		<form class="h-full"><input type="number" id="DomeTimeout" class="bg-gray-100 p-2 text-gray-500 h-full"></form>
-		<button class="ml-2 px-12 py-2 bg-green-600 font-bold" type="button" onclick="DomeSaveFnc()">SAVE</button>
-	</div>
+      btn.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
 
-</div>
+      window.onload = function () {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            let obj = JSON.parse(this.responseText);
+            document.getElementById("DomeLstCmd").innerHTML =
+              DomeCmd[obj.domelstcmd];
+            console.log(DomeCmd);
+            document.getElementById("DomeTimeout").value = obj.dometimeout;
+            document.getElementById("DomePos").innerHTML =
+              DomeState[obj.domepos];
+          }
+        };
+        xhttp.open("GET", "http://192.168.129.213/getdomestate", true);
+        xhttp.send();
+      };
 
-	<script>
- 	const btn = document.querySelector("button.mobile-menu-button");
-	const menu = document.querySelector(".mobile-menu");
-	const mok = document.querySelector(".message-ok");
-	const mer = document.querySelector(".message-err");
-	const DomeState = ["Open", "Close", "Opening", "Closing", "In Error"];
-	const DomeCmd = ["No operation", "Opening", "Closing", "Halt"];
+      function getDomeState() {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            let obj = JSON.parse(this.responseText);
+            document.getElementById("DomeLstCmd").innerHTML =
+              DomeCmd[obj.domelstcmd];
+            document.getElementById("DomePos").innerHTML =
+              DomeState[obj.domepos];
+          }
+        };
+        xhttp.open("GET", "http://192.168.129.213/getdomestate", true);
+        xhttp.send();
+      }
 
-	btn.addEventListener("click", () => {
-		menu.classList.toggle("hidden");
-	});         
-	
-	window.onload = function() {
-		let xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			let obj = JSON.parse(this.responseText);
-			document.getElementById("DomeLstCmd").innerHTML = DomeCmd[obj.domelstcmd];
-			console.log(DomeCmd);
-			document.getElementById("DomeTimeout").value = obj.dometimeout;
-			document.getElementById("DomePos").innerHTML = DomeState[obj.domepos];
-			}
-		}
-		xhttp.open("GET", "http://192.168.129.213/getdomestate", true);
-		xhttp.send();
-	};
+      setInterval(getDomeState, 5000);
 
+      function CmdReq(cmd) {
+        let http = new XMLHttpRequest();
+        let params = "cmd=" + cmd;
+        mok.classList.add("hidden");
+        mer.classList.add("hidden");
+        http.open("POST", "http://192.168.129.213/domecmd?" + params, true);
+        //Send the proper header information along with the request
+        http.setRequestHeader("Content-type", "application/json");
 
-	function getDomeState() {
-		let xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			let obj = JSON.parse(this.responseText);
-			document.getElementById("DomeLstCmd").innerHTML = DomeCmd[obj.domelstcmd];
-			document.getElementById("DomePos").innerHTML = DomeState[obj.domepos];
-			}
-		}
-		xhttp.open("GET", "http://192.168.129.213/getdomestate", true);
-		xhttp.send();
-	};
+        http.onreadystatechange = function () {
+          //Call a function when the state changes.
+          if (http.readyState == 4 && http.status == 200) {
+            if (http.responseText === "ok") {
+              mok.classList.remove("hidden");
+            } else {
+              document.getElementById("cmdansw").innerHTML = http.responseText;
+              mer.classList.remove("hidden");
+            }
+          }
+        };
+        http.send(params);
+      }
 
-	setInterval(getDomeState, 5000);
-
-
-	function CmdReq(cmd){
-		let http = new XMLHttpRequest();
-		let params = 'cmd=' + cmd;
-		mok.classList.add("hidden");
-		mer.classList.add("hidden");
-		http.open('POST', "http://192.168.129.213/domecmd?"+ params, true);
-		//Send the proper header information along with the request
-		http.setRequestHeader('Content-type', 'application/json');
-
-		http.onreadystatechange = function() {//Call a function when the state changes.
-			if(http.readyState == 4 && http.status == 200) {
-				if(http.responseText === "ok"){
-					mok.classList.remove("hidden");
-				} else {
-					document.getElementById("cmdansw").innerHTML = http.responseText;
-					mer.classList.remove("hidden");
-				}
-			}
-		}
-		http.send(params);
-	}
-
-	function DomeSaveFnc(){
-	let xhttp = new XMLHttpRequest();
-	let domeTimeOut = document.getElementById("DomeTimeout").value;
-	const jsonFormInfo = JSON.stringify({
-			dometmout:domeTimeOut, 
-		});   
-	xhttp.open("POST", "/storedomedata");
-	xhttp.setRequestHeader('Content-type', 'application/json');
-	xhttp.send(jsonFormInfo);
-	}
-	</script>
-      
-	</body>
+      function DomeSaveFnc() {
+        let xhttp = new XMLHttpRequest();
+        let domeTimeOut = document.getElementById("DomeTimeout").value;
+        const jsonFormInfo = JSON.stringify({
+          dometmout: domeTimeOut,
+        });
+        xhttp.open("POST", "/storedomedata");
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(jsonFormInfo);
+      }
+    </script>
+  </body>
 </html>

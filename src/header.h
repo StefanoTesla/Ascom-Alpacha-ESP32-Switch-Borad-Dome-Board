@@ -41,8 +41,6 @@ ShInEnum ShutterInputState;
 unsigned long MovingTimeOut = 20;
 /** END DOME DATA **/
 
-/** SWITCH DATA **/
-#define _MAX_SWTICH_ID_ 6
 
 struct SwtichStruct
 {
@@ -58,8 +56,11 @@ struct SwtichStruct
   int pwmChannel = -1;
 };
 
+#define _MAX_SWTICH_ID_ 6
+
 SwtichStruct Switch[_MAX_SWTICH_ID_];
 
+unsigned int pwmchannles = 0;
 
 
 
