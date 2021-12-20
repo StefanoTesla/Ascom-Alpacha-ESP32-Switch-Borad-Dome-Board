@@ -220,6 +220,11 @@ void setup()
     request->send(SPIFFS, "/switchsetup.html", "text/html");
   });
 
+
+  server.on("/setup.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/setup.txt", "text/plain");
+  });
+
   server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
   /** END SWITCH SPECIFIC METHODS **/
