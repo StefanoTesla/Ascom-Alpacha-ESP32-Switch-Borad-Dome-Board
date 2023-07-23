@@ -40,7 +40,7 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
   Switch[4].pin = 18; //output you wanna use as switch
 
 // PWM Output Example
-  Switch[5].pin = 2;  //on board esp32 blue led, dummy example
+  Switch[5].pin = 12;  //on board esp32 blue led, dummy example
   Switch[5].analog = true;
 
 

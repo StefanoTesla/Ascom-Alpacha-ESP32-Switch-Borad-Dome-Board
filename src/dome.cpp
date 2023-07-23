@@ -9,13 +9,14 @@
 #include "SPIFFS.h"
 #include "header.h"
 #include "alpacamanagefunction.h"
-
+#include <AsyncElegantOTA.h>
 
 AsyncWebServer server(80);
 AsyncWebServer Alpserver(4567);
 #include "AlpacaDomeServer.h"
 #include "AlpacaSwitchServer.h"
-
+unsigned long previousMillis = 0;
+unsigned long interval = 30000;
 DNSServer dns;
 ///////enter your sensitive data in the Secret tab/arduino_secrets.h
 
@@ -41,7 +42,7 @@ void setup()
 {
   Serial.begin(115200);
   AlpServerID = 0;
-
+  pinMode(2, OUTPUT);
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   if (!SPIFFS.exists("/setup.txt")) { StoreDataFileSPIFFS(); } else { ReadDataFileSPIFFS(); }
@@ -50,7 +51,7 @@ void setup()
   domehandlersetup();
   
   JDomeAnsw.reserve(300);
-  
+  Serial.println("Listening for discovery requests...");
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("TeslaBoard");
   Serial.print("Connect with IP Address: ");
@@ -229,6 +230,7 @@ void setup()
 
   /** END SWITCH SPECIFIC METHODS **/
   Alpserver.begin();
+  AsyncElegantOTA.begin(&server);    // Start ElegantOTA
   server.begin();
 }
 
@@ -239,4 +241,18 @@ void loop()
     StoreDataFileSPIFFS();
   }
 
+  unsigned long currentMillis = millis();
+  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
+    Serial.print(millis());
+    Serial.println("Reconnecting to WiFi...");
+    WiFi.disconnect();
+    WiFi.reconnect();
+    previousMillis = currentMillis;
+  }
+
+  if(WiFi.status() == WL_CONNECTED ){
+    digitalWrite(2, HIGH);
+  } else {
+    digitalWrite(2, LOW);
+  }
 }

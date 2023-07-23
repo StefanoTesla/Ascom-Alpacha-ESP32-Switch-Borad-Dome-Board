@@ -56,7 +56,7 @@ struct SwtichStruct
   int pwmChannel = -1;
 };
 
-#define _MAX_SWTICH_ID_ 6
+#define _MAX_SWTICH_ID_ 17
 
 SwtichStruct Switch[_MAX_SWTICH_ID_];
 
