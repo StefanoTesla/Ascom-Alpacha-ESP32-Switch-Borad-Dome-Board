@@ -50,6 +50,8 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 
 #### Changelog
 
+1.2.4 Added wifi automatic reconnection, added OTA firmware uploader
+
 1.2.3 Switch web page should be ok now 💥
 
 1.2.2 Dome web page should be ok now 💥
@@ -63,7 +65,6 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 
 ### ToDo List:
 
-- Automatic setup of pwm output
 - Make Switch OOP
 - Webrowser have some bugs
 
