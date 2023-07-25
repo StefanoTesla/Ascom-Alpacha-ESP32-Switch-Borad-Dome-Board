@@ -29,4 +29,71 @@ h3,h4,h5,h6
   @apply pt-10 pb-4 text-2xl font-bold;
 }
 
+.main-tab
+{
+  @apply flex mx-auto mx-4 my-4 py-4 px-4 flex-col
 }
+
+.tab-header
+{
+  @apply flex flex-row
+}
+.message{
+  @apply rounded-lg mt-10 py-3 px-3 w-full border-2
+}
+
+.message-ok{
+  @apply border-green-600 bg-green-200  text-green-600
+}
+
+.message-ko{
+  @apply border-red-600 bg-red-200 text-red-600
+}
+
+.button{
+  @apply px-5 py-2 rounded-sm
+}
+
+.button_green
+{
+  @apply  bg-green-600 
+
+}
+
+.button_red
+{
+  @apply bg-red-600
+}
+
+
+.card_container
+{
+  @apply self-center bg-slate-800 py-4 rounded-lg shadow-md h-full px-4
+}
+
+.title_space
+{
+  min-height: 24px;
+}
+.card_title
+{
+  @apply overflow-hidden title_space font-semibold text-lg
+}
+.card_comment
+{
+  @apply overflow-hidden title_space italic text-xs text-gray-300
+}
+
+.card_command
+{
+  @apply py-2
+}
+
+
+.card_actual_value
+{
+  @apply w-1/2 lg:w-1/3 font-semibold px-5 py-2 mx-auto rounded-md
+}
+
+}
+

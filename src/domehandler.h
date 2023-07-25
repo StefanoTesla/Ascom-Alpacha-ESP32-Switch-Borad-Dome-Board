@@ -6,13 +6,9 @@
 #define SHUTTER_CMD_OUTPUT    16
 #define SHUTTER_HALT_OUTPUT   4
 
-unsigned long onesecack;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
-int ShCyIndex = 0;
-bool MoveRetry;
-bool onesecclock;
-int OldShCyIndex;
+
 void domehandlersetup() {
   pinMode(SHUTTER_CMD_OUTPUT, OUTPUT);
   pinMode(SHUTTER_HALT_OUTPUT, OUTPUT);
@@ -25,71 +21,66 @@ void domeInputState(){
 
     // I used enum for input state for making the cycle code more clean
     if (digitalRead(SHUTTER_CLOSE_INPUT) == HIGH && digitalRead(SHUTTER_OPEN_INPUT) == LOW) {
-      ShutterInputState = ShOnlyClose;
+      Dome.ShutterInputState = ShOnlyClose;
     }
     if ( digitalRead(SHUTTER_CLOSE_INPUT) == LOW && digitalRead(SHUTTER_OPEN_INPUT) == HIGH) {
-      ShutterInputState = ShOnlyOpen;
+      Dome.ShutterInputState = ShOnlyOpen;
     }
     if ( digitalRead(SHUTTER_OPEN_INPUT) == HIGH && digitalRead(SHUTTER_CLOSE_INPUT) == HIGH) {
-      ShutterInputState = ShInAll;
+      Dome.ShutterInputState = ShInAll;
     }
     if ( digitalRead(SHUTTER_OPEN_INPUT) == LOW && digitalRead(SHUTTER_CLOSE_INPUT) == LOW) {
-      ShutterInputState = ShInNoOne;
+      Dome.ShutterInputState = ShInNoOne;
     }
 }
 void LastDomeCommandExe(){
-  if (ShutterCommand != Idle) {
-    LastDomeCommand = ShutterCommand;
+  if (Dome.ShutterCommand != Idle) {
+    Dome.LastDomeCommand = Dome.ShutterCommand;
   }
 }
 
 void domehandlerloop() {
-  ShMoveTimeOut = MovingTimeOut *1000;
+  ShMoveTimeOut = Dome.MovingTimeOut *1000;
   domeInputState();
   LastDomeCommandExe();
-  
-  if (ShCyIndex != OldShCyIndex){
-    Serial.println(ShCyIndex);
-    OldShCyIndex=ShCyIndex;
-  }
 
   // TIMEOUT MOVIMENTAZIONE
-  if (ShCyIndex >= 11 && ShCyIndex <= 12) {
+  if (Dome.Cycle >= 11 && Dome.Cycle <= 12) {
     if ((millis() - ShMoveTimeOutAck) > ShMoveTimeOut) { //input error I wait 10 sec. before done command
-      ShCyIndex = 100;  //Timeout, HALT
+      Dome.Cycle = 100;  //Timeout, HALT
     }
   }
 
-  switch (ShCyIndex)
+  switch (Dome.Cycle)
   {
     case 0:
-            MoveRetry = false;
+            Dome.MoveRetry = false;
             
-            if (ShutterInputState == ShOnlyClose) {       ShutterState = ShClose;
-            } else if (ShutterInputState == ShOnlyOpen) { ShutterState = ShOpen;
-            } else {                                      ShutterState = ShError; }
+            if (Dome.ShutterInputState == ShOnlyClose) {       Dome.ShutterState = ShClose;
+            } else if (Dome.ShutterInputState == ShOnlyOpen) { Dome.ShutterState = ShOpen;
+            } else {                                      Dome.ShutterState = ShError; }
             
-            if (ShutterCommand == CmdOpen) {
-              if (ShutterInputState != ShOnlyOpen) {
-                ShutterState = ShOpening;
-                ShCyIndex = 10;
+            if (Dome.ShutterCommand == CmdOpen) {
+              if (Dome.ShutterInputState != ShOnlyOpen) {
+                Dome.ShutterState = ShOpening;
+                Dome.Cycle = 10;
               } else {
-                ShutterState = ShOpen;
-                ShutterCommand = Idle;
+                Dome.ShutterState = ShOpen;
+                Dome.ShutterCommand = Idle;
               }
             }
 
-            if (ShutterCommand == CmdClose) {
-              if (ShutterInputState != ShOnlyClose) {
-                ShCyIndex = 10;
-                ShutterState = ShClosing;
+            if (Dome.ShutterCommand == CmdClose) {
+              if (Dome.ShutterInputState != ShOnlyClose) {
+                Dome.Cycle = 10;
+                Dome.ShutterState = ShClosing;
               } else {
-                ShutterCommand = Idle;
-                ShutterState = ShClose;
+                Dome.ShutterCommand = Idle;
+                Dome.ShutterState = ShClose;
               }
             }
-            if (ShutterCommand == CmdHalt) {
-              ShCyIndex = 100;
+            if (Dome.ShutterCommand == CmdHalt) {
+              Dome.Cycle = 100;
             }
             break;
 
@@ -99,33 +90,33 @@ void domehandlerloop() {
             //Pulse to start to the motor, ack millis for time out and
             ShMoveTimeOutAck = millis();
             digitalWrite(SHUTTER_CMD_OUTPUT, HIGH);
-            ShCyIndex++;
+            Dome.Cycle++;
             break;
 
     case 11:  //Take signal end to loose signal
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait 1second anyway
-              if (ShutterInputState == ShInAll || ShutterInputState == ShInNoOne) {
+              if (Dome.ShutterInputState == ShInAll || Dome.ShutterInputState == ShInNoOne) {
                 digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
                 ShMoveTimeOutAck = millis();
-                ShCyIndex++;
+                Dome.Cycle++;
               }
             }
             break;
 
     case 12:  //Sensor Reached
             // INIZIO CHECK APERTUA
-            if (ShutterCommand == CmdOpen) {
-                if (ShutterInputState == ShOnlyOpen) { //As aspected direction!
-                ShutterState = ShOpen;
-                ShCyIndex++;
+            if (Dome.ShutterCommand == CmdOpen) {
+                if (Dome.ShutterInputState == ShOnlyOpen) { //As aspected direction!
+                Dome.ShutterState = ShOpen;
+                Dome.Cycle++;
                 break;
               }
-              if (ShutterInputState == ShOnlyClose) { //OMG wrong direction!
-                if (MoveRetry == false) {
-                  MoveRetry = true; // just one retry
-                  ShCyIndex = 20;
+              if (Dome.ShutterInputState == ShOnlyClose) { //OMG wrong direction!
+                if (Dome.MoveRetry == false) {
+                  Dome.MoveRetry = true; // just one retry
+                  Dome.Cycle = 20;
                 } else {
-                  ShCyIndex = 100;  //no ping pong all day, HALT
+                  Dome.Cycle = 100;  //no ping pong all day, HALT
                 }
               } 
 
@@ -135,18 +126,18 @@ void domehandlerloop() {
 
 
             //INIZIO CHECK CHIUSURA
-            if (ShutterCommand == CmdClose) { //OMG wrong direction!
-              if (ShutterInputState == ShOnlyOpen) {
-                if (MoveRetry == false) {
-                  MoveRetry = true; // just one retry
-                  ShCyIndex = 20;
+            if (Dome.ShutterCommand == CmdClose) { //OMG wrong direction!
+              if (Dome.ShutterInputState == ShOnlyOpen) {
+                if (Dome.MoveRetry == false) {
+                  Dome.MoveRetry = true; // just one retry
+                  Dome.Cycle = 20;
                 } else {
-                  ShCyIndex = 100;  //no ping pong all day, HALT
+                  Dome.Cycle = 100;  //no ping pong all day, HALT
                 }
               }
-              if (ShutterInputState == ShOnlyClose) { //As aspected direction!
-                ShutterState = ShClose;
-                ShCyIndex++;
+              if (Dome.ShutterInputState == ShOnlyClose) { //As aspected direction!
+                Dome.ShutterState = ShClose;
+                Dome.Cycle++;
               }
             }
             // FINE CHECK CHIUSURA
@@ -154,9 +145,9 @@ void domehandlerloop() {
             break;
 
     case 13:
-            MoveRetry = false;
-            ShutterCommand = Idle;
-            ShCyIndex = 0;
+            Dome.MoveRetry = false;
+            Dome.ShutterCommand = Idle;
+            Dome.Cycle = 0;
             break;
 
 
@@ -164,21 +155,21 @@ void domehandlerloop() {
     case 20:ShMoveTimeOutAck = millis();
             digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);   //I need just a pulse for start roof motor
             digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
-            ShCyIndex++;
+            Dome.Cycle++;
             break;
 
     case 21:
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait a second
               digitalWrite(SHUTTER_HALT_OUTPUT, LOW);   
               digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
-              ShCyIndex++;
+              Dome.Cycle++;
               ShMoveTimeOutAck = millis();
             }        
             break;
 
     case 22:
             if ((millis() - ShMoveTimeOutAck) > 5000) { //Wait 5 seconds and restart movement
-              ShCyIndex = 10;
+              Dome.Cycle = 10;
             }        
             break;
 
@@ -186,24 +177,24 @@ void domehandlerloop() {
     /* HALT CYCLE */
     case 100: //halt command for 1sec
             ShMoveTimeOutAck = millis();
-            ShutterState = ShError;
+            Dome.ShutterState = ShError;
             digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);
             digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
-            ShCyIndex++;
+            Dome.Cycle++;
             break;
 
     case 101: //halt command for 1sec
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Setting Output for 1sec
               digitalWrite(SHUTTER_HALT_OUTPUT, LOW);   
               digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
-              ShCyIndex++;
+              Dome.Cycle++;
             }
             break;
 
     case 102: 
-            ShutterCommand = Idle;
-            ShCyIndex = 0;
-            MoveRetry = false;
+            Dome.ShutterCommand = Idle;
+            Dome.Cycle = 0;
+            Dome.MoveRetry = false;
             break;
 
 

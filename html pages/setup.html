@@ -1,0 +1,179 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script defer src="/alpine.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+
+    <header 
+      x-data="{ open: false }"
+      
+      @resize.window="
+      width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+      if (width > 767) {
+       open = false
+      }
+      "
+      
+      >
+      <!-- Navbar goes here -->
+      <nav class="bg-gray-800">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="flex justify-between">
+            <div class="self-center">
+              <!-- Website Logo -->
+              <span class="font-semibold text-lg">StefanoTesla</span>
+            </div>
+            <!-- Primary Navbar items -->
+            <div class="hidden md:flex items-center space-x-1">
+              <a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
+              <a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center h-14" >
+              <button class="outline-none mobile-menu-button" @click="open = ! open">
+                <svg class="w-6 h-6 text-gray-500 hover:text-green-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- mobile menu -->
+        <div x-show="open" class="mobile-menu">
+          <ul class="">
+            <li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
+            <li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <div class="">
+      <h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
+    </div>
+
+    <div 
+      x-data="globalData()" 
+    >
+    <!--DOME-->
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}"
+      >
+
+      <div class="tab-header" >
+        <div class="grow">Dome</div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+      </div>
+
+      <div class="tab-content" x-show="open" x-transition>
+
+        <div>
+            <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5"/> Sec.</p>
+        </div>
+        <div>
+        <p class="py-2">Abilita chiusura in caso di mancata connessione: <input type="checkbox" id="endomeautoclose" class="bg-gray-100 p-2 text-gray-500"/> </p>
+        <p>Tempo di inattività: <input type="number" id="domeautoclose" class="bg-gray-100 p-2 text-gray-800 h-5"/> Min.</p>
+        </div>
+        <div class="pt-2">
+            <button class="button button_green">Salva</button>
+            <button class="button button_green">Scarica Configurazione</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--SWITCH-->
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}">
+
+    <div class="tab-header" >
+      <div class="grow">Switch</div>
+      <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+    </div>
+
+    
+    <div class="tab-content pt-4" x-show="open" x-transition>
+
+
+        <p>Numero di Switch da utilizzare: <form><input x-on:change.debounce="validateSwitchNumber($event)" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></form></p>
+
+        <template  x-for="(i,index) in switchNumber" >
+            <div :id="$id('sw',index)" class="py-4">
+                <p class="pt-2">Nome: <input type="text" x-on:change.debounce="validateString($event)" :id="$id('sw-name',index)" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
+                <p class="pt-2">Descrizione: <input type="text" x-on:change.debounce="validateString($event)" :id="$id('sw-desc',index)" class="bg-gray-100 p-2 text-gray-800 h-5"/> </p>
+                <p class="pt-2">Tipo:
+                <input list="datalist_id" class="text-gray-800">
+                    <datalist  id="datalist_id">
+                        <option value="Uscita Digitale"></option>
+                        <option value="Uscita PWM"></option>
+                        <option value="Ingresso Digitale"></option>
+                    </datalist>
+                <p class="pt-2">Pin: <input x-on:change.debounce="validateNumber($event)" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
+                </p>
+            </div>
+        </template>
+
+    <div class="pt-2">
+        <button class="button button_green">Salva</button>
+        <button class="button button_green">Scarica Configurazione</button>
+    </div>
+    </div>
+    </div>
+
+</div>
+
+
+  <script>
+    function globalData() {
+      return {
+        switchNumber : 1,
+        dome: [],
+        switches: [],
+        reload() {
+          this.dome = [];
+          this.switches = [];
+        },
+        updateData(){
+          fetch('http://192.168.69.116/status')
+            .then(response => response.json())
+            .then(response => {
+              this.dome = response.dome;
+              this.switches =  response.switches
+              });
+        },
+        init() {  
+          this.updateData()
+        },
+        validateSwitchNumber(event){
+            let ionumber = parseInt(event.target.value);
+            if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 33){
+                this.switchNumber = ionumber
+            } else {
+                console.error("Errore di validazione", ionumber)
+            }
+        },
+        validateString(event){
+            event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+            console.log(event.target.value)
+        },
+        validateSwitchNumber(event){
+            let ionumber = parseInt(event.target.value);
+            if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 33){
+                this.switchNumber = ionumber
+            } else {
+                console.error("Errore di validazione", ionumber)
+            }
+        },
+      }
+    };
+
+
+  </script>
+  </body>
+</html>

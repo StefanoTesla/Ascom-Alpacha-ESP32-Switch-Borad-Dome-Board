@@ -1,20 +1,31 @@
+struct FileStruct{
+  bool saveSwitchSetting;
+  bool saveDomeSetting;
+};
+
+FileStruct FileHandler;
+
 bool StoreData;
 
 /* ALPACA COMMON DATA */
-uint32_t ClientTransactionID;
-uint32_t AlpServerID = 0;
-uint32_t ClientID;
-int Alp_Int_ID;               /* used for switch ID */
-bool Alp_state;               /* used for setswitch */
-int Alp_Int_Value;            /* used for setswitchvalue */
-String Alp_Name;              /* used for set switch name */
-bool Alp_idcheck;
-bool Alp_value_ex;
-bool boConnect;
+struct AlpacaCommonData{
+  uint32_t ClientTransactionID;
+  uint32_t AlpServerID = 0;
+  uint32_t ClientID;
+  int SwitchId;               /* used for switch ID */
+  bool SwitchValue;               /* used for setswitch */
+  int SwitchIntValue;            /* used for setswitchvalue */
+  String SwitchString;              /* used for set switch name */
+  bool SwitchIdInRange;
+  bool SwitchValueInRange;
+  bool boConnect;
+};
+
+AlpacaCommonData AlpacaData;
+
 /*END ALPACA COMMON DATA */
 
 /**DOME DATA**/
-unsigned int LastDomeCommand =0;
 enum ShInEnum {
   ShInNoOne,
   ShOnlyClose,
@@ -35,10 +46,21 @@ enum ShCmdEnum {
   CmdHalt
 };
 
-ShCmdEnum ShutterCommand;
-ShStEnum ShutterState;
-ShInEnum ShutterInputState;
-unsigned long MovingTimeOut = 20;
+struct DomeStruct{
+  ShCmdEnum ShutterCommand;
+  ShStEnum ShutterState;
+  ShInEnum ShutterInputState;
+  int Cycle;
+  bool MoveRetry;
+  unsigned int LastDomeCommand =0;
+  unsigned long MovingTimeOut = 20;
+  unsigned long LastServerRequest;
+  bool EnableAutoClose;
+  unsigned long AutoCloseTimeOut = 20;
+};
+
+DomeStruct Dome;
+
 /** END DOME DATA **/
 
 
@@ -69,7 +91,7 @@ void StoreDataFileSPIFFS() {
   const size_t capacity = JSON_OBJECT_SIZE(1024);
   String datasetup;
   DynamicJsonDocument doc(capacity);
-  doc["dometime"]   = MovingTimeOut;
+  doc["dometime"]   = Dome.MovingTimeOut;
   JsonArray Switchjs = doc.createNestedArray("Switch");
 
     JsonObject Switchjs_0 = Switchjs.createNestedObject();
@@ -97,8 +119,6 @@ void StoreDataFileSPIFFS() {
     Switchjs_5["description"] = Switch[5].Description;
 
   serializeJson(doc, datasetup);
-
-Serial.println(datasetup);
 
   File file = SPIFFS.open("/setup.txt", FILE_WRITE);
   if (!file) {
@@ -147,13 +167,11 @@ void ReadDataFileSPIFFS() {
     Serial.print(F("deserializeJson() failed: "));
     Serial.println(error.c_str());
   } else {
-    MovingTimeOut  = doc["dometime"];
+    Dome.MovingTimeOut  = doc["dometime"];
     for (JsonObject elem : doc["Switch"].as<JsonArray>()) {
 
-    Switch[i].Name = elem["name"].as<String>(); 
+    Switch[i].Name = elem["name"].as<String>();
     Switch[i].Description = elem["description"].as<String>();
-    Serial.println(Switch[i].Name);
-    Serial.println(Switch[i].Description);
     i++;
 }
 

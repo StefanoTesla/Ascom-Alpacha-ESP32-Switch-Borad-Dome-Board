@@ -9,8 +9,8 @@ String JDomeAnsw;
 
 
 void JsonDomeCostructor(int error, String errormessage ) {
-  JDome["ClientTransactionID"] = ClientTransactionID;
-  JDome["ServerTransactionID"] = AlpServerID;
+  JDome["ClientTransactionID"] = AlpacaData.ClientTransactionID;
+  JDome["ServerTransactionID"] = AlpacaData.AlpServerID;
   JDome["ErrorNumber"] = (uint32_t)error;
   JDome["ErrorMessage"] = errormessage;
   JDomeAnsw = "";
@@ -24,17 +24,17 @@ void AlpacaDome(){
 
 Alpserver.on("/api/v1/dome/0/shutterstatus",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  JDome["Value"] = ShutterState;
+  JDome["Value"] = Dome.ShutterState;
   JsonDomeCostructor(0, "");
   request->send(200, "application/json", JDomeAnsw);
 });
 
 Alpserver.on("/api/v1/dome/0/closeshutter",                                             HTTP_PUT, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  if (ShutterCommand == Idle && ShutterState != ShOpen ){
+  if (Dome.ShutterCommand == Idle && Dome.ShutterState != ShOpen ){
     JsonDomeCostructor(0, "");
     request->send(200, "application/json", JDomeAnsw);
-    ShutterCommand = CmdClose;
+    Dome.ShutterCommand = CmdClose;
   } else {
   JsonDomeCostructor(1035, "Shutter already opened or moving");
   request->send(200, "application/json", JDomeAnsw);
@@ -43,10 +43,10 @@ Alpserver.on("/api/v1/dome/0/closeshutter",                                     
 
 Alpserver.on("/api/v1/dome/0/openshutter",                                              HTTP_PUT, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  if (ShutterCommand == Idle && ShutterState != ShOpen ){
+  if (Dome.ShutterCommand == Idle && Dome.ShutterState != ShOpen ){
     JsonDomeCostructor(0, "");
     request->send(200, "application/json", JDomeAnsw);
-    ShutterCommand = CmdOpen;
+    Dome.ShutterCommand = CmdOpen;
   } else {
   JsonDomeCostructor(1035, "Shutter already opened or moving");
   request->send(200, "application/json", JDomeAnsw);
@@ -54,7 +54,7 @@ Alpserver.on("/api/v1/dome/0/openshutter",                                      
 });
 
 Alpserver.on("/api/v1/dome/0/abortslew",                                                HTTP_PUT, [](AsyncWebServerRequest *request) {
-  ShCyIndex =100;
+  Dome.Cycle =100;
   GetAlpArguments(request);
   JsonDomeCostructor(0, "");
   request->send(200, "application/json", JDomeAnsw);
@@ -181,7 +181,7 @@ Alpserver.on("/api/v1/dome/0/slaved",                                           
 
 Alpserver.on("/api/v1/dome/0/slewing",                                                  HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  if (ShutterCommand == Idle) {
+  if (Dome.ShutterCommand == Idle) {
     JDome["Value"] = false;
   } else {
     JDome["Value"] = true;
@@ -216,9 +216,9 @@ void DomWSState (AsyncWebServerRequest *request) {
   const size_t capacity = JSON_OBJECT_SIZE(800);
   String domestatus;
   DynamicJsonDocument doc(capacity);
-  doc["domepos"]   = ShutterState;
-  doc["domelstcmd"]  = LastDomeCommand;
-  doc["dometimeout"] = MovingTimeOut;
+  doc["domepos"]   = Dome.ShutterState;
+  doc["domelstcmd"]  = Dome.LastDomeCommand;
+  doc["dometimeout"] = Dome.MovingTimeOut;
  
   serializeJson(doc, domestatus);
   request->send(200, "application/json", domestatus);

@@ -8,13 +8,18 @@
 #include <stdint.h>
 #include "SPIFFS.h"
 #include "header.h"
+
 #include "alpacamanagefunction.h"
 #include <AsyncElegantOTA.h>
 
 AsyncWebServer server(80);
 AsyncWebServer Alpserver(4567);
+
+
 #include "AlpacaDomeServer.h"
 #include "AlpacaSwitchServer.h"
+#include "browserServer.h"
+
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;
 DNSServer dns;
@@ -41,8 +46,9 @@ void ServerNotFound(AsyncWebServerRequest *request) {
 void setup()
 {
   Serial.begin(115200);
-  AlpServerID = 0;
+  AlpacaData.AlpServerID = 0;
   pinMode(2, OUTPUT);
+  
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   if (!SPIFFS.exists("/setup.txt")) { StoreDataFileSPIFFS(); } else { ReadDataFileSPIFFS(); }
@@ -83,7 +89,7 @@ void setup()
 
   AlpacaDome();
   SwitchAlpaca();
-
+  browserServer();
 
   server.onNotFound(notFound);
 
@@ -110,21 +116,21 @@ void setup()
       cmd = request->getParam("cmd")->value().toInt();
     }
     if (cmd <1){
-      ShutterCommand = CmdHalt;
-      ShCyIndex = 100;
+      Dome.ShutterCommand = CmdHalt;
+      Dome.Cycle = 100;
       request->send(200, "text/html", "HALT");
 
     } else {
 
-    if (ShutterCommand == Idle){
+    if (Dome.ShutterCommand == Idle){
       if (cmd ==1){
-          if(ShutterState != ShOpen){
-            ShutterCommand = CmdOpen;
+          if(Dome.ShutterState != ShOpen){
+            Dome.ShutterCommand = CmdOpen;
             request->send(200, "text/html", "ok");
           } else { request->send(200, "text/html", "Shutter is Already Open"); }
       } else if (cmd == 2){
-          if(ShutterState != ShClose){
-            ShutterCommand = CmdClose;
+          if(Dome.ShutterState != ShClose){
+            Dome.ShutterCommand = CmdClose;
             request->send(200, "text/html", "ok");
           } else { request->send(200, "text/html", "Shutter is Already Closed"); }}
     } else { request->send(200, "text/html", "Shutter is already moving"); }
@@ -168,7 +174,7 @@ void setup()
     {
       doc = json.as<JsonObject>();
     }
-    MovingTimeOut = doc["dometmout"];
+    Dome.MovingTimeOut = doc["dometmout"];
 
     request->send(200);
     StoreData = true;

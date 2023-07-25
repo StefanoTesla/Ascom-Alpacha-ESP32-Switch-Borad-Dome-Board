@@ -19,26 +19,26 @@ Alpserver.on("/api/v1/switch/0/setswitchvalue",                                 
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
 
-  if(Alp_idcheck){
-    if(Alp_value_ex){
-      if(Alp_Int_Value >= Switch[Alp_Int_ID].minValue && Alp_Int_Value <= Switch[Alp_Int_ID].maxValue) {
-        if (Switch[Alp_Int_ID].analog == true) {
-          Switch[Alp_Int_ID].anaValue = Alp_Int_Value;
-          ledcWrite(Switch[Alp_Int_ID].pwmChannel, Switch[Alp_Int_ID].anaValue);
+  if(AlpacaData.SwitchIdInRange){
+    if(AlpacaData.SwitchValueInRange){
+      if(AlpacaData.SwitchIntValue >= Switch[AlpacaData.SwitchId].minValue && AlpacaData.SwitchIntValue <= Switch[AlpacaData.SwitchId].maxValue) {
+        if (Switch[AlpacaData.SwitchId].analog == true) {
+          Switch[AlpacaData.SwitchId].anaValue = AlpacaData.SwitchIntValue;
+          ledcWrite(Switch[AlpacaData.SwitchId].pwmChannel, Switch[AlpacaData.SwitchId].anaValue);
         } else {
-          Alp_Int_Value == 1 ? digitalWrite(Switch[Alp_Int_ID].pin, HIGH) : digitalWrite(Switch[Alp_Int_ID].pin, LOW);
+          AlpacaData.SwitchIntValue == 1 ? digitalWrite(Switch[AlpacaData.SwitchId].pin, HIGH) : digitalWrite(Switch[AlpacaData.SwitchId].pin, LOW);
         }
         response->print(Alp_NoErrors);
       } else {
-        response->printf("%s1025,%s \"The Value %d is out of range MIN: %d MAX: %d\"", Alp_ErrN, Alp_ErrM, Alp_Int_Value,Switch[Alp_Int_ID].minValue,Switch[Alp_Int_ID].maxValue);
+        response->printf("%s1025,%s \"The Value %d is out of range MIN: %d MAX: %d\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchIntValue,Switch[AlpacaData.SwitchId].minValue,Switch[AlpacaData.SwitchId].maxValue);
       }
     } else {
       response->printf("%s1025, %s\"The Value was not provided from ASCOM\"", Alp_ErrN, Alp_ErrM);
     }
   } else {
-    response->printf("%s 1025, %s \"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID);
+    response->printf("%s 1025, %s \"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId);
   }
   response->print(" }");
   request->send(response);
@@ -50,7 +50,7 @@ Alpserver.on("/api/v1/switch/0/maxswitch",                                      
   response->print("{ ");
   response->print(Alp_Value);
   response->printf("%d, ",_MAX_SWTICH_ID_);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -61,12 +61,12 @@ Alpserver.on("/api/v1/switch/0/canwrite",                                       
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    Switch[Alp_Int_ID].CanSet ? response->print("true, ") : response->print("false, ");
+    Switch[AlpacaData.SwitchId].CanSet ? response->print("true, ") : response->print("false, ");
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 
@@ -77,12 +77,12 @@ Alpserver.on("/api/v1/switch/0/getswitch",                                      
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    response->printf("%d, ",digitalRead(Switch[Alp_Int_ID].pin));
+    response->printf("%d, ",digitalRead(Switch[AlpacaData.SwitchId].pin));
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 
@@ -94,12 +94,12 @@ Alpserver.on("/api/v1/switch/0/getswitchdescription",                           
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    response->printf("\"%s\", ",Switch[Alp_Int_ID].Description.c_str());
+    response->printf("\"%s\", ",Switch[AlpacaData.SwitchId].Description.c_str());
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 });
@@ -110,12 +110,12 @@ Alpserver.on("/api/v1/switch/0/getswitchname",                                  
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    response->printf("\"%s\", ",Switch[Alp_Int_ID].Name.c_str());
+    response->printf("\"%s\", ",Switch[AlpacaData.SwitchId].Name.c_str());
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 });
@@ -126,12 +126,12 @@ Alpserver.on("/api/v1/switch/0/minswitchvalue",                                 
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    response->printf("%d, ",Switch[Alp_Int_ID].minValue);
+    response->printf("%d, ",Switch[AlpacaData.SwitchId].minValue);
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 });
@@ -142,12 +142,12 @@ Alpserver.on("/api/v1/switch/0/maxswitchvalue",                                 
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    response->printf("%d, ",Switch[Alp_Int_ID].maxValue);
+    response->printf("%d, ",Switch[AlpacaData.SwitchId].maxValue);
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s 1025, %s \"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s 1025, %s \"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 });
@@ -158,12 +158,12 @@ Alpserver.on("/api/v1/switch/0/switchstep",                                     
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    response->printf("%d, ",Switch[Alp_Int_ID].Step);
+    response->printf("%d, ",Switch[AlpacaData.SwitchId].Step);
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 });
@@ -174,12 +174,12 @@ Alpserver.on("/api/v1/switch/0/getswitchvalue",                                 
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
+  if(AlpacaData.SwitchIdInRange){
     response->print(Alp_Value);
-    Switch[Alp_Int_ID].analog ? response->printf("%d, ",Switch[Alp_Int_ID].anaValue) : response->printf("%d, ",digitalRead(Switch[Alp_Int_ID].pin)); 
+    Switch[AlpacaData.SwitchId].analog ? response->printf("%d, ",Switch[AlpacaData.SwitchId].anaValue) : response->printf("%d, ",digitalRead(Switch[AlpacaData.SwitchId].pin)); 
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   response->print(" }");
   request->send(response);
 });
@@ -189,7 +189,7 @@ Alpserver.on("/api/v1/switch/0/name",                                           
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->printf("%s\"Tesla Switch\", ",Alp_Value);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -200,7 +200,7 @@ Alpserver.on("/api/v1/switch/0/description",                                    
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->printf("%s\"Tesla Switch board with esp32 and Ascom Alpaca Protocol\", ",Alp_Value);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -211,7 +211,7 @@ Alpserver.on("/api/v1/switch/0/driverinfo",                                     
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->printf("%s\"Removed Json handler to better error message handling\", ",Alp_Value);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -222,7 +222,7 @@ Alpserver.on("/api/v1/switch/0/driverversion",                                  
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->printf("%s\"1.2\", ",Alp_Value);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -233,7 +233,7 @@ Alpserver.on("/api/v1/switch/0/interfaceversion",                               
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->printf("%s1, ",Alp_Value);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -244,7 +244,7 @@ Alpserver.on("/api/v1/switch/0/connected",                                      
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->printf("%strue, ",Alp_Value);
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -255,7 +255,7 @@ Alpserver.on("/api/v1/switch/0/connected",                                      
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");
   request->send(response);
@@ -267,11 +267,11 @@ Alpserver.on("/api/v1/switch/0/setswitchname",                                  
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
-    Switch[Alp_Int_ID].Name = Alp_Name;
+  if(AlpacaData.SwitchIdInRange){
+    Switch[AlpacaData.SwitchId].Name = AlpacaData.SwitchString;
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  Alp_idcheck ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  AlpacaData.SwitchIdInRange ? response->print(Alp_NoErrors) : response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId);
   response->print(" }");
   request->send(response);
 });
@@ -285,7 +285,7 @@ Alpserver.on("/api/v1/switch/0/action",                                         
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->printf("%s1036, %s\"No actions defined\"", Alp_ErrN, Alp_ErrM); 
   response->print(" }");
   request->send(response);
@@ -298,22 +298,22 @@ Alpserver.on("/api/v1/switch/0/setswitch",                                      
   AsyncResponseStream *response = request->beginResponseStream("application/json");
 
   response->print("{ ");
-  if(Alp_idcheck){
-    if (Switch[Alp_Int_ID].analog){
-      Switch[Alp_Int_ID].anaValue = Switch[Alp_Int_ID].maxValue;
-      ledcWrite(Switch[Alp_Int_ID].pwmChannel, Switch[Alp_Int_ID].maxValue);
+  if(AlpacaData.SwitchIdInRange){
+    if (Switch[AlpacaData.SwitchId].analog){
+      Switch[AlpacaData.SwitchId].anaValue = Switch[AlpacaData.SwitchId].maxValue;
+      ledcWrite(Switch[AlpacaData.SwitchId].pwmChannel, Switch[AlpacaData.SwitchId].maxValue);
     } else {
-      digitalWrite(Switch[Alp_Int_ID].pin, Alp_state);
+      digitalWrite(Switch[AlpacaData.SwitchId].pin, AlpacaData.SwitchValue);
     }
   }
-  response->printf("%s%d, %s%d, ",Alp_CliTraId, ClientTransactionID, Alp_SerTraId, AlpServerID);
-  if(Alp_idcheck){
-    if(Alp_state == 0 || Alp_state == 1){
+  response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
+  if(AlpacaData.SwitchIdInRange){
+    if(AlpacaData.SwitchValue == 0 || AlpacaData.SwitchValue == 1){
       response->print(Alp_NoErrors);
     } else {
       response->printf("%s1025, %s\"The Switch State is outside range\"", Alp_ErrN, Alp_ErrM);
     }
-    response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, Alp_Int_ID); 
+    response->printf("%s1025, %s\"The Switch %d doesn't exist\"", Alp_ErrN, Alp_ErrM, AlpacaData.SwitchId); 
   }
   response->print(" }");
   request->send(response);

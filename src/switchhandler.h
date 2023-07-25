@@ -33,7 +33,7 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
   Switch[1].CanSet = false;
 
 // Output Example
-  Switch[2].pin = 4; // Halt Signal to Dome
+  Switch[2].pin = 2; // Halt Signal to Dome
 
   Switch[3].pin = 16; // Start Signal to the Dome
 
