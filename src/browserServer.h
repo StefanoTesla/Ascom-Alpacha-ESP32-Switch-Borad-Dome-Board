@@ -43,24 +43,24 @@ void browserServer(){
         if (request->hasParam("id")){
              id = request->getParam("id")->value().toInt();
         } else { 
-            request->send(200, "application/json", "{\"error\" : \"Missing ID\"");
+            request->send(200, "application/json", "{\"error\" : \"Missing ID\"}");
             return;
         }
         if (request->hasParam("value")){ 
             value = request->getParam("value")->value().toInt();
         } else {
-            request->send(200, "application/json", "{\"error\" : \"Missing Value\"");
+            request->send(200, "application/json", "{\"error\" : \"Missing Value\"}");
             return;
         }
         if (id >= _MAX_SWTICH_ID_){ 
-            request->send(200, "application/json", "{\"error\" : \"ID Out of Range\""); return;
+            request->send(200, "application/json", "{\"error\" : \"ID Out of Range\"}"); return;
         }
         if (!Switch[id].CanSet){ 
-            request->send(200, "application/json", "{\"error\" : \"Switch cannot be setted\""); 
+            request->send(200, "application/json", "{\"error\" : \"Switch cannot be setted\"}"); 
             return;
         }
         if (value < Switch[id].minValue || value > Switch[id].maxValue){
-            request->send(200, "application/json", "{\"error\" : \"Value outside limits\"");
+            request->send(200, "application/json", "{\"error\" : \"Value outside limits\"}");
             return;
         }
 
