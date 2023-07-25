@@ -3,11 +3,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-
-    <link rel="stylesheet" href="/assets/style.10c8a192.css" />
+    
+    
+    <script type="module" crossorigin src="/assets/main.3226035a.js"></script>
+    <link rel="stylesheet" href="/assets/style.dfca7758.css">
   </head>
   <body>
-    <header>
+
+    <header 
+      x-data="{ open: false }"
+      
+      @resize.window="
+      width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+      if (width > 767) {
+       open = false
+      }
+      "
+      
+      >
       <!-- Navbar goes here -->
       <nav class="bg-gray-800">
         <div class="max-w-6xl mx-auto px-4">
@@ -18,45 +31,14 @@
             </div>
             <!-- Primary Navbar items -->
             <div class="hidden md:flex items-center space-x-1">
-              <a
-                href="/dome"
-                class="
-                  py-4
-                  px-2
-                  font-semibold
-                  hover:text-green-500
-                  transition
-                  duration-300
-                "
-                >Dome</a
-              >
-              <a
-                href="/switch"
-                class="
-                  py-4
-                  px-2
-                  font-semibold
-                  hover:text-green-500
-                  transition
-                  duration-300
-                "
-                >Switch</a
-              >
+              <a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
+              <a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
             </div>
 
             <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center h-14">
-              <button class="outline-none mobile-menu-button">
-                <svg
-                  class="w-6 h-6 text-gray-500 hover:text-green-500"
-                  x-show="!showMenu"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+            <div class="md:hidden flex items-center h-14" >
+              <button class="outline-none mobile-menu-button" @click="open = ! open">
+                <svg class="w-6 h-6 text-gray-500 hover:text-green-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                   <path d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
               </button>
@@ -64,54 +46,203 @@
           </div>
         </div>
         <!-- mobile menu -->
-        <div class="hidden mobile-menu">
+        <div x-show="open" class="mobile-menu">
           <ul class="">
-            <li>
-              <a
-                href="/dome"
-                class="
-                  block
-                  text-sm
-                  px-2
-                  py-4
-                  hover:bg-green-500
-                  transition
-                  duration-300
-                "
-                >Dome</a
-              >
-            </li>
-            <li>
-              <a
-                href="/switch"
-                class="
-                  block
-                  text-sm
-                  px-2
-                  py-4
-                  hover:bg-green-500
-                  transition
-                  duration-300
-                "
-                >Switch</a
-              >
-            </li>
+            <li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
+            <li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
           </ul>
         </div>
       </nav>
     </header>
 
-    <div class="container mx-auto px-2">
+    <div class="">
       <h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
     </div>
 
-    <script>
-      const btn = document.querySelector("button.mobile-menu-button");
-      const menu = document.querySelector(".mobile-menu");
+    <div 
+      x-data="globalData()" 
+    >
+    <!--DOME-->
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}"
+      >
 
-      btn.addEventListener("click", () => {
-        menu.classList.toggle("hidden");
-      });
-    </script>
+      <div class="tab-header" >
+        <div class="grow">Dome</div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+      </div>
+
+      <div class="tab-content" x-show="open" x-transition>
+
+        <div class="flex text-xl pt-6">Roof State: 
+          <template x-if="dome.actualState === 0"><p>Open</p></template>
+          <template x-if="dome.actualState === 1"><p>Close</p></template>
+          <template x-if="dome.actualState === 2"><p>Opening</p></template>
+          <template x-if="dome.actualState === 3"><p>Closing</p></template>
+          <template x-if="dome.actualState === 4"><p>Error</p></template>
+        </div>
+        <div class="flex text-xl">Last Command: 
+          <template x-if="dome.lastCommand === 0"><p>Idle</p></template>
+          <template x-if="dome.lastCommand === 1"><p>Opening</p></template>
+          <template x-if="dome.lastCommand === 2"><p>Closing</p></template>
+          <template x-if="dome.lastCommand === 3"><p>HALT</p></template>
+        </div>
+        <div class="grid grid-flow-row grid-rows-3 mx-auto gap-10 pt-6">
+            <button @click="openShutter" class="px-12 py-2 bg-green-600 w-full" >Apri</button>
+            <button @click="closeShutter" class="px-12 py-2 bg-red-600 w-full">Chiudi</button>
+            <button @click="haltShutter" class="text-black font-bold px-12 py-2 bg-yellow-300 w-full">HALT</button>
+        </div>
+        <template x-if="dome.error == 1">
+          <div class="message message-ok">Command Send Succesfully!!</div>
+        </template>
+        <template x-if="dome.error > 1">
+          <div class="message message-ko">Errore</div>
+        </template>
+
+      </div>
+
+    </div>
+
+    <!--SWITCH-->
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}">
+
+    <div class="tab-header" >
+      <div class="grow">Switch</div>
+      <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+    </div>
+
+    
+    <div class="tab-content pt-4" x-show="open" x-transition>
+      <div class="grid sm:grid-cols-2 gap-4 lg:grid-cols-3 items-stretch text-center">
+        <template  x-for="swi in switches" :key="swi.id">
+          <div class="card_container">
+            <p class="card_title" x-text="swi.name"></p>
+            <p class="card_comment" x-text="swi.description"></p>
+
+            <div class="card_command">
+
+              <template x-if="swi.type == 1 && swi.canBeHandle == 1">
+                <input @change="setAnalogSwValue(swi.id,$event)" type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2" />
+              </template>
+  
+              <template x-if="swi.type == 0 && swi.canBeHandle == 1">
+                <div class="flex justify-center">
+                  <button @click="setDigitalSwValue(swi.id,1)" class="button button_green">ON</button>
+                  <button @click="setDigitalSwValue(swi.id,0)" class="button ml-5 button_red">OFF</button>
+                </div>
+              </template>
+  
+              <template x-if="swi.type == 1 && swi.canBeHandle == 0">
+                <input type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2 cursor-not-allowed" />
+              </template>
+  
+              <template x-if="swi.type == 0 && swi.canBeHandle == 0">
+                <div class="flex justify-center">
+                  <button class="button bg-slate-500 cursor-not-allowed">ON</button>
+                  <button class="button bg-slate-500 ml-5 cursor-not-allowed">OFF</button>
+                </div>
+              </template>
+
+
+            </div>
+
+            <p>Valore Attuale:</p>
+              <template x-if="swi.type == 1">
+                <div class="flex w-full flex-col justify-around ">
+                  <p class="font-semibold" x-text="swi.actualValue"></p>
+                  <p>Min: <span x-text="swi.actualValue"></span> Max: <span x-text="swi.max"></span></p>
+                </div> 
+                
+              </template>
+
+              <template x-if="swi.type == 0">
+                <div class="w-full">
+                  <div x-show="swi.actualValue" class="card_actual_value  bg-green-600">ON</div>
+                  <div x-show="!swi.actualValue" class="card_actual_value bg-red-600">OFF</div>
+                </div>
+
+              </template>
+            
+            
+            <p :id="$id('error-message')" class="py-2 bg-red-600 hidden">fdbdb</p>
+          </div>
+        </template>
+
+      </div>
+    </div>
+    </div>
+
+  </div>
+
+
+  <script>
+    function globalData() {
+      return {
+        dome: [],
+        switches: [],
+        reload() {
+          this.dome = [];
+          this.switches = [];
+        },
+        updateData(){
+          fetch('http://192.168.69.116/status')
+            .then(response => response.json())
+            .then(response => {
+              this.dome = response.dome;
+              this.switches =  response.switches
+              });
+        },
+        init() {  
+          this.updateData()
+
+        //  setInterval(() => {
+        //        this.updateData();
+        //      }, 1000);
+        },
+
+        openShutter(){
+          fetch('http://localhost:5000/domecmd?cmd=1',{ method: 'PUT'})
+            .then(response => response.json())
+            .then(response => {
+                  this.dome.error = response.error
+              });
+        },
+
+        closeShutter(){
+          fetch('http://localhost:5000/domecmd?cmd=2',{ method: 'PUT'})
+            .then(response => response.json())
+            .then(response => {
+                  this.dome.error = response.error
+              });
+        },
+
+        haltShutter(){
+          fetch('http://localhost:5000/domecmd?cmd=3',{ method: 'PUT'})
+            .then(response => response.json())
+            .then(response => {
+                  this.dome.error = response.error
+              });
+        },
+
+        setDigitalSwValue(id,value){
+          fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
+            .then(response => response.json())
+            .then(response => {
+                 // this.dome.error = response.error
+              });
+        },
+        setAnalogSwValue(id,event){
+          fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
+            .then(response => response.json())
+            .then(response => {
+                  //this.dome.error = response.error
+              });
+        }
+      }
+    };
+
+
+  </script>
   </body>
 </html>
