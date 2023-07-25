@@ -70,7 +70,7 @@ void browserServer(){
         } else {
             value == 1 ? digitalWrite(Switch[id].pin, HIGH) : digitalWrite(Switch[id].pin, LOW);
         }
-        request->send(200, "text/html", "{\"done\" : 1");
+        request->send(200, "text/html", "{\"done\" : 1}");
     
     });
 
