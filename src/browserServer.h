@@ -3,6 +3,33 @@
 
 
 void browserServer(){
+    
+
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/index.html", "text/html");
+    });
+
+    server.on("/dome", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/dome.html", "text/html");
+    });
+
+    server.on("/switch", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/switch.html", "text/html");
+    });
+
+    server.on("/swsetup", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/switchsetup.html", "text/html");
+    });
+
+    server.on("/setup", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/setup.html", "text/html");
+    });
+
+    server.on("/setup.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/setup.txt", "text/plain");
+    });
+
+    server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
     server.on("/domecmd",               HTTP_PUT, [](AsyncWebServerRequest *request) {
         if (request->hasParam("cmd")){
