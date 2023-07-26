@@ -6,7 +6,6 @@ StaticJsonDocument<128> AplacaError;
 
 
 void GetAlpArguments(AsyncWebServerRequest *request ) {
-  Serial.println(request->url());
   AlpacaData.ClientID = 0;
   AlpacaData.ClientTransactionID = 0;
   AlpacaData.boConnect = false;
@@ -78,7 +77,7 @@ void ManDescription(AsyncWebServerRequest *request) {
   JsonObject Value = JMan.createNestedObject("Value");
   Value["ServerName"] = "Tesla Alpaca Device";
   Value["Manufacturer"] = "The Big Tesla Company";
-  Value["ManufacturerVersion"] = "v1.2.3";
+  Value["ManufacturerVersion"] = "v2.0.0-alpha";
   Value["Location"] = "Cerreto Guidi, IT";
   if (request->hasParam("ClientTransactionID"))    {
     ManClientTransactionID = request->getParam("ClientTransactionID")->value().toInt();
@@ -89,7 +88,6 @@ void ManDescription(AsyncWebServerRequest *request) {
   serializeJson(JMan, JManAnsw);
   request->send(200, "application/json" , JManAnsw);
   JMan.clear();
-  Serial.println("descrizione");
 }
 
 void ManConfigureDev(AsyncWebServerRequest *request) {

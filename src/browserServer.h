@@ -119,6 +119,8 @@ void browserServer(){
         doc = json.as<JsonObject>();
         setting.dome.pinStart = doc["pinstart"];
         setting.dome.pinHalt = doc["pinhalt"];
+        setting.dome.pinOpen = doc["pinopen"];
+        setting.dome.pinClose = doc["pinclose"];
         setting.dome.movingTimeOut = doc["tout"];
         setting.dome.enAutoClose = doc["enautoclose"];
         setting.dome.autoCloseTimeOut = doc["autoclose"];
@@ -134,7 +136,12 @@ void browserServer(){
         response->print(setting.dome.pinStart);
         response->print(",\"pinhalt\":");
         response->print(setting.dome.pinHalt);
+        response->print(",\"pinopen\":");
+        response->print(setting.dome.pinOpen);
+        response->print(",\"pinclose\":");
+        response->print(setting.dome.pinClose);
         response->print(",\"tout\":");
+        response->print(setting.dome.movingTimeOut);
         response->print(",\"enautoclose\":");
         setting.dome.enAutoClose ? response->print("true") : response->print("false");
         response->print(",\"autoclose\":");

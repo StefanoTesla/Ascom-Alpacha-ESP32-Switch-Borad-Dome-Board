@@ -74,6 +74,8 @@
         <div>
           <p>Pin Start Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinstart" x-model="dome.pinstart"/></p>
           <p>Pin Halt Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinhalt" x-model="dome.pinhalt"/></p>
+          <p>Pin Shutter Open: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinopen" x-model="dome.pinopen"/></p>
+          <p>Pin Shutter Close: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinclose" x-model="dome.pinclose"/></p>
       </div>
         <div>
             <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.tout" x-model="dome.tout"/> Sec.</p>
@@ -181,7 +183,7 @@
             fetch('/domeconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
-              body: "{\"pinstart\":" +this.dome.pinstart+",\"pinhalt\":"+this.dome.pinhalt+",\"tout\":"+this.dome.tout+",\"enautoclose\":"+this.dome.enautoclose+",\"autoclose\":"+this.dome.autoclose+"}"
+              body: "{\"pinstart\":" +this.dome.pinstart+",\"pinhalt\":"+this.dome.pinhalt+",\"pinopen\":" +this.dome.pinopen+",\"pinclose\":"+this.dome.pinclose+",\"tout\":"+this.dome.tout+",\"enautoclose\":"+this.dome.enautoclose+",\"autoclose\":"+this.dome.autoclose+"}"
             })
             .then(response => response.json())
             .then(response => {

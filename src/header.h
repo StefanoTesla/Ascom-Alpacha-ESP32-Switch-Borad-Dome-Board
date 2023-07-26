@@ -65,7 +65,7 @@ struct SwtichStruct
 {
   String Name;
   String Description;
-  int pin;
+  uint8_t pin;
   int minValue = 0;
   int maxValue = 1;
   bool CanSet = true;
@@ -75,7 +75,7 @@ struct SwtichStruct
   int pwmChannel = -1;
 };
 
-#define _MAX_SWTICH_ID_ 32
+#define _MAX_SWTICH_ID_ 8
 
 SwtichStruct Switch[_MAX_SWTICH_ID_];
 
@@ -83,8 +83,10 @@ unsigned int pwmchannles = 0;
 
 
 typedef struct{
-  unsigned int pinStart;
-  unsigned int pinHalt;
+  uint8_t pinStart;
+  uint8_t pinHalt;
+  uint8_t pinOpen;
+  uint8_t pinClose;
   unsigned long movingTimeOut = 20;
   bool enAutoClose;
   unsigned long autoCloseTimeOut = 20;

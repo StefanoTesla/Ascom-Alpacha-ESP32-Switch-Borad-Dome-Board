@@ -17,10 +17,16 @@ void readDomeConfig(){
     } else {
         setting.dome.pinStart = doc["pinstart"];
         setting.dome.pinHalt = doc["pinhalt"];
+        setting.dome.pinOpen = doc["pinopen"];
+        setting.dome.pinClose = doc["pinclose"];
         setting.dome.movingTimeOut = doc["tout"];
         setting.dome.enAutoClose = doc["enautoclose"];
         setting.dome.autoCloseTimeOut = doc["autoclose"];
     }
+    Serial.println(setting.dome.pinStart);
+    Serial.println(setting.dome.pinHalt);
+    Serial.println(setting.dome.pinOpen);
+    Serial.println(setting.dome.pinClose);
     file.close();
 }
 
@@ -31,6 +37,8 @@ void saveDomeConfig(){
     DynamicJsonDocument doc(capacity);
     doc["pinstart"] = setting.dome.pinStart;
     doc["pinhalt"] = setting.dome.pinHalt;
+    doc["pinopen"] = setting.dome.pinOpen;
+    doc["pinclose"] = setting.dome.pinClose;    
     doc["tout"] = setting.dome.movingTimeOut;
     doc["enautoclose"] = setting.dome.enAutoClose;
     doc["autoclose"] = setting.dome.autoCloseTimeOut;

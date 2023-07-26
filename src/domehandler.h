@@ -1,33 +1,29 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
-#define SHUTTER_OPEN_INPUT    34
-#define SHUTTER_CLOSE_INPUT   35
-
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
 void domehandlersetup() {
   pinMode(setting.dome.pinStart, OUTPUT);
   pinMode(setting.dome.pinHalt, OUTPUT);
-  pinMode(SHUTTER_OPEN_INPUT, INPUT);
-  pinMode(SHUTTER_CLOSE_INPUT, INPUT);
+  pinMode(setting.dome.pinOpen, INPUT);
+  pinMode(setting.dome.pinClose, INPUT);
 }
-
 
 void domeInputState(){
 
     // I used enum for input state for making the cycle code more clean
-    if (digitalRead(SHUTTER_CLOSE_INPUT) == HIGH && digitalRead(SHUTTER_OPEN_INPUT) == LOW) {
+    if (digitalRead(setting.dome.pinClose) == HIGH && digitalRead(setting.dome.pinOpen) == LOW) {
       Dome.ShutterInputState = ShOnlyClose;
     }
-    if ( digitalRead(SHUTTER_CLOSE_INPUT) == LOW && digitalRead(SHUTTER_OPEN_INPUT) == HIGH) {
+    if ( digitalRead(setting.dome.pinClose) == LOW && digitalRead(setting.dome.pinOpen) == HIGH) {
       Dome.ShutterInputState = ShOnlyOpen;
     }
-    if ( digitalRead(SHUTTER_OPEN_INPUT) == HIGH && digitalRead(SHUTTER_CLOSE_INPUT) == HIGH) {
+    if ( digitalRead(setting.dome.pinOpen) == HIGH && digitalRead(setting.dome.pinClose) == HIGH) {
       Dome.ShutterInputState = ShInAll;
     }
-    if ( digitalRead(SHUTTER_OPEN_INPUT) == LOW && digitalRead(SHUTTER_CLOSE_INPUT) == LOW) {
+    if ( digitalRead(setting.dome.pinOpen) == LOW && digitalRead(setting.dome.pinClose) == LOW) {
       Dome.ShutterInputState = ShInNoOne;
     }
 }
