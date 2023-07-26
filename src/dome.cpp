@@ -19,6 +19,7 @@ AsyncWebServer Alpserver(4567);
 #include "AlpacaDomeServer.h"
 #include "AlpacaSwitchServer.h"
 #include "browserServer.h"
+#include "fileHandler.h"
 
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;
@@ -52,7 +53,7 @@ void setup()
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   if (!SPIFFS.exists("/setup.txt")) { StoreDataFileSPIFFS(); } else { ReadDataFileSPIFFS(); }
- 
+  readDomeConfig();
   switchsetup();
   domehandlersetup();
   
@@ -163,23 +164,6 @@ void setup()
    
 });
 
-  AsyncCallbackJsonWebHandler *domehandler = new AsyncCallbackJsonWebHandler("/storedomedata", [](AsyncWebServerRequest * request, JsonVariant & json) {
-    const size_t capacity = JSON_OBJECT_SIZE(200);
-    DynamicJsonDocument doc(capacity);
-    if (json.is<JsonArray>())
-    {
-      doc = json.as<JsonArray>();
-    }
-    else if (json.is<JsonObject>())
-    {
-      doc = json.as<JsonObject>();
-    }
-    Dome.MovingTimeOut = doc["dometmout"];
-
-    request->send(200);
-    StoreData = true;
-  });
-  server.addHandler(domehandler);
 
 
  AsyncCallbackJsonWebHandler *switchhandler = new AsyncCallbackJsonWebHandler("/storeswdata", [](AsyncWebServerRequest * request, JsonVariant & json) {
@@ -227,6 +211,9 @@ void setup()
     request->send(SPIFFS, "/switchsetup.html", "text/html");
   });
 
+  server.on("/setup", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/setup.html", "text/html");
+  });
 
   server.on("/setup.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/setup.txt", "text/plain");
@@ -242,6 +229,7 @@ void setup()
 
 void loop()
 {
+  fileLoop();
   domehandlerloop();
   if (StoreData == true) {
     StoreDataFileSPIFFS();

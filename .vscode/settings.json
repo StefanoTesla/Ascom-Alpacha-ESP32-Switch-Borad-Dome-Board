@@ -4,6 +4,7 @@
         "string": "cpp",
         "functional": "cpp",
         "*.tcc": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "fstream": "cpp"
     }
 }

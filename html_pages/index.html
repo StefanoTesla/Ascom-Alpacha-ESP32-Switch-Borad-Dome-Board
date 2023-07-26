@@ -227,14 +227,24 @@
           fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                 // this.dome.error = response.error
+                if (response.done){
+                  this.switches[id].actualValue = value;
+                }
+                if (response.error ){
+                  console.error(response.error)
+                }
               });
         },
         setAnalogSwValue(id,event){
           fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                  //this.dome.error = response.error
+              if (response.done){
+                  this.switches[id].actualValue = value;
+                }
+              if (response.error ){
+                  console.error(response.error)
+                }
               });
         }
       }

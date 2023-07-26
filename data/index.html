@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     
     
-    <script type="module" crossorigin src="/assets/main.3226035a.js"></script>
-    <link rel="stylesheet" href="/assets/style.dfca7758.css">
+    <script type="module" crossorigin src="/assets/alpine.5b3b84c7.js"></script>
+    <link rel="stylesheet" href="/assets/style.5cefe70c.css">
   </head>
   <body>
 
@@ -229,14 +229,24 @@
           fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                 // this.dome.error = response.error
+                if (response.done){
+                  this.switches[id].actualValue = value;
+                }
+                if (response.error ){
+                  console.error(response.error)
+                }
               });
         },
         setAnalogSwValue(id,event){
           fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                  //this.dome.error = response.error
+              if (response.done){
+                  this.switches[id].actualValue = value;
+                }
+              if (response.error ){
+                  console.error(response.error)
+                }
               });
         }
       }

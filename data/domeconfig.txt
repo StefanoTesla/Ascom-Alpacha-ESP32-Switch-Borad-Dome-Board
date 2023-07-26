@@ -1,0 +1,1 @@
+{"pinstart":1,"pinhalt":2,"tout":20,"enautoclose":false,"autoclose":10}

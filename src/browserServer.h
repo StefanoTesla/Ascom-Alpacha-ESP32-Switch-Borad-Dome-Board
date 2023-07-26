@@ -4,7 +4,7 @@
 
 void browserServer(){
 
-    server.on("/domecmd",              HTTP_PUT, [](AsyncWebServerRequest *request) {
+    server.on("/domecmd",               HTTP_PUT, [](AsyncWebServerRequest *request) {
         if (request->hasParam("cmd")){
             int cmd;
             cmd = request->getParam("cmd")->value().toInt();
@@ -37,7 +37,7 @@ void browserServer(){
         }
     });
 
-    server.on("/switchcmd",              HTTP_PUT, [](AsyncWebServerRequest *request) {
+    server.on("/switchcmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
         int id = -1;
         int value = -1;
         if (request->hasParam("id")){
@@ -74,15 +74,13 @@ void browserServer(){
     
     });
 
-    server.on("/status",            HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/status",                HTTP_GET, [](AsyncWebServerRequest *request) {
         int i;
         AsyncResponseStream *response = request->beginResponseStream("application/json");
-        response->print("{");
-        response->printf("\"dome\":{");
-            response->print("\"actualState\":");
+
+        response->printf("{\"dome\":{ \"actualState\":");
             response->print(Dome.ShutterState);
-            response->print(",");
-            response->print("\"lastCommand\":");
+            response->print(",\"lastCommand\":");
             response->print(Dome.LastDomeCommand);
         response->print("},");
 
@@ -99,11 +97,7 @@ void browserServer(){
             response->print(",\"type\":");
             response->print(Switch[i].analog);
             response->print(",\"actualValue\":");
-            if (Switch[i].analog == true){
-                response->print(analogRead(Switch[i].pin));
-            } else {
-                response->print(digitalRead(Switch[i].pin));
-            }
+            Switch[i].analog == true ? response->print(analogRead(Switch[i].pin)) : response->print(digitalRead(Switch[i].pin));
             response->print(",\"min\":");
             response->print(Switch[i].minValue);
             response->print(",\"max\":");
@@ -119,6 +113,40 @@ void browserServer(){
         request->send(response);
     });
 
+    AsyncCallbackJsonWebHandler *domecfg = new AsyncCallbackJsonWebHandler("/domeconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
+        const size_t capacity = JSON_OBJECT_SIZE(200);
+        DynamicJsonDocument doc(capacity);
+        doc = json.as<JsonObject>();
+        setting.dome.pinStart = doc["pinstart"];
+        setting.dome.pinHalt = doc["pinhalt"];
+        setting.dome.movingTimeOut = doc["tout"];
+        setting.dome.enAutoClose = doc["enautoclose"];
+        setting.dome.autoCloseTimeOut = doc["autoclose"];
+        FileHandler.saveDomeSetting = true;
+        request->send(200, "application/json", "{\"accept\": \"ok\"}");
+    });
+    server.addHandler(domecfg);
+
+    server.on("/config",                HTTP_GET, [](AsyncWebServerRequest *request) {
+        int i;
+        AsyncResponseStream *response = request->beginResponseStream("application/json");
+        response->printf("{\"dome\":{ \"pinstart\":");
+        response->print(setting.dome.pinStart);
+        response->print(",\"pinhalt\":");
+        response->print(setting.dome.pinHalt);
+        response->print(",\"tout\":");
+        response->print(",\"enautoclose\":");
+        setting.dome.enAutoClose ? response->print("true") : response->print("false");
+        response->print(",\"autoclose\":");
+        response->print(setting.dome.autoCloseTimeOut);
+        response->print("}");
+        response->print("}");
+        request->send(response);
+    });
+
+    server.on("/domeconfig.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/domeconfig.txt", "text/plain");
+    });
 }
 
 #endif

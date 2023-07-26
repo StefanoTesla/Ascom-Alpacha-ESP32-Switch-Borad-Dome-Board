@@ -9,6 +9,12 @@
     "autoprefixer": "^10.2.6",
     "postcss": "^8.3.5",
     "tailwindcss": "^3.3.2",
-    "vite": "^2.9.16"
+    "terser": "^5.19.2",
+    "vite": "^2.9.16",
+    "vite-plugin-html": "^3.2.0"
+  },
+  "dependencies": {
+    "vite-plugin-legacy": "^2.1.0",
+    "vite-plugin-minify": "^1.5.2"
   }
 }

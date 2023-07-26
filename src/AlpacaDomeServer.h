@@ -218,7 +218,7 @@ void DomWSState (AsyncWebServerRequest *request) {
   DynamicJsonDocument doc(capacity);
   doc["domepos"]   = Dome.ShutterState;
   doc["domelstcmd"]  = Dome.LastDomeCommand;
-  doc["dometimeout"] = Dome.MovingTimeOut;
+  doc["dometimeout"] = setting.dome.movingTimeOut * 1000;
  
   serializeJson(doc, domestatus);
   request->send(200, "application/json", domestatus);

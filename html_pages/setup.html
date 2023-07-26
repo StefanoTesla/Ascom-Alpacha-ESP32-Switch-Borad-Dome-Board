@@ -3,7 +3,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script defer src="/alpine.js"></script>
+    <script defer src="/alpine.js" type="module"></script>
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
@@ -57,9 +57,7 @@
       <h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
     </div>
 
-    <div 
-      x-data="globalData()" 
-    >
+    <div x-data="globalData()">
     <!--DOME-->
     <div class="main-tab bg-slate-600"
       x-data="{open:false}"
@@ -71,16 +69,20 @@
       </div>
 
       <div class="tab-content" x-show="open" x-transition>
-
         <div>
-            <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5"/> Sec.</p>
+          <p>Pin Start Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinstart" x-model="dome.pinstart"/></p>
+          <p>Pin Halt Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinhalt" x-model="dome.pinhalt"/></p>
+      </div>
+        <div>
+            <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.tout" x-model="dome.tout"/> Sec.</p>
         </div>
         <div>
-        <p class="py-2">Abilita chiusura in caso di mancata connessione: <input type="checkbox" id="endomeautoclose" class="bg-gray-100 p-2 text-gray-500"/> </p>
-        <p>Tempo di inattività: <input type="number" id="domeautoclose" class="bg-gray-100 p-2 text-gray-800 h-5"/> Min.</p>
+          <p class="pt-2">Abilita chiusura in caso di mancata connessione: <input type="checkbox" id="dome.enautoclose" class="bg-gray-100 p-2 text-gray-500" x-bind:value="dome.enautoclose" x-model="dome.enautoclose"/> </p>
+          <p class="text-xs italic">In caso di mancate richieste da parte dei driver ascom o portale web, lo shutter si chiude automaticamente dopo un tot tempo.</p>
+        <p>Tempo di inattività: <input type="number" id="domeautoclose" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.autoclose" x-model="dome.autoclose"/> Min.</p>
         </div>
         <div class="pt-2">
-            <button class="button button_green">Salva</button>
+            <button @click="saveDomeSetting()" class="button button_green">Salva</button>
             <button class="button button_green">Scarica Configurazione</button>
         </div>
 
@@ -140,11 +142,10 @@
           this.switches = [];
         },
         updateData(){
-          fetch('http://192.168.69.116/status')
+          fetch('/config')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
-              this.switches =  response.switches
               });
         },
         init() {  
@@ -170,8 +171,23 @@
                 console.error("Errore di validazione", ionumber)
             }
         },
+        saveDomeSetting(){
+            this.dome.autoclose = parseInt(this.dome.autoclose)
+            this.dome.tout = parseInt(this.dome.tout)
+            this.dome.pinstart = parseInt(this.dome.pinstart)
+            this.dome.pinhalt = parseInt(this.dome.pinhalt)
+            fetch('/domeconfig',{ 
+              method: 'POST',
+              headers: {"Content-Type": "application/json",},
+              body: "{\"pinstart\":" +this.dome.pinstart+",\"pinhalt\":"+this.dome.pinhalt+",\"tout\":"+this.dome.tout+",\"enautoclose\":"+this.dome.enautoclose+",\"autoclose\":"+this.dome.autoclose+"}"
+            })
+            .then(response => response.json())
+            .then(response => {
+                  this.dome.error = response.error
+              });
       }
     };
+  }
 
 
   </script>

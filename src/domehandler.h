@@ -3,15 +3,13 @@
 
 #define SHUTTER_OPEN_INPUT    34
 #define SHUTTER_CLOSE_INPUT   35
-#define SHUTTER_CMD_OUTPUT    16
-#define SHUTTER_HALT_OUTPUT   4
 
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
 void domehandlersetup() {
-  pinMode(SHUTTER_CMD_OUTPUT, OUTPUT);
-  pinMode(SHUTTER_HALT_OUTPUT, OUTPUT);
+  pinMode(setting.dome.pinStart, OUTPUT);
+  pinMode(setting.dome.pinHalt, OUTPUT);
   pinMode(SHUTTER_OPEN_INPUT, INPUT);
   pinMode(SHUTTER_CLOSE_INPUT, INPUT);
 }
@@ -40,7 +38,7 @@ void LastDomeCommandExe(){
 }
 
 void domehandlerloop() {
-  ShMoveTimeOut = Dome.MovingTimeOut *1000;
+  ShMoveTimeOut = setting.dome.movingTimeOut *1000;
   domeInputState();
   LastDomeCommandExe();
 
@@ -89,14 +87,14 @@ void domehandlerloop() {
             //Open and close cycle are identical, I just hope to reach the right
             //Pulse to start to the motor, ack millis for time out and
             ShMoveTimeOutAck = millis();
-            digitalWrite(SHUTTER_CMD_OUTPUT, HIGH);
+            digitalWrite(setting.dome.pinStart, HIGH);
             Dome.Cycle++;
             break;
 
     case 11:  //Take signal end to loose signal
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait 1second anyway
               if (Dome.ShutterInputState == ShInAll || Dome.ShutterInputState == ShInNoOne) {
-                digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
+                digitalWrite(setting.dome.pinStart, LOW);
                 ShMoveTimeOutAck = millis();
                 Dome.Cycle++;
               }
@@ -153,15 +151,15 @@ void domehandlerloop() {
 
 //PING PONG - HALT ASPETTO E RIBADISCO LO START
     case 20:ShMoveTimeOutAck = millis();
-            digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);   //I need just a pulse for start roof motor
-            digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
+            digitalWrite(setting.dome.pinHalt, HIGH);   //I need just a pulse for start roof motor
+            digitalWrite(setting.dome.pinStart, LOW);
             Dome.Cycle++;
             break;
 
     case 21:
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait a second
-              digitalWrite(SHUTTER_HALT_OUTPUT, LOW);   
-              digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
+              digitalWrite(setting.dome.pinHalt, LOW);   
+              digitalWrite(setting.dome.pinStart, LOW);
               Dome.Cycle++;
               ShMoveTimeOutAck = millis();
             }        
@@ -178,15 +176,15 @@ void domehandlerloop() {
     case 100: //halt command for 1sec
             ShMoveTimeOutAck = millis();
             Dome.ShutterState = ShError;
-            digitalWrite(SHUTTER_HALT_OUTPUT, HIGH);
-            digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
+            digitalWrite(setting.dome.pinHalt, HIGH);
+            digitalWrite(setting.dome.pinStart, LOW);
             Dome.Cycle++;
             break;
 
     case 101: //halt command for 1sec
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Setting Output for 1sec
-              digitalWrite(SHUTTER_HALT_OUTPUT, LOW);   
-              digitalWrite(SHUTTER_CMD_OUTPUT, LOW);
+              digitalWrite(setting.dome.pinHalt, LOW);   
+              digitalWrite(setting.dome.pinStart, LOW);
               Dome.Cycle++;
             }
             break;

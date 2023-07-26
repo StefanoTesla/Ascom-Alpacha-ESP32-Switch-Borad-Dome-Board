@@ -53,17 +53,14 @@ struct DomeStruct{
   int Cycle;
   bool MoveRetry;
   unsigned int LastDomeCommand =0;
-  unsigned long MovingTimeOut = 20;
   unsigned long LastServerRequest;
-  bool EnableAutoClose;
-  unsigned long AutoCloseTimeOut = 20;
 };
 
 DomeStruct Dome;
 
 /** END DOME DATA **/
 
-
+/** SWITCH STRUCT **/
 struct SwtichStruct
 {
   String Name;
@@ -78,12 +75,31 @@ struct SwtichStruct
   int pwmChannel = -1;
 };
 
-#define _MAX_SWTICH_ID_ 17
+#define _MAX_SWTICH_ID_ 32
 
 SwtichStruct Switch[_MAX_SWTICH_ID_];
 
 unsigned int pwmchannles = 0;
 
+
+typedef struct{
+  unsigned int pinStart;
+  unsigned int pinHalt;
+  unsigned long movingTimeOut = 20;
+  bool enAutoClose;
+  unsigned long autoCloseTimeOut = 20;
+} domeSetting;
+
+typedef struct{
+  unsigned int maxSwitch;
+} switchSetting;
+
+typedef struct {
+  domeSetting dome;
+  switchSetting switches;
+}boardSetting;
+
+boardSetting setting;
 
 
 void StoreDataFileSPIFFS() {
@@ -91,7 +107,7 @@ void StoreDataFileSPIFFS() {
   const size_t capacity = JSON_OBJECT_SIZE(1024);
   String datasetup;
   DynamicJsonDocument doc(capacity);
-  doc["dometime"]   = Dome.MovingTimeOut;
+  doc["dometime"]   = setting.dome.movingTimeOut;
   JsonArray Switchjs = doc.createNestedArray("Switch");
 
     JsonObject Switchjs_0 = Switchjs.createNestedObject();
@@ -167,15 +183,15 @@ void ReadDataFileSPIFFS() {
     Serial.print(F("deserializeJson() failed: "));
     Serial.println(error.c_str());
   } else {
-    Dome.MovingTimeOut  = doc["dometime"];
+    setting.dome.movingTimeOut = doc["dometime"];
     for (JsonObject elem : doc["Switch"].as<JsonArray>()) {
 
     Switch[i].Name = elem["name"].as<String>();
     Switch[i].Description = elem["description"].as<String>();
     i++;
-}
-
+  }
 
   }
   file.close();
 }
+
