@@ -1,62 +1,46 @@
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script defer src="/alpine.js" type="module"></script>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
-  <body>
-
-    <header 
-      x-data="{ open: false }"
-      
-      @resize.window="
-      width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-      if (width > 767) {
-       open = false
-      }
-      "
-      
-      >
-      <!-- Navbar goes here -->
-      <nav class="bg-gray-800">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="flex justify-between">
-            <div class="self-center">
-              <!-- Website Logo -->
-              <span class="font-semibold text-lg">StefanoTesla</span>
-            </div>
-            <!-- Primary Navbar items -->
-            <div class="hidden md:flex items-center space-x-1">
-              <a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
-              <a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
-            </div>
-
-            <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center h-14" >
-              <button class="outline-none mobile-menu-button" @click="open = ! open">
-                <svg class="w-6 h-6 text-gray-500 hover:text-green-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                  <path d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- mobile menu -->
-        <div x-show="open" class="mobile-menu">
-          <ul class="">
-            <li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
-            <li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
-
-    <div class="">
-      <h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <script defer src="/alpine.js" type="module"></script>
+  <link rel="stylesheet" href="/style.css" />
+  <title>Setup - TeslaBoard</title>
+</head>
+<body>
+<header x-data="{ open: false }" @resize.window="width = (window.innerWidth > 0) ? window.innerWidth : screen.width;if (width > 767) {open = false}">
+<nav class="bg-gray-800">
+<div class="max-w-6xl mx-auto px-4">
+<div class="flex justify-between">
+  <div class="self-center">
+  <!-- Website Logo -->
+  <span class="font-semibold text-lg">StefanoTesla</span>
+  </div>
+  <!-- Primary Navbar items -->
+  <div class="hidden md:flex items-center space-x-1">
+    <a href="/" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Home</a>
+    <a href="/setup" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Setup</a>
+  </div>
+  <!-- Mobile menu button -->
+  <div class="md:hidden flex items-center h-14" >
+    <button class="outline-none mobile-menu-button" @click="open = ! open">
+    <svg class="w-6 h-6 text-gray-500 hover:text-green-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+    <path d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+    </button>
     </div>
-
+    </div>
+  </div>
+  <!-- mobile menu -->
+  <div x-show="open" class="mobile-menu">
+  <ul class="">
+    <li><a href="/" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Home</a></li>
+    <li><a href="/setup" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Setup</a></li>
+  </ul>
+  </div>
+  </nav>
+  </header>
+  <div class=""><h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1></div>
     <div x-data="globalData()">
     <!--DOME-->
     <div class="main-tab bg-slate-600"
@@ -85,7 +69,7 @@
         </div>
         <div class="pt-2">
             <button @click="saveDomeSetting()" class="button button_green">Salva</button>
-            <button class="button button_green">Scarica Configurazione</button>
+            <a href="/domeconfig.txt" download class="button button_green">Scarica Configurazione</a>
         </div>
 
       </div>
@@ -132,7 +116,7 @@
       </div>
     <div class="pt-2">
         <button @click="savePinSetting()" class="button button_green">Salva</button>
-        <button class="button button_green">Scarica Configurazione</button>
+        <a href="/switchconfig.txt" download class="button button_green">Scarica Configurazione</a>
     </div>
     </div>
     </div>
@@ -149,30 +133,8 @@
           this.dome = [];
           this.switches = [];
         },
-        updateData(){
-          fetch('http://192.168.69.116/config')
-            .then(response => response.json())
-            .then(response => {
-              this.dome = response.dome
-              response.switches.forEach((element,index) => (
-                this.switches.push(element)
-              ))
-
-            });
-
-        },
-        init() {  
-
-          this.updateData()
-        },
-        validateSwitchNumber(event){
-            let ionumber = parseInt(event.target.value);
-            if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 33){
-                this.switchNumber = ionumber
-            } else {
-                console.error("Errore di validazione", ionumber)
-            }
-        },
+        updateData(){fetch('/config').then(response => response.json()).then(response => {this.dome = response.dome; response.switches.forEach((element,index) => (this.switches.push(element)))});},
+        init() {this.updateData()},
         validateString(event){
             event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
         },
@@ -181,15 +143,15 @@
             if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 37){
                 this.switchNumber = ionumber
             } else {
-                console.error("Errore di validazione", ionumber)
+                console.error("Errore di validazione", ionumber);
                 event.target.value = 36;
             }
         },
         saveDomeSetting(){
-            this.dome.autoclose = parseInt(this.dome.autoclose)
-            this.dome.tout = parseInt(this.dome.tout)
-            this.dome.pinstart = parseInt(this.dome.pinstart)
-            this.dome.pinhalt = parseInt(this.dome.pinhalt)
+            this.dome.autoclose = parseInt(this.dome.autoclose);
+            this.dome.tout = parseInt(this.dome.tout);
+            this.dome.pinstart = parseInt(this.dome.pinstart);
+            this.dome.pinhalt = parseInt(this.dome.pinhalt);
 
             fetch('/domeconfig',{ 
               method: 'POST',
@@ -202,7 +164,7 @@
               });
         },
         savePinSetting(){
-          fetch('http://192.168.69.116/switchconfig',{ 
+          fetch('/switchconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.switches)
@@ -210,7 +172,7 @@
             .then(response => response.json())
           console.log(JSON.stringify(this.switches))
         },
-        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: '',pin: '',min:'',max:'',});} else { console.error("Limite Raggiunto")}},
+        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: '1',pin: '',min:'0',max:'1',});} else { console.error("Limite Raggiunto")}},
         removePin(index) {this.switches.splice(index, 1);}
 
     };

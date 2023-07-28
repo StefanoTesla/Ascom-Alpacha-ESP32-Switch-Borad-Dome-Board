@@ -5,53 +5,41 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script defer src="/alpine.js" type="module"></script>
     <link rel="stylesheet" href="/style.css" />
+    <title>Home - TeslaBoard</title>
   </head>
   <body>
-
-    <header 
-      x-data="{ open: false }"
-      
-      @resize.window="
-      width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-      if (width > 767) {
-       open = false
-      }
-      "
-      
-      >
-      <!-- Navbar goes here -->
-      <nav class="bg-gray-800">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="flex justify-between">
-            <div class="self-center">
-              <!-- Website Logo -->
-              <span class="font-semibold text-lg">StefanoTesla</span>
-            </div>
-            <!-- Primary Navbar items -->
-            <div class="hidden md:flex items-center space-x-1">
-              <a href="/dome" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Dome</a>
-              <a href="/switch" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Switch</a>
-            </div>
-
-            <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center h-14" >
-              <button class="outline-none mobile-menu-button" @click="open = ! open">
-                <svg class="w-6 h-6 text-gray-500 hover:text-green-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                  <path d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- mobile menu -->
-        <div x-show="open" class="mobile-menu">
-          <ul class="">
-            <li><a href="/dome" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Dome</a></li>
-            <li><a href="/switch" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Switch</a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+<header x-data="{ open: false }" @resize.window="width = (window.innerWidth > 0) ? window.innerWidth : screen.width;if (width > 767) {open = false}">
+<nav class="bg-gray-800">
+<div class="max-w-6xl mx-auto px-4">
+<div class="flex justify-between">
+<div class="self-center">
+<!-- Website Logo -->
+<span class="font-semibold text-lg">StefanoTesla</span>
+</div>
+<!-- Primary Navbar items -->
+<div class="hidden md:flex items-center space-x-1">
+  <a href="/" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Home</a>
+  <a href="/setup" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Setup</a>
+</div>
+<!-- Mobile menu button -->
+<div class="md:hidden flex items-center h-14" >
+  <button class="outline-none mobile-menu-button" @click="open = ! open">
+  <svg class="w-6 h-6 text-gray-500 hover:text-green-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+  <path d="M4 6h16M4 12h16M4 18h16"></path>
+  </svg>
+  </button>
+  </div>
+  </div>
+</div>
+<!-- mobile menu -->
+<div x-show="open" class="mobile-menu">
+<ul class="">
+  <li><a href="/" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Home</a></li>
+  <li><a href="/setup" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Setup</a></li>
+</ul>
+</div>
+</nav>
+</header>
 
     <div class="">
       <h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1>
@@ -61,7 +49,6 @@
     <div 
       x-data="globalData()" 
     >
-    <p x-text="free"></p>
     <!--DOME-->
     <div class="main-tab bg-slate-600"
       x-data="{open:false}"
@@ -181,18 +168,16 @@
       return {
         dome: [],
         switches: [],
-        free : 0,
         reload() {
           this.dome = [];
           this.switches = [];
         },
         updateData(){
-          fetch('http://192.168.69.116/status')
+          fetch('/status')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
-              this.switches =  response.switches
-              this.free = 100 -(( response.free * 100) / 327680)
+              this.switches =  response.switches;
               });
         },
         init() {  
@@ -207,7 +192,7 @@
           fetch('/domecmd?cmd=1',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                  this.dome.error = response.error
+                  this.dome.error = response.error;
               });
         },
 
@@ -215,7 +200,7 @@
           fetch('/domecmd?cmd=2',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                  this.dome.error = response.error
+                  this.dome.error = response.error;
               });
         },
 
@@ -223,7 +208,7 @@
           fetch('/domecmd?cmd=3',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
-                  this.dome.error = response.error
+                  this.dome.error = response.error;
               });
         },
 
@@ -235,7 +220,7 @@
                   this.switches[id].actualValue = value;
                 }
                 if (response.error ){
-                  console.error(response.error)
+                  console.error(response.error);
                 }
               });
         },

@@ -1,1 +1,0 @@
-{"dometime":20,"Switch":[{"name":"Switch 1","description":""},{"name":"Switch 2","description":""},{"name":"Switch 3","description":""},{"name":"Switch 4","description":""},{"name":"Switch 5","description":""},{"name":"Switch 6","description":""}]}

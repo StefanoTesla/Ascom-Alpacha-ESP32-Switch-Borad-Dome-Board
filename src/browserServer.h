@@ -14,18 +14,6 @@ void browserServer(){
         request->send(SPIFFS, "/index.html", "text/html");
     });
 
-    server.on("/dome", HTTP_GET, [](AsyncWebServerRequest * request) {
-        request->send(SPIFFS, "/dome.html", "text/html");
-    });
-
-    server.on("/switch", HTTP_GET, [](AsyncWebServerRequest * request) {
-        request->send(SPIFFS, "/switch.html", "text/html");
-    });
-
-    server.on("/swsetup", HTTP_GET, [](AsyncWebServerRequest * request) {
-        request->send(SPIFFS, "/switchsetup.html", "text/html");
-    });
-
     server.on("/setup", HTTP_GET, [](AsyncWebServerRequest * request) {
         request->send(SPIFFS, "/setup.html", "text/html");
     });
@@ -285,6 +273,7 @@ void browserServer(){
 
     server.serveStatic("/domeconfig.txt", SPIFFS, "/domeconfig.txt");
     server.serveStatic("/switchconfig.txt", SPIFFS, "/switchconfig.txt");
+    server.serveStatic("/favicon.ico", SPIFFS, "/favicon.ico").setCacheControl("max-age=31536000");
     server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
     server.onNotFound(notFound);
