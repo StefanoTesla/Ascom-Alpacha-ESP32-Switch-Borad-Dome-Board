@@ -37,7 +37,7 @@ Actually Ascom Switch function is tested with:
 
 - N.I.N.A.
 
-6 Switch can be configurated as output or input, in near future I will implement olso pwm signal.
+16 Switch can be configurated as output or input, pwm signal or analog input.
 
 Error sended to ascom alpaca:
 
@@ -49,6 +49,17 @@ Error sended to ascom alpaca:
 The software was made with Arduino IDE and ported subsequently to Platformio for better management
 
 #### Changelog
+
+💥 2.0.0 - BREACKING NEWS! Now all the board can be setupped by the browser. Dome I/O and Switch setting is now editable from the browser and you can save the confi files.
+Before update write in a memo all your setting.
+
+What's new in version 2.0.0?
+
+Web pages run now alpine.js and all the js under the hood is rewrited in a modern way.
+Now Dome and switch are in the same page, olso settings now are in the same page!
+New dome function: Auto Close if anyone is talking with the board (browser or ascom alpacha driver) [IS UNDER DEVELOPMENT], you can enable or disable this featur by browser setup page.
+
+
 
 1.2.4 Added wifi automatic reconnection, added OTA firmware uploader
 
@@ -69,7 +80,7 @@ The software was made with Arduino IDE and ported subsequently to Platformio for
 - Webrowser have some bugs
 
 Knowed browser bugs:
-
+- :white_check_mark: No one   [2.0.0]
 - :white_check_mark: Updating switch actual value [1.2.1]
 - :white_check_mark: Show last command to the dome, at the moment is "nietca" an Italian words meaning "nothing" [1.2.1]
 - :white_check_mark: Saving Switch Name and Descriptions [1.1.0]
