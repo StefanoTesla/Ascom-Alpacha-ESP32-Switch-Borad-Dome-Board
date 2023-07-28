@@ -15,7 +15,6 @@
 AsyncWebServer server(80);
 AsyncWebServer Alpserver(4567);
 
-
 #include "AlpacaDomeServer.h"
 #include "AlpacaSwitchServer.h"
 #include "browserServer.h"
@@ -32,11 +31,7 @@ unsigned const int alpacaPort = 4567;  //The (fake) port that the Alpaca API wou
 
 AsyncUDP udp;
 
-void notFound(AsyncWebServerRequest *request) {
-  request->send(400, "text/plain", "Not found");
-  Serial.println("400");
-  Serial.println(request->url());
-}
+
 
 void ServerNotFound(AsyncWebServerRequest *request) {
   request->send(404, "text/plain", "Not found");
@@ -49,11 +44,11 @@ void setup()
   Serial.begin(115200);
   AlpacaData.AlpServerID = 0;
   pinMode(2, OUTPUT);
-  
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   if (!SPIFFS.exists("/setup.txt")) { StoreDataFileSPIFFS(); } else { ReadDataFileSPIFFS(); }
   readDomeConfig();
+  readSwitchConfig();
   switchsetup();
   domehandlersetup();
   
@@ -92,7 +87,7 @@ void setup()
   SwitchAlpaca();
   browserServer();
 
-  server.onNotFound(notFound);
+
 
   server.on("/getdomestate",              HTTP_GET, DomWSState);
   server.on("/getswitchname",             HTTP_GET, SwtSWName);
@@ -193,7 +188,7 @@ void setup()
   server.addHandler(switchhandler);
 
   /** END COMMON OPERATION **/
-  server.onNotFound(notFound);
+
 
   /** END SWITCH SPECIFIC METHODS **/
   Alpserver.begin();

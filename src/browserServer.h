@@ -1,9 +1,14 @@
 #ifndef BROWSER_WEB
 #define BROWSER_WEB
 
+void notFound(AsyncWebServerRequest *request) {
+  request->send(400, "text/plain", "Not found");
+  Serial.println("400");
+  Serial.println(request->url());
+}
+
 
 void browserServer(){
-    
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
         request->send(SPIFFS, "/index.html", "text/html");
@@ -28,8 +33,6 @@ void browserServer(){
     server.on("/setup.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
         request->send(SPIFFS, "/setup.txt", "text/plain");
     });
-
-    server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
     server.on("/domecmd",               HTTP_PUT, [](AsyncWebServerRequest *request) {
         if (request->hasParam("cmd")){
@@ -136,7 +139,9 @@ void browserServer(){
                 response->printf(",");
             }
         }
-        response->print("]}");
+        response->printf("],\"free\":");
+        response->print(ESP.getFreeHeap());
+        response->print("}");
         request->send(response);
     });
 
@@ -156,10 +161,91 @@ void browserServer(){
     });
     server.addHandler(domecfg);
 
+
+    AsyncCallbackJsonWebHandler *switchConfig = new AsyncCallbackJsonWebHandler("/switchconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
+        const size_t capacity = JSON_OBJECT_SIZE(5000);
+        DynamicJsonDocument doc(capacity);
+        int i=0;
+        int type = 0;
+        int pin = 0;
+        bool err = false;
+        bool reboot = false;
+        for (JsonObject elem : json.as<JsonArray>()) {
+            type = elem["type"].as<unsigned int>();
+            pin = elem["pin"].as<unsigned int>();
+            if(type != 0 && pin != 0){
+                switch(type){
+
+                    case 1: //Digital Output
+                            if(Switch[i].CanSet != true){ reboot = true; }
+                            if(Switch[i].pin != pin){ reboot = true; }
+                            Switch[i].CanSet = true;
+                            Switch[i].analog = false;
+                            Switch[i].pin = pin;
+                            Switch[i].minValue = 0;
+                            Switch[i].maxValue = 1;
+                            break;
+
+                    case 2: //Digital Input
+                            if(Switch[i].CanSet != false){ reboot = true; }
+                            if(Switch[i].pin != pin){ reboot = true; }
+                            Switch[i].CanSet = false;
+                            Switch[i].analog = false;
+                            Switch[i].pin = pin;
+                            Switch[i].minValue = 0;
+                            Switch[i].maxValue = 1;
+                            break;
+                    case 3: //PWM Output
+                            if(Switch[i].CanSet != true){ reboot = true; }
+                            if(Switch[i].pin != pin){ reboot = true; }
+                            Switch[i].CanSet = true;
+                            Switch[i].analog = true;
+                            Switch[i].pin = pin;
+                            Switch[i].minValue = elem["min"].as<unsigned int>();
+                            Switch[i].maxValue = elem["max"].as<unsigned int>();
+                            break;
+
+                    case 4: //Analog Input
+                            if(Switch[i].CanSet != false){ reboot = true; }
+                            if(Switch[i].pin != pin){ reboot = true; }
+                            Switch[i].CanSet = false;
+                            Switch[i].analog = true;
+                            Switch[i].pin = pin;
+                            Switch[i].minValue = elem["min"].as<unsigned int>();
+                            Switch[i].maxValue = elem["max"].as<unsigned int>();
+                            break;
+                    
+                    default:
+                        Serial.println("/switchconfig wrong pin type");
+                        err = true;
+                        break;
+                }
+                Switch[i].type = type;
+                Switch[i].Name = elem["name"].as<String>();
+                Switch[i].Description = elem["desc"].as<String>();
+            } else {
+                Serial.print("male");
+                err = true;
+                return;
+            }
+            i++;
+        }
+        if(err){
+            request->send(200, "application/json", "{\"error\": \"some type or input are wrong\"}");
+        } else if (reboot){
+            request->send(200, "application/json", "{\"reboot\": \"1\"}");
+            FileHandler.saveSwitchSetting = true;
+        } else {
+            request->send(200, "application/json", "{\"accept\": \"ok\"}");
+            FileHandler.saveSwitchSetting = true;
+        }
+    });
+    server.addHandler(switchConfig);
+
     server.on("/config",                HTTP_GET, [](AsyncWebServerRequest *request) {
         int i;
         AsyncResponseStream *response = request->beginResponseStream("application/json");
-        response->printf("{\"dome\":{ \"pinstart\":");
+        response->print("{\"dome\":{ \"pinstart\":");
         response->print(setting.dome.pinStart);
         response->print(",\"pinhalt\":");
         response->print(setting.dome.pinHalt);
@@ -173,14 +259,41 @@ void browserServer(){
         setting.dome.enAutoClose ? response->print("true") : response->print("false");
         response->print(",\"autoclose\":");
         response->print(setting.dome.autoCloseTimeOut);
-        response->print("}");
-        response->print("}");
+        response->print("},");
+        response->print("\"switches\":[");
+        for(i=0;i<setting.switches.maxSwitch;i++){
+            response->print("{\"name\":\"");
+            response->print(Switch[i].Name);
+            response->print("\",\"desc\":\"");
+            response->print(Switch[i].Description);
+            response->print("\",\"type\":");
+            response->print(Switch[i].type);
+            response->print(",\"pin\":");
+            response->print(Switch[i].pin);
+            response->print(",\"min\":");
+            response->print(Switch[i].minValue);
+            response->print(",\"max\":");
+            response->print(Switch[i].minValue);
+            response->print("}");
+            if (i != setting.switches.maxSwitch - 1 ){
+                response->print(",");
+            }
+        }    
+        response->print("]}");
         request->send(response);
     });
 
     server.on("/domeconfig.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
         request->send(SPIFFS, "/domeconfig.txt", "text/plain");
     });
+
+    server.on("/switchconfig.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
+        request->send(SPIFFS, "/switchconfig.txt", "text/plain");
+    });
+
+    server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
+
+    server.onNotFound(notFound);
 }
 
 #endif

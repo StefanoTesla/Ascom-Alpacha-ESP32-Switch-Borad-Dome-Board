@@ -186,7 +186,7 @@
           this.switches = [];
         },
         updateData(){
-          fetch('http://192.168.69.116/status')
+          fetch('/status')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
@@ -202,7 +202,7 @@
         },
 
         openShutter(){
-          fetch('http://localhost:5000/domecmd?cmd=1',{ method: 'PUT'})
+          fetch('/domecmd?cmd=1',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error
@@ -210,7 +210,7 @@
         },
 
         closeShutter(){
-          fetch('http://localhost:5000/domecmd?cmd=2',{ method: 'PUT'})
+          fetch('/domecmd?cmd=2',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error
@@ -218,7 +218,7 @@
         },
 
         haltShutter(){
-          fetch('http://localhost:5000/domecmd?cmd=3',{ method: 'PUT'})
+          fetch('/domecmd?cmd=3',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error
@@ -226,7 +226,7 @@
         },
 
         setDigitalSwValue(id,value){
-          fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
+          fetch('/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                 if (response.done){
@@ -238,7 +238,7 @@
               });
         },
         setAnalogSwValue(id,event){
-          fetch('http://192.168.69.116/switchcmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
+          fetch('/switchcmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
               if (response.done){

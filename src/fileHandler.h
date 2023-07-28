@@ -2,7 +2,7 @@
 #define FILE_HAND
 
 void readDomeConfig(){
-    const size_t capacity = JSON_OBJECT_SIZE(100);
+    const size_t capacity = JSON_OBJECT_SIZE(200);
     DynamicJsonDocument doc(capacity);
     File file = SPIFFS.open("/domeconfig.txt", FILE_READ);
     if (!file) {
@@ -23,10 +23,6 @@ void readDomeConfig(){
         setting.dome.enAutoClose = doc["enautoclose"];
         setting.dome.autoCloseTimeOut = doc["autoclose"];
     }
-    Serial.println(setting.dome.pinStart);
-    Serial.println(setting.dome.pinHalt);
-    Serial.println(setting.dome.pinOpen);
-    Serial.println(setting.dome.pinClose);
     file.close();
 }
 
@@ -49,6 +45,100 @@ void saveDomeConfig(){
 }
 
 
+void readSwitchConfig(){
+    const size_t capacity = JSON_OBJECT_SIZE(5000);
+    DynamicJsonDocument doc(capacity);
+    File file = SPIFFS.open("/switchconfig.txt", FILE_READ);
+    if (!file) {
+        Serial.println("Reading Switch config error");
+        return;
+    }
+    DeserializationError error = deserializeJson(doc, file);
+
+    if(error){
+        Serial.print(F("deserialize switch setting failed: "));
+        Serial.println(error.c_str());
+    } 
+
+    int i=0;
+    int type = 0;
+    int pin = 0;
+    for (JsonObject elem : doc.as<JsonArray>()) {
+        type = elem["type"].as<unsigned int>();
+        pin = elem["pin"].as<unsigned int>();
+        if(type != 0 && (pin != 0 || pin != 99)){
+            Switch[i].Name = elem["name"].as<String>();
+            Switch[i].Description = elem["desc"].as<String>();
+            Switch[i].type = type;
+            Switch[i].CanSet = false;
+            Switch[i].analog = false;
+            Switch[i].pin = pin;
+            Switch[i].minValue = 0;
+            Switch[i].maxValue = 1;
+            switch(type){
+                case 1: //Digital Output
+                        Switch[i].CanSet = true;
+                        Switch[i].pin = pin;
+
+                        break;
+                case 2: //Digital Input
+                        Switch[i].pin = pin;
+                        break;
+                case 3: //PWM Output
+                        Switch[i].CanSet = true;
+                        Switch[i].analog = true;
+                        Switch[i].pin = pin;
+                        Switch[i].minValue = elem["min"].as<unsigned int>();
+                        Switch[i].maxValue = elem["max"].as<unsigned int>();
+                        break;
+                case 4: //Analog Input
+                        Switch[i].CanSet = false;
+                        Switch[i].analog = true;
+                        Switch[i].pin = pin;
+                        Switch[i].minValue = elem["min"].as<unsigned int>();
+                        Switch[i].maxValue = elem["max"].as<unsigned int>();
+                        break;
+                
+                default:
+                    Serial.println("reading switch config wrong pin type");
+                    break;
+            }
+        } else {
+            break;
+        }
+        i++;
+    }
+    file.close();
+    Serial.print("fine lettura");
+}
+
+void saveSwitchConfig(){
+    int i = 0;
+    File file = SPIFFS.open("/switchconfig.txt", FILE_WRITE);
+    file.print("[");
+    for(i=0;i<_MAX_SWTICH_ID_;i++){
+        file.print("{\"name\":\"");
+        file.print(Switch[i].Name.substring(0,32));
+        file.print("\",\"desc\":\"");
+        file.print(Switch[i].Description.substring(0,32));
+        file.print("\",\"type\":");
+        file.print(Switch[i].type);
+        file.print(",\"pin\":");
+        file.print(Switch[i].pin);
+        file.print(",\"min\":");
+        file.print(Switch[i].minValue);
+        file.print(",\"max\":");
+        file.print(Switch[i].maxValue);
+        file.print("}");
+        if(i != _MAX_SWTICH_ID_ - 1){
+            file.print(",");
+        }
+    }
+    file.print("]");
+    file.close();
+}
+
+
 void fileLoop(){
 
     if(FileHandler.saveDomeSetting){
@@ -59,6 +149,7 @@ void fileLoop(){
 
     if(FileHandler.saveSwitchSetting){
         FileHandler.saveSwitchSetting = false;
+        saveSwitchConfig();
         Serial.println("richiesta salvataggio dati switch");
     }
 }

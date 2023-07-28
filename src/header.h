@@ -1,6 +1,7 @@
 struct FileStruct{
   bool saveSwitchSetting;
   bool saveDomeSetting;
+  bool restartNeeded;
 };
 
 FileStruct FileHandler;
@@ -65,17 +66,18 @@ struct SwtichStruct
 {
   String Name;
   String Description;
-  uint8_t pin;
+  uint8_t pin = 99;
   int minValue = 0;
   int maxValue = 1;
-  bool CanSet = true;
+  bool CanSet = false;
   int Step = 1;
   bool analog = false;
   int anaValue = 0;
   int pwmChannel = -1;
+  int type;
 };
 
-#define _MAX_SWTICH_ID_ 8
+#define _MAX_SWTICH_ID_ 16
 
 SwtichStruct Switch[_MAX_SWTICH_ID_];
 

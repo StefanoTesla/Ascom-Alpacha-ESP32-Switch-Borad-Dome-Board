@@ -6,6 +6,16 @@
         "*.tcc": "cpp",
         "vector": "cpp",
         "fstream": "cpp",
-        "cmath": "cpp"
-    }
+        "cmath": "cpp",
+        "random": "cpp",
+        "limits": "cpp",
+        "array": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
+    },
+    "idf.portWin": "COM3",
+    "cmake.sourceDirectory": "C:/Users/StefanoMartini/ascom-alpacha-switch-dome-board/.pio/libdeps/esp32doit-devkit-v1/ArduinoJson"
 }

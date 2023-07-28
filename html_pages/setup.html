@@ -70,10 +70,10 @@
 
       <div class="tab-content" x-show="open" x-transition>
         <div>
-          <p>Pin Start Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinstart" x-model="dome.pinstart"/></p>
-          <p>Pin Halt Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinhalt" x-model="dome.pinhalt"/></p>
-          <p>Pin Shutter Open: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinopen" x-model="dome.pinopen"/></p>
-          <p>Pin Shutter Close: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.pinclose" x-model="dome.pinclose"/></p>
+          <p>Pin Start Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinstart"/></p>
+          <p>Pin Halt Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinhalt"/></p>
+          <p>Pin Shutter Open: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinopen"/></p>
+          <p>Pin Shutter Close: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinclose"/></p>
       </div>
         <div>
             <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.tout" x-model="dome.tout"/> Sec.</p>
@@ -104,27 +104,34 @@
     
     <div class="tab-content pt-4" x-show="open" x-transition>
 
-
-        <p>Numero di Switch da utilizzare: <form><input x-on:change.debounce="validateSwitchNumber($event)" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></form></p>
-
-        <template  x-for="(i,index) in switchNumber" >
-            <div :id="$id('sw',index)" class="py-4">
-                <p class="pt-2">Nome: <input type="text" x-on:change.debounce="validateString($event)" :id="$id('sw-name',index)" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
-                <p class="pt-2">Descrizione: <input type="text" x-on:change.debounce="validateString($event)" :id="$id('sw-desc',index)" class="bg-gray-100 p-2 text-gray-800 h-5"/> </p>
-                <p class="pt-2">Tipo:
-                <input list="datalist_id" class="text-gray-800">
-                    <datalist  id="datalist_id">
-                        <option value="Uscita Digitale"></option>
-                        <option value="Uscita PWM"></option>
-                        <option value="Ingresso Digitale"></option>
-                    </datalist>
-                <p class="pt-2">Pin: <input x-on:change.debounce="validateNumber($event)" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
-                </p>
+        <template  x-for="(swi, index) in switches" >
+            <div class="my-2 py-2 px-2 rounded-md bg-slate-900">
+                <p class="pt-2">Nome: <input type="text" x-on:change.debounce="validateString($event)" x-model="swi.name" class="bg-gray-100 p-2 text-gray-800 h-5" maxlength="32"/></p>
+                <p class="pt-2">Descrizione: <input type="text" x-on:change.debounce="validateString($event)" x-model="swi.desc" class="bg-gray-100 p-2 text-gray-800 h-5" maxlength="32"/> </p>
+                <div class="flex">
+                  <p class="pt-2">Tipo: </p>
+                  <select class="text-gray-800 px-2" x-model="swi.type">
+                    <option id="1" value="1">Digital Output</option>
+                    <option id="2" value="2">Digital Input</option>
+                    <option id="3" value="3">PWM Output</option>
+                    <option id="4" value="4">Analog Input</option>
+                  </select>
+                </div>
+                <p class="pt-2">Pin: <input x-on:change.debounce="validatePinNumber($event)" x-model="swi.pin" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
+                <div x-show="swi.type > 2">
+                  <p class="pt-2">Valore minimo: <input x-model="swi.min" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
+                  <p class="pt-2">Valore Massimo: <input x-model="swi.max" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
+                </div>
+                <button @click="removePin(index)" class=" mt-4 button button_red">Rimuovi</button>
             </div>
         </template>
 
+        <div class="py-4">
+          <button @click="addPin()" class="button bg-yellow-600">Aggiungi Nuovo Switch</button>
+
+      </div>
     <div class="pt-2">
-        <button class="button button_green">Salva</button>
+        <button @click="savePinSetting()" class="button button_green">Salva</button>
         <button class="button button_green">Scarica Configurazione</button>
     </div>
     </div>
@@ -136,21 +143,26 @@
   <script>
     function globalData() {
       return {
-        switchNumber : 1,
         dome: [],
-        switches: [],
+        switches : [],
         reload() {
           this.dome = [];
           this.switches = [];
         },
         updateData(){
-          fetch('/config')
+          fetch('http://localhost:5000/config')
             .then(response => response.json())
             .then(response => {
-              this.dome = response.dome;
-              });
+              this.dome = response.dome
+              response.switches.forEach((element,index) => (
+                this.switches.push(element)
+              ))
+
+            });
+
         },
         init() {  
+
           this.updateData()
         },
         validateSwitchNumber(event){
@@ -163,14 +175,14 @@
         },
         validateString(event){
             event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-            console.log(event.target.value)
         },
-        validateSwitchNumber(event){
+        validatePinNumber(event){
             let ionumber = parseInt(event.target.value);
-            if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 33){
+            if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 37){
                 this.switchNumber = ionumber
             } else {
                 console.error("Errore di validazione", ionumber)
+                event.target.value = 36;
             }
         },
         saveDomeSetting(){
@@ -178,16 +190,29 @@
             this.dome.tout = parseInt(this.dome.tout)
             this.dome.pinstart = parseInt(this.dome.pinstart)
             this.dome.pinhalt = parseInt(this.dome.pinhalt)
+
             fetch('/domeconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
-              body: "{\"pinstart\":" +this.dome.pinstart+",\"pinhalt\":"+this.dome.pinhalt+",\"pinopen\":" +this.dome.pinopen+",\"pinclose\":"+this.dome.pinclose+",\"tout\":"+this.dome.tout+",\"enautoclose\":"+this.dome.enautoclose+",\"autoclose\":"+this.dome.autoclose+"}"
+              body: JSON.stringify(this.dome)
             })
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error
               });
-      }
+        },
+        savePinSetting(){
+          fetch('http://192.168.69.116/switchconfig',{ 
+              method: 'POST',
+              headers: {"Content-Type": "application/json",},
+              body: JSON.stringify(this.switches)
+            })
+            .then(response => response.json())
+          console.log(JSON.stringify(this.switches))
+        },
+        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: '',pin: '',min:'',max:'',});} else { console.error("Limite Raggiunto")}},
+        removePin(index) {this.switches.splice(index, 1);}
+
     };
   }
 

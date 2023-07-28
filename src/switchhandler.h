@@ -6,8 +6,6 @@
 
 void switchsetup() {
   int i=0;
-
-  
 /* Switch Setup */
 
 /* Default Switch setting
@@ -20,49 +18,62 @@ void switchsetup() {
   analog -> Default is false, if true this switch is PWM
   pwmChannel -> Default -1, the value can be 0..15 according to esp32 pwm channels
 
-
 Please refer to this page to understand wich output/input you can use without problems:
 https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
 */
-
-// Input Example
-  Switch[0].pin = 34; //dome shutter close input
-  Switch[0].CanSet = false;
-
-  Switch[1].pin = 35; //dome shutter open input
-  Switch[1].CanSet = false;
-
-// Output Example
-  Switch[2].pin = 2; // Halt Signal to Dome
-
-  Switch[3].pin = 16; // Start Signal to the Dome
-
-  Switch[4].pin = 18; //output you wanna use as switch
-
-// PWM Output Example
-  Switch[5].pin = 12;  //on board esp32 blue led, dummy example
-  Switch[5].analog = true;
 
 
 /* automatic setup for Switch */
 
   for (i=0;i<_MAX_SWTICH_ID_;i++){
-    if (Switch[i].CanSet == false){
-      pinMode(Switch[i].pin, INPUT);
-    } else {
+    if((Switch[i].pin == 0 || Switch[i].pin == 99) || Switch[i].type == 0 ){
+      Serial.print(i);
+      Serial.print(" ");
+      Serial.print(Switch[i].pin);
+      Serial.print(" ");
+      Serial.print(Switch[i].type);
+      Serial.println("fine switch setup");
+      setting.switches.maxSwitch = i;
+      break;
+    }
+    Serial.println("");
+    Serial.print("Pin: ");
+    Serial.print(Switch[i].pin);
+    Serial.print(" ");
+    if (Switch[i].CanSet == true){
       if (Switch[i].analog == false){
+        //Uscita Digitale
         pinMode(Switch[i].pin, OUTPUT);
+        Serial.print("Uscita Digitale ");
         Switch[i].Step = 1;
+        Switch[i].minValue = 0;
         Switch[i].maxValue = 1;
-      }  else {
+      } else {
+          //Uscita PWM
+          Serial.print("Uscita PWM ");
           ledcSetup(pwmchannles, 5000, 10);
           ledcAttachPin(Switch[i].pin, pwmchannles);
           Switch[i].pwmChannel = pwmchannles;
           Switch[i].minValue = 0;
           Switch[i].maxValue = 1024;
           pwmchannles++;
+      }
+    } else {
+      if (Switch[i].analog == false){
+        //Ingresso Digitale
+        Serial.print("Ingresso Digitale ");
+        pinMode(Switch[i].pin, INPUT);
+        Switch[i].Step = 1;
+        Switch[i].minValue = 0;
+        Switch[i].maxValue = 1;
+      } else {
+        //Ingresso Analogico
+        Serial.print("Ingresso Analogico ");
+        Switch[i].minValue = 0;
+        Switch[i].maxValue = 4095;
       }  
     }
+  Serial.println("");
   }
 }
 
