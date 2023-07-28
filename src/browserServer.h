@@ -82,7 +82,7 @@ void browserServer(){
             request->send(200, "application/json", "{\"error\" : \"Missing Value\"}");
             return;
         }
-        if (id >= _MAX_SWTICH_ID_){ 
+        if (id >= setting.switches.maxSwitch){ 
             request->send(200, "application/json", "{\"error\" : \"ID Out of Range\"}"); return;
         }
         if (!Switch[id].CanSet){ 
@@ -115,7 +115,7 @@ void browserServer(){
         response->print("},");
 
         response->print("\"switches\": [");
-        for (i=0;i<_MAX_SWTICH_ID_;i++){
+        for (i=0;i<setting.switches.maxSwitch;i++){
             response->print("{\"id\":");
             response->print(i);
             response->print(",\"name\":\"");
@@ -135,7 +135,7 @@ void browserServer(){
             response->print(",\"step\":");
             response->print(Switch[i].Step);
             response->print("}");
-            if(i != _MAX_SWTICH_ID_ - 1 ){
+            if(i != setting.switches.maxSwitch - 1 ){
                 response->printf(",");
             }
         }
@@ -283,14 +283,8 @@ void browserServer(){
         request->send(response);
     });
 
-    server.on("/domeconfig.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
-        request->send(SPIFFS, "/domeconfig.txt", "text/plain");
-    });
-
-    server.on("/switchconfig.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
-        request->send(SPIFFS, "/switchconfig.txt", "text/plain");
-    });
-
+    server.serveStatic("/domeconfig.txt", SPIFFS, "/domeconfig.txt");
+    server.serveStatic("/switchconfig.txt", SPIFFS, "/switchconfig.txt");
     server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 
     server.onNotFound(notFound);

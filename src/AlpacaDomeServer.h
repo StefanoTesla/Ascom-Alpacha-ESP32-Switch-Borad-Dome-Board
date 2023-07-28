@@ -212,16 +212,4 @@ Alpserver.on("api/v1/dome/0/action",                                            
 
 }
 
-void DomWSState (AsyncWebServerRequest *request) {
-  const size_t capacity = JSON_OBJECT_SIZE(800);
-  String domestatus;
-  DynamicJsonDocument doc(capacity);
-  doc["domepos"]   = Dome.ShutterState;
-  doc["domelstcmd"]  = Dome.LastDomeCommand;
-  doc["dometimeout"] = setting.dome.movingTimeOut * 1000;
- 
-  serializeJson(doc, domestatus);
-  request->send(200, "application/json", domestatus);
-}
-
 #endif

@@ -46,7 +46,6 @@ void setup()
   pinMode(2, OUTPUT);
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
-  if (!SPIFFS.exists("/setup.txt")) { StoreDataFileSPIFFS(); } else { ReadDataFileSPIFFS(); }
   readDomeConfig();
   readSwitchConfig();
   switchsetup();
@@ -86,109 +85,6 @@ void setup()
   AlpacaDome();
   SwitchAlpaca();
   browserServer();
-
-
-
-  server.on("/getdomestate",              HTTP_GET, DomWSState);
-  server.on("/getswitchname",             HTTP_GET, SwtSWName);
-  server.on("/getswitchstate",            HTTP_GET, [](AsyncWebServerRequest *request) {
-    int i;
-    AsyncResponseStream *response = request->beginResponseStream("application/json");
-    response->print("{ \"State\": [");
-
-    for (i=0;i<_MAX_SWTICH_ID_;i++){
-        Switch[i].analog ? response->printf("%d",Switch[i].anaValue) : response->printf("%d",digitalRead(Switch[i].pin));
-        if (i != _MAX_SWTICH_ID_ -1){
-          response->printf(", ");
-        }
-    }
-    response->print("]}");
-    request->send(response);
-});
-
-  server.on("/domecmd",              HTTP_POST, [](AsyncWebServerRequest *request) {
-    int cmd = -1;
-    if (request->hasParam("cmd")){
-      cmd = request->getParam("cmd")->value().toInt();
-    }
-    if (cmd <1){
-      Dome.ShutterCommand = CmdHalt;
-      Dome.Cycle = 100;
-      request->send(200, "text/html", "HALT");
-
-    } else {
-
-    if (Dome.ShutterCommand == Idle){
-      if (cmd ==1){
-          if(Dome.ShutterState != ShOpen){
-            Dome.ShutterCommand = CmdOpen;
-            request->send(200, "text/html", "ok");
-          } else { request->send(200, "text/html", "Shutter is Already Open"); }
-      } else if (cmd == 2){
-          if(Dome.ShutterState != ShClose){
-            Dome.ShutterCommand = CmdClose;
-            request->send(200, "text/html", "ok");
-          } else { request->send(200, "text/html", "Shutter is Already Closed"); }}
-    } else { request->send(200, "text/html", "Shutter is already moving"); }
-    
-    }
-});
-
-  server.on("/setsw",              HTTP_POST, [](AsyncWebServerRequest *request) {
-    int sw = -1;
-    int value = -1;
-    if (request->hasParam("sw")){ sw = request->getParam("sw")->value().toInt();
-    } else { request->send(200, "text/html", "No switch selected");
-      return;
-    }
-    if (request->hasParam("value")){ value = request->getParam("value")->value().toInt();
-    } else { request->send(200, "text/html", "No value passed");
-      return;
-    }
-    if (sw >= _MAX_SWTICH_ID_){ request->send(200, "text/html", "Switch ID Out of range"); return;}
-    if (!Switch[sw].CanSet){ request->send(200, "text/html", "Switch cannot be setted"); return;}
-    if (value < Switch[sw].minValue || value > Switch[sw].maxValue){ request->send(200, "text/html", "Value outside limits"); return;}
-
-    if (Switch[sw].analog){
-      Switch[sw].anaValue = value;
-      ledcWrite(Switch[sw].pwmChannel, Switch[sw].anaValue);
-    } else {
-          value == 1 ? digitalWrite(Switch[sw].pin, HIGH) : digitalWrite(Switch[sw].pin, LOW);
-    }
-    request->send(200, "text/html", "ok");
-   
-});
-
-
-
- AsyncCallbackJsonWebHandler *switchhandler = new AsyncCallbackJsonWebHandler("/storeswdata", [](AsyncWebServerRequest * request, JsonVariant & json) {
-  StaticJsonDocument<1000> data;
-  int i=0;
-  if (json.is<JsonArray>())
-  {
-    data = json.as<JsonArray>();
-  }
-  else if (json.is<JsonObject>())
-  {
-    data = json.as<JsonObject>();
-  }
-
-  for (JsonObject elem : data["Switch"][0].as<JsonArray>()) {
-
-  const char* name = elem["name"]; // "Switch 1", "Switch 2", "Switch 3", "Switch 4", "Switch 5", "Switch ...
-  const char* description = elem["description"]; // "Switch 1", "Switch 2", "Switch 3", "Switch 4", ...
-  Switch[i].Name = name;
-  Switch[i].Description = description;
-  i++;
-  }
-
-  request->send(200);
-  StoreData = true;
-  });
-  server.addHandler(switchhandler);
-
-  /** END COMMON OPERATION **/
-
 
   /** END SWITCH SPECIFIC METHODS **/
   Alpserver.begin();

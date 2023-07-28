@@ -38,7 +38,7 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
     }
     if (parameter == "id") {
       AlpacaData.SwitchId = p->value().toInt();
-      AlpacaData.SwitchId >= 0 && AlpacaData.SwitchId < _MAX_SWTICH_ID_ ? AlpacaData.SwitchIdInRange = true : AlpacaData.SwitchIdInRange = false;
+      AlpacaData.SwitchId >= 0 && AlpacaData.SwitchId < setting.switches.maxSwitch ? AlpacaData.SwitchIdInRange = true : AlpacaData.SwitchIdInRange = false;
     }
     if (parameter == "value") {
       AlpacaData.SwitchIntValue = p->value().toInt();

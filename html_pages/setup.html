@@ -150,7 +150,7 @@
           this.switches = [];
         },
         updateData(){
-          fetch('http://localhost:5000/config')
+          fetch('http://192.168.69.116/config')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome

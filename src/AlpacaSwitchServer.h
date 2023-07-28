@@ -49,7 +49,7 @@ Alpserver.on("/api/v1/switch/0/maxswitch",                                      
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   response->print("{ ");
   response->print(Alp_Value);
-  response->printf("%d, ",_MAX_SWTICH_ID_);
+  response->printf("%d, ",setting.switches.maxSwitch);
   response->printf("%s%d, %s%d, ",Alp_CliTraId, AlpacaData.ClientTransactionID, Alp_SerTraId, AlpacaData.AlpServerID);
   response->print(Alp_NoErrors);
   response->print(" }");

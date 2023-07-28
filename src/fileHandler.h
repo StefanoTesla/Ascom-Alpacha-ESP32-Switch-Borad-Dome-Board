@@ -50,7 +50,7 @@ void readSwitchConfig(){
     DynamicJsonDocument doc(capacity);
     File file = SPIFFS.open("/switchconfig.txt", FILE_READ);
     if (!file) {
-        Serial.println("Reading Switch config error");
+        Serial.println(F("Reading Switch config error"));
         return;
     }
     DeserializationError error = deserializeJson(doc, file);
@@ -104,6 +104,7 @@ void readSwitchConfig(){
                     break;
             }
         } else {
+            setting.switches.maxSwitch = i;
             break;
         }
         i++;
