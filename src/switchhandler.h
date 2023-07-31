@@ -30,21 +30,17 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
         Switch[i].Name ="";
         Switch[i].Description ="";
     }
-    Serial.println("");
-    Serial.print("Pin: ");
     Serial.print(Switch[i].pin);
     Serial.print(" ");
     if (Switch[i].CanSet == true){
       if (Switch[i].analog == false){
         //Uscita Digitale
         pinMode(Switch[i].pin, OUTPUT);
-        Serial.print("Uscita Digitale ");
         Switch[i].Step = 1;
         Switch[i].minValue = 0;
         Switch[i].maxValue = 1;
       } else {
           //Uscita PWM
-          Serial.print("Uscita PWM ");
           ledcAttachPin(Switch[i].pin, pwmchannles);
           ledcSetup(pwmchannles, 5000, 13);
           Switch[i].pwmChannel = pwmchannles;
@@ -55,14 +51,12 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
     } else {
       if (Switch[i].analog == false){
         //Ingresso Digitale
-        Serial.print("Ingresso Digitale ");
         pinMode(Switch[i].pin, INPUT);
         Switch[i].Step = 1;
         Switch[i].minValue = 0;
         Switch[i].maxValue = 1;
       } else {
         //Ingresso Analogico
-        Serial.print("Ingresso Analogico ");
         Switch[i].minValue = 0;
         Switch[i].maxValue = 4095;
       }  
