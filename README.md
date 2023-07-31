@@ -1,16 +1,20 @@
 # Ascom Alpacha Switch and Dome Board ESP32
 
 
-Hello everyone, I use this firmware to open and close my Dome roof and is used olso for handle 6 switch.
+Hello everyone, with this board you can use Ascom Switch and Ascom Dome via Wifi!
 
-Each two devices are recognized form ascom aplacha, no usb connectio or driver are needed to work, only http api comunication.
+Each two devices are recognized form ascom aplacha, no usb connectio or driver are needed to work!
+
+Switch can be ON/OFF or PWM!!!!
 
 The switch are already tested with N.I.N.A!
-Dome is already tested with Ascom device hub
+Dome is already tested with Ascom device hub, Nina and Starkeepper Voyager Software
 
 It's a work in progess, but it's already tested with great stability!
 
-WiFi Manager for first connection or connection to WiFi fail, automatic reconnection in case of disconnection (hoping for a router restart)
+WiFi Manager for first connection.
+Automatic reconnection in case of disconnection (hoping for a router restart)
+Ota Update to update the firmware without any cables.
 
 ## Dome
 Actually Ascom Dome function is tested with:
@@ -25,8 +29,7 @@ My dome is R.O.R rolling roof, I used a gate motor, so I use just two output and
 - Open Input
 - Close Input
 
-The start signal is HIGH just for one second
-
+The start signal is HIGH until I will not lost the acutal position sensor.
 - If everything work as expected roof will open/close correcty
 - In case of Worng direction (you want open but it going to close) the board send another Start signal (only one time avoiding ping pong), this can happen in case of shoutdown during roof is moving
 - A timer look for a moviment timeout, if timeout occurred HALT signal is HIGH for 3 second.
@@ -47,6 +50,7 @@ Error sended to ascom alpaca:
 
 ### History
 The software was made with Arduino IDE and ported subsequently to Platformio for better management
+Version 1.2 requred I/O config form the firmware, with version 2.0 you need to download the firmware only the first time!
 
 #### Changelog
 
