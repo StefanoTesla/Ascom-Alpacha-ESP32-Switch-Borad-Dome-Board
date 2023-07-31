@@ -1,25 +1,32 @@
 struct FileStruct{
-  bool saveSwitchSetting;
-  bool saveDomeSetting;
-  bool restartNeeded;
+  bool saveSwitchSetting = false;
+  bool saveDomeSetting = false;
+  bool restartNeeded = false;
 };
 
 FileStruct FileHandler;
 
 bool StoreData;
 
+typedef struct{
+  bool idExist;
+  int id;               /* used for switch ID */
+  bool stateExist;
+  bool state;               /* used for setswitch */
+  bool intValueExist;
+  int intValue;            /* used for setswitchvalue */
+  bool nameExist;
+  String name;              /* used for set switch name */
+} switchAlpacaParameters;
+
+
 /* ALPACA COMMON DATA */
 struct AlpacaCommonData{
-  uint32_t ClientTransactionID;
-  uint32_t AlpServerID = 0;
-  uint32_t ClientID;
-  int SwitchId;               /* used for switch ID */
-  bool SwitchValue;               /* used for setswitch */
-  int SwitchIntValue;            /* used for setswitchvalue */
-  String SwitchString;              /* used for set switch name */
-  bool SwitchIdInRange;
-  bool SwitchValueInRange;
+  uint32_t clientTransactionID;
+  uint32_t serverTransitionID = 0;
+  uint32_t clientID;
   bool boConnect;
+  switchAlpacaParameters switches;
 };
 
 AlpacaCommonData AlpacaData;
@@ -105,97 +112,4 @@ typedef struct {
 
 boardSetting setting;
 
-
-void StoreDataFileSPIFFS() {
-
-  const size_t capacity = JSON_OBJECT_SIZE(1024);
-  String datasetup;
-  DynamicJsonDocument doc(capacity);
-  doc["dometime"]   = setting.dome.movingTimeOut;
-  JsonArray Switchjs = doc.createNestedArray("Switch");
-
-    JsonObject Switchjs_0 = Switchjs.createNestedObject();
-    Switchjs_0["name"] = Switch[0].Name;
-    Switchjs_0["description"] = Switch[0].Description;
-
-    JsonObject Switchjs_1 = Switchjs.createNestedObject();
-    Switchjs_1["name"] = Switch[1].Name;
-    Switchjs_1["description"] = Switch[1].Description;
-
-    JsonObject Switchjs_2 = Switchjs.createNestedObject();
-    Switchjs_2["name"] = Switch[2].Name;
-    Switchjs_2["description"] = Switch[2].Description;
-
-    JsonObject Switchjs_3 = Switchjs.createNestedObject();
-    Switchjs_3["name"] = Switch[3].Name;
-    Switchjs_3["description"] = Switch[3].Description;
-
-    JsonObject Switchjs_4 = Switchjs.createNestedObject();
-    Switchjs_4["name"] = Switch[4].Name;
-    Switchjs_4["description"] = Switch[4].Description;
-
-    JsonObject Switchjs_5 = Switchjs.createNestedObject();
-    Switchjs_5["name"] = Switch[5].Name;
-    Switchjs_5["description"] = Switch[5].Description;
-
-  serializeJson(doc, datasetup);
-
-  File file = SPIFFS.open("/setup.txt", FILE_WRITE);
-  if (!file) {
-    Serial.println("Error writing file");
-    return;
-  } else {
-    file.close();
-    SPIFFS.remove("/setup.txt");
-  }
-  file = SPIFFS.open("/setup.txt", FILE_WRITE);
-  
-  if (!file) {
-    Serial.println("Error writing file");
-  }
-
-  int bytesWritten = file.print(datasetup);
- 
-if (bytesWritten == 0) {
-    Serial.println("File write failed");
-    return;
-} else {
-Serial.println("tuttoookkk");
-
-}
- 
-file.close();
-
-  StoreData = false;
-}
-
-
-void ReadDataFileSPIFFS() {
-  const size_t capacity = JSON_OBJECT_SIZE(20) + 500;
-  int i=0;
-  DynamicJsonDocument doc(capacity);
-
-  File file = SPIFFS.open("/setup.txt", FILE_READ);
-  if (!file) {
-    Serial.println("ReadDataFileSPIFFS Error reading file");
-    return;
-  }
-
-  DeserializationError error = deserializeJson(doc, file);
-  
-  if (error) {
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.c_str());
-  } else {
-    setting.dome.movingTimeOut = doc["dometime"];
-    for (JsonObject elem : doc["Switch"].as<JsonArray>()) {
-
-    Switch[i].Name = elem["name"].as<String>();
-    Switch[i].Description = elem["description"].as<String>();
-    i++;
-  }
-
-  }
-  file.close();
-}
 

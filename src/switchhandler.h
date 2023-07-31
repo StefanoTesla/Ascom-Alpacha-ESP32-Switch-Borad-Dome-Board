@@ -45,11 +45,11 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
       } else {
           //Uscita PWM
           Serial.print("Uscita PWM ");
-          ledcSetup(pwmchannles, 5000, 10);
           ledcAttachPin(Switch[i].pin, pwmchannles);
+          ledcSetup(pwmchannles, 5000, 13);
           Switch[i].pwmChannel = pwmchannles;
           Switch[i].minValue = 0;
-          Switch[i].maxValue = 1024;
+          Switch[i].maxValue = 8192;
           pwmchannles++;
       }
     } else {

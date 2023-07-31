@@ -9,8 +9,8 @@ String JDomeAnsw;
 
 
 void JsonDomeCostructor(int error, String errormessage ) {
-  JDome["ClientTransactionID"] = AlpacaData.ClientTransactionID;
-  JDome["ServerTransactionID"] = AlpacaData.AlpServerID;
+  JDome["ClientTransactionID"] = AlpacaData.clientTransactionID;
+  JDome["ServerTransactionID"] = AlpacaData.serverTransitionID;
   JDome["ErrorNumber"] = (uint32_t)error;
   JDome["ErrorMessage"] = errormessage;
   JDomeAnsw = "";

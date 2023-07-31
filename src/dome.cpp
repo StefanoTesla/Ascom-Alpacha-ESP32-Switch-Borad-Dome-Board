@@ -42,15 +42,15 @@ void ServerNotFound(AsyncWebServerRequest *request) {
 void setup()
 {
   Serial.begin(115200);
-  AlpacaData.AlpServerID = 0;
-  pinMode(2, OUTPUT);
+  AlpacaData.serverTransitionID = 0;
+  //pinMode(2, OUTPUT);
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   readDomeConfig();
   readSwitchConfig();
   switchsetup();
   domehandlersetup();
-  
+  urlDecoding.reserve(35);
   JDomeAnsw.reserve(300);
   Serial.println("Listening for discovery requests...");
   AsyncWiFiManager wifiManager(&server,&dns);
@@ -83,7 +83,8 @@ void setup()
   Alpserver.on("/management/v1/configureddevices",                                        HTTP_GET, ManConfigureDev);
 
   AlpacaDome();
-  SwitchAlpaca();
+  //SwitchAlpaca();
+  SwitchAlpacaShort();
   browserServer();
 
   /** END SWITCH SPECIFIC METHODS **/
@@ -96,9 +97,7 @@ void loop()
 {
   fileLoop();
   domehandlerloop();
-  if (StoreData == true) {
-    StoreDataFileSPIFFS();
-  }
+
 
   unsigned long currentMillis = millis();
   if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
@@ -108,8 +107,8 @@ void loop()
   }
 
   if(WiFi.status() == WL_CONNECTED ){
-    digitalWrite(2, HIGH);
+    //digitalWrite(2, HIGH);
   } else {
-    digitalWrite(2, LOW);
+    //digitalWrite(2, LOW);
   }
 }

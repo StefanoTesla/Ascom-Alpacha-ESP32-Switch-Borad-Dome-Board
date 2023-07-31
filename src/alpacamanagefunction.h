@@ -6,25 +6,31 @@ StaticJsonDocument<128> AplacaError;
 
 
 void GetAlpArguments(AsyncWebServerRequest *request ) {
-  AlpacaData.ClientID = 0;
-  AlpacaData.ClientTransactionID = 0;
+  AlpacaData.switches.idExist = false;
+  AlpacaData.switches.intValueExist = false;
+  AlpacaData.switches.nameExist = false;
+  AlpacaData.switches.stateExist = false;
+  AlpacaData.switches.intValueExist = false;
+  AlpacaData.switches.nameExist = false;
+  AlpacaData.switches.stateExist = false;
+  AlpacaData.clientID = 0;
+  AlpacaData.clientTransactionID = 0;
   AlpacaData.boConnect = false;
-  AlpacaData.SwitchIntValue = 0;
-  AlpacaData.SwitchId = -1;
-  AlpacaData.SwitchIdInRange = false;
-  AlpacaData.SwitchValueInRange = true;
+  AlpacaData.switches.id = -1;
+  AlpacaData.switches.state = false;
+  AlpacaData.switches.intValue = -1;
   int paramsNr = request->params();
   String parameter;
-  AlpacaData.AlpServerID++;
+  AlpacaData.serverTransitionID++;
   for (int i = 0; i < paramsNr; i++) {
     AsyncWebParameter* p = request->getParam(i);
     parameter = p->name();
     parameter.toLowerCase();
     if (parameter == "clientid") {
-      AlpacaData.ClientID = p->value().toInt();
+      AlpacaData.clientID = p->value().toInt();
     }
     if (parameter == "clienttransactionid") {
-      AlpacaData.ClientTransactionID = p->value().toInt();
+      AlpacaData.clientTransactionID = p->value().toInt();
     }
     if (parameter == "connected") {
       String aa;
@@ -37,18 +43,20 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
       }
     }
     if (parameter == "id") {
-      AlpacaData.SwitchId = p->value().toInt();
-      AlpacaData.SwitchId >= 0 && AlpacaData.SwitchId < setting.switches.maxSwitch ? AlpacaData.SwitchIdInRange = true : AlpacaData.SwitchIdInRange = false;
+      AlpacaData.switches.idExist = true;
+      AlpacaData.switches.id = p->value().toInt();
     }
     if (parameter == "value") {
-      AlpacaData.SwitchIntValue = p->value().toInt();
-      AlpacaData.SwitchValueInRange = true;
+      AlpacaData.switches.intValueExist = true;
+      AlpacaData.switches.intValue = p->value().toInt();
     }
     if (parameter == "name") {
-      AlpacaData.SwitchString = p->value();
+      AlpacaData.switches.nameExist = true;
+      AlpacaData.switches.name = p->value();
     }
     if (parameter == "state") {
-      AlpacaData.SwitchValue = p->value().toInt();
+      AlpacaData.switches.stateExist = true;
+      AlpacaData.switches.state = p->value().toInt();
     }    
     
   }
@@ -61,8 +69,8 @@ void ManApiversion(AsyncWebServerRequest *request) {
   DynamicJsonDocument JMan(capacity);
   JsonArray Value = JMan.createNestedArray("Value");
   Value.add(1);
-  JMan["ClientTransactionID"] = AlpacaData.ClientTransactionID;
-  JMan["ServerTransactionID"] = AlpacaData.AlpServerID;
+  JMan["ClientTransactionID"] = AlpacaData.clientTransactionID;
+  JMan["ServerTransactionID"] = AlpacaData.serverTransitionID;
   JManAnsw = "";
   serializeJson(JMan, JManAnsw);
   request->send(200, "application/json" , JManAnsw);
@@ -83,7 +91,7 @@ void ManDescription(AsyncWebServerRequest *request) {
     ManClientTransactionID = request->getParam("ClientTransactionID")->value().toInt();
     JMan["ClientTransactionID"] = ManClientTransactionID;
   }
-  JMan["ServerTransactionID"] = AlpacaData.AlpServerID;
+  JMan["ServerTransactionID"] = AlpacaData.serverTransitionID;
   JManAnsw = "";
   serializeJson(JMan, JManAnsw);
   request->send(200, "application/json" , JManAnsw);
@@ -108,8 +116,8 @@ void ManConfigureDev(AsyncWebServerRequest *request) {
   Switch["DeviceType"] = "Switch";
   Switch["DeviceNumber"] = 0;
   Switch["UniqueID"] = "69D8C73A-AEC8-4B21-8332-F1497A90100A";
-  doc["ClientTransactionID"] = AlpacaData.ClientTransactionID;
-  doc["ServerTransactionID"] = AlpacaData.AlpServerID;
+  doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+  doc["ServerTransactionID"] = AlpacaData.serverTransitionID;
   JManAnsw="";
   serializeJson(doc, JManAnsw);
   request->send(200, "application/json", JManAnsw);
@@ -117,8 +125,8 @@ void ManConfigureDev(AsyncWebServerRequest *request) {
 
 void AscomMethodNotImplemented(AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  AplacaError["ClientTransactionID"] = AlpacaData.ClientTransactionID;
-  AplacaError["ServerTransactionID"] = AlpacaData.AlpServerID;
+  AplacaError["ClientTransactionID"] = AlpacaData.clientTransactionID;
+  AplacaError["ServerTransactionID"] = AlpacaData.serverTransitionID;
   AplacaError["ErrorNumber"] = 1024;
   AplacaError["ErrorMessage"] = "Method not implemented";
   JManAnsw="";
@@ -129,8 +137,8 @@ void AscomMethodNotImplemented(AsyncWebServerRequest *request) {
 
 void AscomPropertyNotImplemented(AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  AplacaError["ClientTransactionID"] = AlpacaData.ClientTransactionID;
-  AplacaError["ServerTransactionID"] = AlpacaData.AlpServerID;
+  AplacaError["ClientTransactionID"] = AlpacaData.clientTransactionID;
+  AplacaError["ServerTransactionID"] = AlpacaData.serverTransitionID;
   AplacaError["ErrorNumber"] = 1024;
   AplacaError["ErrorMessage"] = "Property not implemented";
   JManAnsw="";

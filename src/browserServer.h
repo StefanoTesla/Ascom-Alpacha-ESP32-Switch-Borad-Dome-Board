@@ -82,11 +82,18 @@ void browserServer(){
             return;
         }
 
-        if (Switch[id].analog){
-            Switch[id].anaValue = value;
-            ledcWrite(Switch[id].pwmChannel, Switch[id].anaValue);
-        } else {
+        switch (Switch[id].type)
+        {
+        case 1:
             value == 1 ? digitalWrite(Switch[id].pin, HIGH) : digitalWrite(Switch[id].pin, LOW);
+            break;
+        
+        case 3: 
+            ledcWrite(Switch[id].pwmChannel,value);
+            Serial.println(value);
+            break;
+        default:
+            break;  
         }
         request->send(200, "text/html", "{\"done\" : 1}");
     
@@ -115,7 +122,21 @@ void browserServer(){
             response->print(",\"type\":");
             response->print(Switch[i].analog);
             response->print(",\"actualValue\":");
-            Switch[i].analog == true ? response->print(analogRead(Switch[i].pin)) : response->print(digitalRead(Switch[i].pin));
+            switch (Switch[i].type)
+            {
+                case 1:
+                case 2:
+                    response->print(digitalRead(Switch[i].pin));
+                    break;
+                case 3:
+                    response->print(ledcRead(Switch[i].pwmChannel));
+                    break;
+                case 4:
+                    response->print(analogRead(Switch[i].pin));
+                    break;
+                default:
+                    break;
+            }
             response->print(",\"min\":");
             response->print(Switch[i].minValue);
             response->print(",\"max\":");
@@ -154,14 +175,16 @@ void browserServer(){
         const size_t capacity = JSON_OBJECT_SIZE(5000);
         DynamicJsonDocument doc(capacity);
         int i=0;
+        int x=0;
         int type = 0;
         int pin = 0;
         bool err = false;
         bool reboot = false;
+
         for (JsonObject elem : json.as<JsonArray>()) {
             type = elem["type"].as<unsigned int>();
             pin = elem["pin"].as<unsigned int>();
-            if(type != 0 && pin != 0){
+            if(type != 0 && pin != 0 && pin !=99){
                 switch(type){
 
                     case 1: //Digital Output
@@ -220,13 +243,24 @@ void browserServer(){
         }
         if(err){
             request->send(200, "application/json", "{\"error\": \"some type or input are wrong\"}");
-        } else if (reboot){
+            return;
+        } 
+        for(x=i;x<_MAX_SWTICH_ID_;x++){
+            Switch[x].Name = "";
+            Switch[x].Description = "";
+            Switch[x].pin = 99;
+            Switch[x].type = 0;
+            Switch[x].minValue = 0;
+            Switch[x].maxValue = 1;
+        }
+        if (reboot){
             request->send(200, "application/json", "{\"reboot\": \"1\"}");
             FileHandler.saveSwitchSetting = true;
         } else {
             request->send(200, "application/json", "{\"accept\": \"ok\"}");
             FileHandler.saveSwitchSetting = true;
         }
+
     });
     server.addHandler(switchConfig);
 
@@ -261,7 +295,7 @@ void browserServer(){
             response->print(",\"min\":");
             response->print(Switch[i].minValue);
             response->print(",\"max\":");
-            response->print(Switch[i].minValue);
+            response->print(Switch[i].maxValue);
             response->print("}");
             if (i != setting.switches.maxSwitch - 1 ){
                 response->print(",");
