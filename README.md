@@ -60,35 +60,13 @@ Now Dome and switch are in the same page, olso settings now are in the same page
 New dome function: Auto Close if anyone is talking with the board (browser or ascom alpacha driver) [IS UNDER DEVELOPMENT], you can enable or disable this featur by browser setup page.
 
 
-
-1.2.4 Added wifi automatic reconnection, added OTA firmware uploader
-
-1.2.3 Switch web page should be ok now 💥
-
-1.2.2 Dome web page should be ok now 💥
-
-1.2.1 Solved bug that cause a slow response from api server port 80
-
-1.1.0 Switch Error have a better expletation of the problem
-
-1.0.0 First GitHub deploy :grinning:
-
-
 ### ToDo List:
 
 - Make Switch OOP
 - Webrowser have some bugs
 
 Knowed browser bugs:
-- :white_check_mark: No one   [2.0.0]
-- :white_check_mark: Updating switch actual value [1.2.1]
-- :white_check_mark: Show last command to the dome, at the moment is "nietca" an Italian words meaning "nothing" [1.2.1]
-- :white_check_mark: Saving Switch Name and Descriptions [1.1.0]
-- :white_check_mark: Actual time-out setting time is not showed in Dome page [1.2.2]
-- :white_check_mark: From WebServer we cannot change switch Value [1.2.3]
-- :white_check_mark: Actually Dome time-out is multiplied * 1000 from webbrowser before store it [1.2.2]
-- :white_check_mark: Actually Dome Open Close Halt buttom from browser do nothing, need to add olso error message. [1.2.2]
-
+- :white_check_mark: Missing Validation info on setup page [2.0.0]
 
 ## html_pages directory
 
