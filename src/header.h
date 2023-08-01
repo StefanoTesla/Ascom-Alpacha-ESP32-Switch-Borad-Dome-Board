@@ -84,9 +84,9 @@ struct SwtichStruct
   int type;
 };
 
-#define _MAX_SWTICH_ID_ 16
+#define _MAX_SWITCH_ID_ 16
 
-SwtichStruct Switch[_MAX_SWTICH_ID_];
+SwtichStruct Switch[_MAX_SWITCH_ID_];
 
 unsigned int pwmchannles = 0;
 

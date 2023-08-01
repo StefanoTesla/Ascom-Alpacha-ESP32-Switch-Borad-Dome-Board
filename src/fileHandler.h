@@ -117,7 +117,7 @@ void saveSwitchConfig(){
     int i = 0;
     File file = SPIFFS.open("/switchconfig.txt", FILE_WRITE);
     file.print("[");
-    for(i=0;i<_MAX_SWTICH_ID_;i++){
+    for(i=0;i<_MAX_SWITCH_ID_;i++){
         file.print("{\"name\":\"");
         file.print(Switch[i].Name.substring(0,32));
         file.print("\",\"desc\":\"");
@@ -131,7 +131,7 @@ void saveSwitchConfig(){
         file.print(",\"max\":");
         file.print(Switch[i].maxValue);
         file.print("}");
-        if(i != _MAX_SWTICH_ID_ - 1){
+        if(i != _MAX_SWITCH_ID_ - 1){
             file.print(",");
         }
     }

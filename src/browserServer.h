@@ -245,7 +245,7 @@ void browserServer(){
             request->send(200, "application/json", "{\"error\": \"some type or input are wrong\"}");
             return;
         } 
-        for(x=i;x<_MAX_SWTICH_ID_;x++){
+        for(x=i;x<_MAX_SWITCH_ID_;x++){
             Switch[x].Name = "";
             Switch[x].Description = "";
             Switch[x].pin = 99;
