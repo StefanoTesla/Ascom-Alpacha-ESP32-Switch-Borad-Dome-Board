@@ -6,8 +6,6 @@ struct FileStruct{
 
 FileStruct FileHandler;
 
-bool StoreData;
-
 typedef struct{
   bool idExist;
   int id;               /* used for switch ID */
