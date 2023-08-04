@@ -163,6 +163,7 @@ Alpserver.on("/api/v1/dome/0/cansetshutter",                                    
                                   Alp_SerTraId,AlpacaData.serverTransactionID,
                                   Alp_NoErrors
                                   );
+  request->send(response);
 });
 
 
