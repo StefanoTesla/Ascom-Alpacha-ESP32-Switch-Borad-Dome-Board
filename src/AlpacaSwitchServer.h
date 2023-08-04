@@ -3,13 +3,6 @@
 
 #include "switchhandler.h"
 
-
-const PROGMEM char Alp_Value[] = "\"Value\": ";
-const PROGMEM char Alp_CliTraId[] = "\"ClientTransactionID\": ";
-const PROGMEM char Alp_SerTraId[] = "\"ServerTransactionID\": ";
-const PROGMEM char Alp_ErrN[] = "\"ErrorNumber\": ";
-const PROGMEM char Alp_ErrM[] = "\"ErrorMessage\": ";
-const PROGMEM char Alp_NoErrors[] ="\"ErrorNumber\": 0,\"ErrorMessage\":\"\"";
 String urlDecoding;
 unsigned int prova;
 char* command[30];
@@ -22,11 +15,7 @@ void ascomSwitchHandler(AsyncWebServerRequest *request){
   urlDecoding = request->url();
   urlDecoding.remove(0,17);
 
-  response->print(F("{\"ClientTransactionID\":"));
-  response->print(AlpacaData.clientTransactionID);
-  response->print(F(", \"ServerTransactionID\":"));
-  response->print(AlpacaData.serverTransitionID);
-  response->print(F(","));
+  response->printf("{%s%d,%s%d,",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
 
   if (urlDecoding == F("name")) {
     response->print(Alp_NoErrors);
@@ -66,7 +55,8 @@ void ascomSwitchHandler(AsyncWebServerRequest *request){
     response->print(F("}"));
     request->send(response);
   } else {
-    if(AlpacaData.switches.idExist && AlpacaData.switches.id < 0 && AlpacaData.switches.id > setting.switches.maxSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > setting.switches.maxSwitch){
+      
       response->printf("\"ErrorNumber\":1025,\"ErrorMessage\":\"The Switch %d doesn't exist\"}",AlpacaData.switches.id);
       request->send(response);
     } else {
@@ -167,38 +157,36 @@ void ascomSwitchHandler(AsyncWebServerRequest *request){
 }
 
 
-void SwitchAlpacaShort(){
-Alpserver.on("/api/v1/switch/0/name",                                                   HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/description",                                            HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/driverinfo",                                             HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/driverversion",                                          HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/interfaceversion",                                       HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/connected",                                              HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/connected",                                              HTTP_PUT, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/action",                                                 HTTP_PUT, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/maxswitch",                                              HTTP_GET, ascomSwitchHandler);
+void SwitchAlpaca(){
 
-Alpserver.on("/api/v1/switch/0/getswitchname",                                          HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/getswitchdescription",                                   HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/minswitchvalue",                                         HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/maxswitchvalue",                                         HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/switchstep",                                             HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/getswitchvalue",                                         HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/canwrite",                                               HTTP_GET, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/getswitch",                                              HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/name",                                                   HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/description",                                            HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/driverinfo",                                             HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/driverversion",                                          HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/interfaceversion",                                       HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/connected",                                              HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/connected",                                              HTTP_PUT, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/action",                                                 HTTP_PUT, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/maxswitch",                                              HTTP_GET, ascomSwitchHandler);
 
-Alpserver.on("/api/v1/switch/0/setswitch",                                              HTTP_PUT, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/setswitchvalue",                                         HTTP_PUT, ascomSwitchHandler);
-Alpserver.on("/api/v1/switch/0/setswitchname",                                          HTTP_PUT, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/getswitchname",                                          HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/getswitchdescription",                                   HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/minswitchvalue",                                         HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/maxswitchvalue",                                         HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/switchstep",                                             HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/getswitchvalue",                                         HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/canwrite",                                               HTTP_GET, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/getswitch",                                              HTTP_GET, ascomSwitchHandler);
 
-Alpserver.on("/api/v1/switch/0/commandblind",                                           HTTP_PUT, AscomMethodNotImplemented);
-Alpserver.on("/api/v1/switch/0/commandbool",                                            HTTP_PUT, AscomMethodNotImplemented);
-Alpserver.on("/api/v1/switch/0/commandstring",                                          HTTP_PUT, AscomMethodNotImplemented);
-Alpserver.on("/api/v1/switch/0/supportedactions",                                       HTTP_GET, AscomPropertyNotImplemented);
+  Alpserver.on("/api/v1/switch/0/setswitch",                                              HTTP_PUT, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/setswitchvalue",                                         HTTP_PUT, ascomSwitchHandler);
+  Alpserver.on("/api/v1/switch/0/setswitchname",                                          HTTP_PUT, ascomSwitchHandler);
+
+  Alpserver.on("/api/v1/switch/0/commandblind",                                           HTTP_PUT, AscomMethodNotImplemented);
+  Alpserver.on("/api/v1/switch/0/commandbool",                                            HTTP_PUT, AscomMethodNotImplemented);
+  Alpserver.on("/api/v1/switch/0/commandstring",                                          HTTP_PUT, AscomMethodNotImplemented);
+  Alpserver.on("/api/v1/switch/0/supportedactions",                                       HTTP_GET, AscomNoActions);
 
 }
-
-
-
 
 #endif

@@ -1,8 +1,12 @@
 #ifndef MANAGE_FUNC
 #define MANAGE_FUNC
-unsigned int ManClientTransactionID;
-String JManAnsw;
-StaticJsonDocument<128> AplacaError;
+
+const char Alp_Value[] PROGMEM= "\"Value\":";
+const char Alp_CliTraId[] PROGMEM= "\"ClientTransactionID\":";
+const char Alp_SerTraId[] PROGMEM = "\"ServerTransactionID\":";
+const char Alp_ErrN[] PROGMEM = "\"ErrorNumber\":";
+const char Alp_ErrM[] PROGMEM = "\"ErrorMessage\":";
+const char Alp_NoErrors[] PROGMEM ="\"ErrorNumber\": 0,\"ErrorMessage\":\"\"";
 
 
 void GetAlpArguments(AsyncWebServerRequest *request ) {
@@ -19,9 +23,10 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
   AlpacaData.switches.id = -1;
   AlpacaData.switches.state = false;
   AlpacaData.switches.intValue = -1;
+  AlpacaData.coverCalibrator.brightness = -1;
   int paramsNr = request->params();
   String parameter;
-  AlpacaData.serverTransitionID++;
+  AlpacaData.serverTransactionID++;
   for (int i = 0; i < paramsNr; i++) {
     AsyncWebParameter* p = request->getParam(i);
     parameter = p->name();
@@ -57,94 +62,92 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
     if (parameter == "state") {
       AlpacaData.switches.stateExist = true;
       AlpacaData.switches.state = p->value().toInt();
-    }    
+    } 
+    if (parameter == "brightness") {
+      AlpacaData.coverCalibrator.brightness = p->value().toInt();
+    }       
     
   }
 }
 
-
-void ManApiversion(AsyncWebServerRequest *request) {
-  GetAlpArguments(request);
-  const size_t capacity = JSON_ARRAY_SIZE(1) + JSON_OBJECT_SIZE(3);
-  DynamicJsonDocument JMan(capacity);
-  JsonArray Value = JMan.createNestedArray("Value");
-  Value.add(1);
-  JMan["ClientTransactionID"] = AlpacaData.clientTransactionID;
-  JMan["ServerTransactionID"] = AlpacaData.serverTransitionID;
-  JManAnsw = "";
-  serializeJson(JMan, JManAnsw);
-  request->send(200, "application/json" , JManAnsw);
-  Serial.println("valore api");
-  JMan.clear();
-}
-
-void ManDescription(AsyncWebServerRequest *request) {
-  const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4);
-  DynamicJsonDocument JMan(capacity);
-
-  JsonObject Value = JMan.createNestedObject("Value");
-  Value["ServerName"] = "Tesla Alpaca Device";
-  Value["Manufacturer"] = "The Big Tesla Company";
-  Value["ManufacturerVersion"] = "v2.0.0-alpha";
-  Value["Location"] = "Cerreto Guidi, IT";
-  if (request->hasParam("ClientTransactionID"))    {
-    ManClientTransactionID = request->getParam("ClientTransactionID")->value().toInt();
-    JMan["ClientTransactionID"] = ManClientTransactionID;
-  }
-  JMan["ServerTransactionID"] = AlpacaData.serverTransitionID;
-  JManAnsw = "";
-  serializeJson(JMan, JManAnsw);
-  request->send(200, "application/json" , JManAnsw);
-  JMan.clear();
-}
-
-void ManConfigureDev(AsyncWebServerRequest *request) {
-  const size_t capacity = JSON_ARRAY_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
-  DynamicJsonDocument doc(capacity);
-  GetAlpArguments(request);
-  
-  JsonArray Value = doc.createNestedArray("Value");
-
-  JsonObject Dome = Value.createNestedObject();
-  Dome["DeviceName"] = "Tesla Dome";
-  Dome["DeviceType"] = "Dome";
-  Dome["DeviceNumber"] = 0;
-  Dome["UniqueID"] = "277C652F-2AA9-4E86-A6A6-9230C42876FA";
-
-  JsonObject Switch = Value.createNestedObject();
-  Switch["DeviceName"] = "Tesla Switch";
-  Switch["DeviceType"] = "Switch";
-  Switch["DeviceNumber"] = 0;
-  Switch["UniqueID"] = "69D8C73A-AEC8-4B21-8332-F1497A90100A";
-  doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-  doc["ServerTransactionID"] = AlpacaData.serverTransitionID;
-  JManAnsw="";
-  serializeJson(doc, JManAnsw);
-  request->send(200, "application/json", JManAnsw);
-}
-
 void AscomMethodNotImplemented(AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  AplacaError["ClientTransactionID"] = AlpacaData.clientTransactionID;
-  AplacaError["ServerTransactionID"] = AlpacaData.serverTransitionID;
-  AplacaError["ErrorNumber"] = 1024;
-  AplacaError["ErrorMessage"] = "Method not implemented";
-  JManAnsw="";
-  serializeJson(AplacaError, JManAnsw);
-  AplacaError.clear();
-  request->send(200, "application/json", JManAnsw);
+  AsyncResponseStream *response = request->beginResponseStream("application/json");
+  response->printf("{%s%d,%s%d,",
+                                Alp_CliTraId,AlpacaData.clientTransactionID,
+                                Alp_SerTraId,AlpacaData.serverTransactionID
+                                );
+  response->print(F("\"ErrorNumber\":1024,\"ErrorMessage\":\"Method not implemented\""));
+  response->print(F("}"));
+  request->send(response); 
 }
 
 void AscomPropertyNotImplemented(AsyncWebServerRequest *request) {
   GetAlpArguments(request);
-  AplacaError["ClientTransactionID"] = AlpacaData.clientTransactionID;
-  AplacaError["ServerTransactionID"] = AlpacaData.serverTransitionID;
-  AplacaError["ErrorNumber"] = 1024;
-  AplacaError["ErrorMessage"] = "Property not implemented";
-  JManAnsw="";
-  serializeJson(AplacaError, JManAnsw);
-  AplacaError.clear();
-  request->send(200, "application/json", JManAnsw);
+  AsyncResponseStream *response = request->beginResponseStream("application/json");
+  response->printf("{%s%d,%s%d,",
+                                Alp_CliTraId,AlpacaData.clientTransactionID,
+                                Alp_SerTraId,AlpacaData.serverTransactionID
+                                );
+  response->print(F("\"ErrorNumber\":1024,\"ErrorMessage\":\"Property not implemented\""));
+  response->print(F("}"));
+  request->send(response); 
+}
+
+void AscomNoActions(AsyncWebServerRequest *request){
+  GetAlpArguments(request);
+  AsyncResponseStream *response = request->beginResponseStream("application/json");
+  response->printf("{%s%d,%s%d,%s",
+                                Alp_CliTraId,AlpacaData.clientTransactionID,
+                                Alp_SerTraId,AlpacaData.serverTransactionID,
+                                Alp_NoErrors
+                                );
+  response->print(F(",\"Value\":[]"));
+  response->print(F("}"));
+  request->send(response); 
+}
+
+void AlpacaManager(){
+
+  Alpserver.on("/management/apiversions",                HTTP_GET, [](AsyncWebServerRequest *request) {
+    GetAlpArguments(request);
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    response->print(F("{\"Value\":[1],"));
+  response->printf("%s%d,%s%d",
+                                Alp_CliTraId,AlpacaData.clientTransactionID,
+                                Alp_SerTraId,AlpacaData.serverTransactionID
+                                );
+    response->print(F("}"));
+    request->send(response);
+  });
+
+  Alpserver.on("/management/v1/description",                HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    GetAlpArguments(request);
+    response->print(F("{\"Value\": {\"ServerName\": \"StefanoTesla Alpaca Device\",\"Manufacturer\":\"The Stefano Tesla Company\",\"ManufacturerVersion\":\"v2.0.0\",\"Location\":\"Empoli, IT\"},"));
+  response->printf("%s%d,%s%d}",
+                                Alp_CliTraId,AlpacaData.clientTransactionID,
+                                Alp_SerTraId,AlpacaData.serverTransactionID
+                                );
+    request->send(response);
+  });
+
+  Alpserver.on("/management/v1/configureddevices",          HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    GetAlpArguments(request);
+    response->print(F("{\"Value\":["));
+    response->print(F("{\"DeviceName\": \"TeslaDome\",\"DeviceType\": \"Dome\",\"DeviceNumber\": 0,\"UniqueID\":\"e989c9b6-ba0f-4834-b299-79a629f2ee59\"},"));
+    response->print(F("{\"DeviceName\":\"TeslaSwitch\",\"DeviceType\":\"Switch\",\"DeviceNumber\":0,\"UniqueID\":\"d93f20fb-aa85-49ed-8799-9f50c0969ede\"},"));
+    response->print(F("{\"DeviceName\":\"TeslaCoverCalibratior\",\"DeviceType\":\"CoverCalibrator\",\"DeviceNumber\":0,\"UniqueID\":\"35672690-40bf-4165-b44e-d59c2c524f11\"}"));
+    response->print(F("],"));
+  response->printf("%s%d,%s%d",
+                                Alp_CliTraId,AlpacaData.clientTransactionID,
+                                Alp_SerTraId,AlpacaData.serverTransactionID
+                                );
+    response->print(F("}"));
+    request->send(response);
+  });
+
 }
 
 #endif

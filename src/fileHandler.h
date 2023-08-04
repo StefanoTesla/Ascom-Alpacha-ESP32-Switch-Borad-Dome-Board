@@ -100,7 +100,6 @@ void readSwitchConfig(){
                         break;
                 
                 default:
-                    Serial.println("reading switch config wrong pin type");
                     break;
             }
         } else {
@@ -110,7 +109,6 @@ void readSwitchConfig(){
         i++;
     }
     file.close();
-    Serial.print("fine lettura");
 }
 
 void saveSwitchConfig(){

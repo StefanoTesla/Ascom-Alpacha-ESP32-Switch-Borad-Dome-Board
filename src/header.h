@@ -1,6 +1,7 @@
 struct FileStruct{
   bool saveSwitchSetting = false;
   bool saveDomeSetting = false;
+  bool saveCoverCalibrator = false;
   bool restartNeeded = false;
 };
 
@@ -17,14 +18,19 @@ typedef struct{
   String name;              /* used for set switch name */
 } switchAlpacaParameters;
 
+typedef struct{
+  unsigned int brightness;
+} coverCalibratorAlpacaParameters;
+
 
 /* ALPACA COMMON DATA */
 struct AlpacaCommonData{
   uint32_t clientTransactionID;
-  uint32_t serverTransitionID = 0;
+  uint32_t serverTransactionID = 0;
   uint32_t clientID;
   bool boConnect;
   switchAlpacaParameters switches;
+  coverCalibratorAlpacaParameters coverCalibrator;
 };
 
 AlpacaCommonData AlpacaData;
@@ -85,10 +91,10 @@ struct SwtichStruct
 #define _MAX_SWITCH_ID_ 16
 
 SwtichStruct Switch[_MAX_SWITCH_ID_];
-
+/** END SWITCH STRUCT **/
 unsigned int pwmchannles = 0;
 
-
+/** SETTING STRUCT **/
 typedef struct{
   uint8_t pinStart;
   uint8_t pinHalt;
@@ -109,5 +115,5 @@ typedef struct {
 }boardSetting;
 
 boardSetting setting;
-
+/**END SETTING STRUCT **/
 

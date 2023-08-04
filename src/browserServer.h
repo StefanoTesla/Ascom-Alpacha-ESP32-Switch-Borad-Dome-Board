@@ -90,7 +90,6 @@ void browserServer(){
         
         case 3: 
             ledcWrite(Switch[id].pwmChannel,value);
-            Serial.println(value);
             break;
         default:
             break;  
@@ -235,7 +234,6 @@ void browserServer(){
                 Switch[i].Name = elem["name"].as<String>();
                 Switch[i].Description = elem["desc"].as<String>();
             } else {
-                Serial.print("male");
                 err = true;
                 return;
             }

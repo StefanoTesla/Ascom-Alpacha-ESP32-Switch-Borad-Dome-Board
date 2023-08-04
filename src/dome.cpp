@@ -8,15 +8,15 @@
 #include <stdint.h>
 #include "SPIFFS.h"
 #include "header.h"
-
-#include "alpacamanagefunction.h"
 #include <AsyncElegantOTA.h>
 
 AsyncWebServer server(80);
 AsyncWebServer Alpserver(4567);
 
+#include "AlpacaManageFunction.h"
 #include "AlpacaDomeServer.h"
 #include "AlpacaSwitchServer.h"
+#include "AlpacaCoverCalibratorServer.h"
 #include "browserServer.h"
 #include "fileHandler.h"
 
@@ -42,16 +42,17 @@ void ServerNotFound(AsyncWebServerRequest *request) {
 void setup()
 {
   Serial.begin(115200);
-  AlpacaData.serverTransitionID = 0;
+  AlpacaData.serverTransactionID = 0;
   //pinMode(2, OUTPUT);
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   readDomeConfig();
+  domeSetup();
+  CoverCalibratorSetup();
   readSwitchConfig();
-  switchsetup();
-  domehandlersetup();
+  switchSetup();
+ 
   urlDecoding.reserve(35);
-  JDomeAnsw.reserve(300);
   Serial.println("Listening for discovery requests...");
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("TeslaBoard");
@@ -78,13 +79,12 @@ void setup()
 
   Alpserver.onNotFound(notFound);
   /*** MANAGE AREA ***/
-  Alpserver.on("/management/apiversions",                                                 HTTP_GET, ManApiversion);
-  Alpserver.on("/management/v1/description",                                              HTTP_GET, ManDescription);
-  Alpserver.on("/management/v1/configureddevices",                                        HTTP_GET, ManConfigureDev);
 
-  AlpacaDome();
-  //SwitchAlpaca();
-  SwitchAlpacaShort();
+
+  AlpacaManager();
+  DomeAlpaca();
+  SwitchAlpaca();
+  CoverCalibratorServer();
   browserServer();
 
   /** END SWITCH SPECIFIC METHODS **/

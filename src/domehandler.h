@@ -4,7 +4,7 @@
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
-void domehandlersetup() {
+void domeSetup() {
   pinMode(setting.dome.pinStart, OUTPUT);
   pinMode(setting.dome.pinHalt, OUTPUT);
   pinMode(setting.dome.pinOpen, INPUT);

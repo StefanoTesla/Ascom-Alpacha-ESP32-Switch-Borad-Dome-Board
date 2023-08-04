@@ -4,7 +4,7 @@
 
 
 
-void switchsetup() {
+void switchSetup() {
   int i=0;
 /* Switch Setup */
 
@@ -30,8 +30,6 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
         Switch[i].Name ="";
         Switch[i].Description ="";
     }
-    Serial.print(Switch[i].pin);
-    Serial.print(" ");
     if (Switch[i].CanSet == true){
       if (Switch[i].analog == false){
         //Uscita Digitale
@@ -61,7 +59,6 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
         Switch[i].maxValue = 4095;
       }  
     }
-  Serial.println("");
   }
 }
 
