@@ -48,8 +48,11 @@ void setup()
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   readDomeConfig();
   domeSetup();
+    Serial.println("dome");
   CoverCalibratorSetup();
+    Serial.println("cover");
   readSwitchConfig();
+    Serial.println("switch");
   switchSetup();
  
   urlDecoding.reserve(35);

@@ -3,8 +3,9 @@
 
 void CoverCalibratorSetup()
 {
-  ledcAttachPin(2, 0);
   ledcSetup(0, 5000, 13);
+  ledcAttachPin(2, 0);
+
 }
 
 void CoverCalibratorServer()
