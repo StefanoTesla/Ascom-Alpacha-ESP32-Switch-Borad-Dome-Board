@@ -22,7 +22,7 @@ void CoverCalibratorServer()
   Alpserver.on("/api/v1/covercalibrator/0/calibratorstate", HTTP_GET, [](AsyncWebServerRequest *request){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
-    response->print(F("{\"Value\":0"));
+    response->print(F("{\"Value\":3"));
     response->printf(",%s%d,%s%d,%s}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID,Alp_NoErrors);
     request->send(response); 
   });
@@ -95,8 +95,7 @@ void CoverCalibratorServer()
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     response->print(F("{\"Value\":\"StefanoTesla CoverCalibrator\","));
-    response->printf(",%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
-    response->print(F("}"));
+    response->printf("%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
     request->send(response); 
   });
 
@@ -104,8 +103,7 @@ void CoverCalibratorServer()
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     response->print(F("{\"Value\":\"StefanoTesla CoverCalibrator response on the fly\","));
-    response->printf(",%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
-    response->print(F("}"));
+    response->printf("%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
     request->send(response);
   });
 
@@ -113,8 +111,7 @@ void CoverCalibratorServer()
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     response->print(F("{\"Value\":\"2.0.0\","));
-    response->printf(",%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
-    response->print(F("}"));
+    response->printf("%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
     request->send(response);
   });
 
@@ -130,8 +127,7 @@ void CoverCalibratorServer()
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     response->print(F("{\"Value\":\"StefanoTesla Cover Calibrator\","));
-    response->printf(",%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
-    response->print(F("}"));
+    response->printf("%s%d,%s%d}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
     request->send(response);
   });
 

@@ -8,6 +8,16 @@ const char Alp_ErrN[] PROGMEM = "\"ErrorNumber\":";
 const char Alp_ErrM[] PROGMEM = "\"ErrorMessage\":";
 const char Alp_NoErrors[] PROGMEM ="\"ErrorNumber\": 0,\"ErrorMessage\":\"\"";
 
+void AlpacaHeaderSchema(AsyncResponseStream *response, AlpacaCommonData parameters){
+  response->print(F("{\"ClientTransactionID\":"));
+  response->print(parameters.clientTransactionID);
+  response->print(F("\"ServerTransactionID\":"));
+  response->print(parameters.clientTransactionID);
+}
+
+void AlpacaNoErrSchema(AsyncResponseStream *response){
+  response->print(F(",\"ErrorNumber\":0,\"ErrorMessage\":\"\"}"));
+}
 
 void GetAlpArguments(AsyncWebServerRequest *request ) {
   AlpacaData.switches.idExist = false;

@@ -20,12 +20,9 @@ void DomeAlpaca(){
 Alpserver.on("/api/v1/dome/0/shutterstatus",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s%d,%s%d,%s%d,%s}",
-                                  Alp_Value,Dome.ShutterState,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  response->printf(",%s%d,",Alp_Value,Dome.ShutterState);
+  AlpacaNoErrSchema(response);
   request->send(response);
 });
 

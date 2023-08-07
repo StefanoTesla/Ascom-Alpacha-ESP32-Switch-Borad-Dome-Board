@@ -92,7 +92,8 @@ struct SwtichStruct
 
 SwtichStruct Switch[_MAX_SWITCH_ID_];
 /** END SWITCH STRUCT **/
-unsigned int pwmchannles = 0;
+unsigned int pwmchannles = 1;
+//channel 0 is reserved to coverCalibrator
 
 /** SETTING STRUCT **/
 typedef struct{
