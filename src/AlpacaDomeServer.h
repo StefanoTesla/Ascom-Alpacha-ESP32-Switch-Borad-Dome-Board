@@ -6,12 +6,9 @@
 void domeFalseValueAnswer(AsyncWebServerRequest *request){
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->print(F("{\"Value\": false,\"ClientTransactionID\":"));
-  response->print(AlpacaData.clientTransactionID);
-  response->print(F(",\"ServerTransactionID\":"));
-  response->print(AlpacaData.serverTransactionID);
-  response->print(F(",\"ErrorNumber\":0,\"ErrorMessage\":\"\""));
-  response->print(F("}"));
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%sfalse}",Alp_Value);
   request->send(response);
 }
 void DomeAlpaca(){ 
@@ -21,20 +18,18 @@ Alpserver.on("/api/v1/dome/0/shutterstatus",                                    
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   AlpacaHeaderSchema(response,AlpacaData);
-  response->printf(",%s%d,",Alp_Value,Dome.ShutterState);
-  AlpacaNoErrSchema(response);
+  AlpacaNoErrorSchema(response);
+  response->printf("%s%d}",Alp_Value,Dome.ShutterState);
   request->send(response);
 });
 
 Alpserver.on("/api/v1/dome/0/closeshutter",                                             HTTP_PUT, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s%d,%s%d,",
-                              Alp_CliTraId,AlpacaData.clientTransactionID,
-                              Alp_SerTraId,AlpacaData.serverTransactionID
-                              );
+  AlpacaHeaderSchema(response,AlpacaData);
   if (Dome.ShutterCommand == Idle && Dome.ShutterState != ShClose ){
-    response->print(Alp_NoErrors);  
+    AlpacaNoErrorSchema(response,false); 
+    Dome.ShutterCommand = CmdClose;
   } else {
     response->printf("%s1035,%s\"Shutter already closed or moving\"",Alp_ErrN,Alp_ErrM); 
   }
@@ -45,11 +40,12 @@ Alpserver.on("/api/v1/dome/0/closeshutter",                                     
 Alpserver.on("/api/v1/dome/0/openshutter",                                              HTTP_PUT, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s%d,%s%d,",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID);
+  AlpacaHeaderSchema(response,AlpacaData);
   if (Dome.ShutterCommand == Idle && Dome.ShutterState != ShOpen ){
-    response->print(Alp_NoErrors);  
+    AlpacaNoErrorSchema(response,false);
+    Dome.ShutterCommand = CmdOpen; 
   } else {
-    response->printf("%s:1035,%s:\"Shutter already opened or moving\"",Alp_ErrN,Alp_ErrM); 
+    response->printf("%s1035,%s\"Shutter already opened or moving\"",Alp_ErrN,Alp_ErrM); 
   }
   response->print(F("}"));
   request->send(response);
@@ -59,55 +55,45 @@ Alpserver.on("/api/v1/dome/0/abortslew",                                        
   Dome.Cycle =100;
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s%d,%s%d,%s}",Alp_CliTraId,AlpacaData.clientTransactionID,Alp_SerTraId,AlpacaData.serverTransactionID,Alp_NoErrors);
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response,false);
+  response->print(F("}"));
   request->send(response);
 });
 
 Alpserver.on("/api/v1/dome/0/connected",                                                HTTP_GET, [](AsyncWebServerRequest *request){
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%strue,%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%strue}",Alp_Value);
   request->send(response);
 });
 
 Alpserver.on("/api/v1/dome/0/connected",                                                HTTP_PUT, [](AsyncWebServerRequest *request){
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%strue,%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response,false);
+  response->printf("}");
   request->send(response);
 });
 
 Alpserver.on("/api/v1/dome/0/description",                                              HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s\"StefanoTesla Dome\",%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%s\"StefanoTesla Dome\"}",Alp_Value);
   request->send(response);
 });
 
 Alpserver.on("/api/v1/dome/0/driverinfo",                                               HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s\"StefanoTesla Dome response on the fly\",%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%s\"StefanoTesla Dome response on the fly\"}",Alp_Value);
   request->send(response);
 });
 
@@ -115,12 +101,9 @@ Alpserver.on("/api/v1/dome/0/driverversion",                                    
 
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s\"2.0.0\",%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%s\"2.0.0\"}",Alp_Value);
   request->send(response);
 
 });
@@ -128,53 +111,36 @@ Alpserver.on("/api/v1/dome/0/driverversion",                                    
 Alpserver.on("/api/v1/dome/0/interfaceversion",                                         HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s1,%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%s1}",Alp_Value);
   request->send(response);
-  });
-
+});
 
 Alpserver.on("/api/v1/dome/0/name",                                                     HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s\"StefanoTeslaDome\",%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%s\"StefanoTeslaDome\"}",Alp_Value);
   request->send(response);
-  });
-
+});
 
 Alpserver.on("/api/v1/dome/0/cansetshutter",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%strue,%s%d,%s%d,%s}",
-                                  Alp_Value,
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  response->printf("%strue}",Alp_Value);
   request->send(response);
 });
-
-
 
 Alpserver.on("/api/v1/dome/0/slewing",                                                  HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
-  response->printf("{%s",Alp_Value);
-  Dome.ShutterCommand == Idle ? response->print("false,") : response->print("true,");
-  response->printf("%s%d,%s%d,%s}",
-                                  Alp_CliTraId,AlpacaData.clientTransactionID,
-                                  Alp_SerTraId,AlpacaData.serverTransactionID,
-                                  Alp_NoErrors
-                                  );
+  AlpacaHeaderSchema(response,AlpacaData);
+  AlpacaNoErrorSchema(response);
+  Dome.ShutterCommand == Idle ? response->printf("%sfalse}",Alp_Value) : response->printf("%strue}",Alp_Value);
   request->send(response);  
 });
 
@@ -194,14 +160,11 @@ Alpserver.on("/api/v1/dome/0/commandbool",                                      
 Alpserver.on("/api/v1/dome/0/commandstring",                                            HTTP_PUT, AscomMethodNotImplemented);
 Alpserver.on("/api/v1/dome/0/supportedactions",                                         HTTP_GET, AscomNoActions);
 Alpserver.on("/api/v1/dome/0/action",                                                    HTTP_PUT, [](AsyncWebServerRequest *request) {
-    GetAlpArguments(request);
-    AsyncResponseStream *response = request->beginResponseStream("application/json");
-    response->print(F("{\"ClientTransactionID\":"));
-    response->print(AlpacaData.clientTransactionID);
-    response->print(F(",\"ServerTransactionID\":"));
-    response->print(AlpacaData.serverTransactionID);
-    response->print(F(",\"ErrorNumber\":1036,\"ErrorMessage\":\"No actions defined\"}"));
-    request->send(response);
+  GetAlpArguments(request);
+  AsyncResponseStream *response = request->beginResponseStream("application/json");
+  AlpacaHeaderSchema(response,AlpacaData);
+  response->print(F("\"ErrorNumber\":1036,\"ErrorMessage\":\"No actions defined\"}"));
+  request->send(response);
 });
 
 

@@ -11,12 +11,14 @@ const char Alp_NoErrors[] PROGMEM ="\"ErrorNumber\": 0,\"ErrorMessage\":\"\"";
 void AlpacaHeaderSchema(AsyncResponseStream *response, AlpacaCommonData parameters){
   response->print(F("{\"ClientTransactionID\":"));
   response->print(parameters.clientTransactionID);
-  response->print(F("\"ServerTransactionID\":"));
+  response->print(F(",\"ServerTransactionID\":"));
   response->print(parameters.clientTransactionID);
+  response->print(F(","));
 }
 
-void AlpacaNoErrSchema(AsyncResponseStream *response){
-  response->print(F(",\"ErrorNumber\":0,\"ErrorMessage\":\"\"}"));
+void AlpacaNoErrorSchema(AsyncResponseStream *response, bool comma = true){
+  response->printf("%s0,%s\"\"",Alp_ErrN,Alp_ErrM);
+  if(comma){response->print(F(","));}
 }
 
 void GetAlpArguments(AsyncWebServerRequest *request ) {
@@ -48,10 +50,10 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
       AlpacaData.clientTransactionID = p->value().toInt();
     }
     if (parameter == "connected") {
-      String aa;
-      aa = p->value();
-      aa.toLowerCase();      
-      if ( aa == "true"){
+      String booleanString;
+      booleanString = p->value();
+      booleanString.toLowerCase();      
+      if ( booleanString == "true"){
         AlpacaData.boConnect = true;
       } else {
         AlpacaData.boConnect = false;
@@ -71,7 +73,14 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
     }
     if (parameter == "state") {
       AlpacaData.switches.stateExist = true;
-      AlpacaData.switches.state = p->value().toInt();
+      String booleanString;
+      booleanString = p->value();
+      booleanString.toLowerCase();      
+      if ( booleanString == "true"){
+        AlpacaData.switches.state = true;
+      } else {
+        AlpacaData.switches.state = false;
+      }
     } 
     if (parameter == "brightness") {
       AlpacaData.coverCalibrator.brightness = p->value().toInt();

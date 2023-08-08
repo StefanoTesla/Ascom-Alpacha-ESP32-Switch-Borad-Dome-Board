@@ -37,7 +37,6 @@ void domehandlerloop() {
   ShMoveTimeOut = setting.dome.movingTimeOut *1000;
   domeInputState();
   LastDomeCommandExe();
-
   // TIMEOUT MOVIMENTAZIONE
   if (Dome.Cycle >= 11 && Dome.Cycle <= 12) {
     if ((millis() - ShMoveTimeOutAck) > ShMoveTimeOut) { //input error I wait 10 sec. before done command

@@ -43,19 +43,14 @@ void setup()
 {
   Serial.begin(115200);
   AlpacaData.serverTransactionID = 0;
-  //pinMode(2, OUTPUT);
 /* reading configuration from file */
   if (!SPIFFS.begin()) { Serial.println("An Error has occurred while mounting SPIFFS"); return; }
   readDomeConfig();
   domeSetup();
-    Serial.println("dome");
   CoverCalibratorSetup();
-    Serial.println("cover");
   readSwitchConfig();
-    Serial.println("switch");
   switchSetup();
  
-  urlDecoding.reserve(35);
   Serial.println("Listening for discovery requests...");
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("TeslaBoard");
