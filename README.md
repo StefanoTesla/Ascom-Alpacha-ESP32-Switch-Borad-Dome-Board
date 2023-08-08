@@ -243,6 +243,8 @@ Download Configurazione - you can download the Dome configuration for backup.
 
 ### Switch Section
 
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/7e7d6ab4-7ad5-46d8-8c18-36f12af5473c)
+
 Here you can setup all the Pin you want to use (MAX 16)
 
 You can give a name and a description (max lenght 32)
