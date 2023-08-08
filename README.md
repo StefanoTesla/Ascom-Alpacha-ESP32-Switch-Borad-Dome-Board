@@ -235,7 +235,7 @@ Pin Shutter Close  should be ON when the shutter is Closed
 
 The board does not allow having both inputs active.
 
-Enable closing in case of missing connection - If selected the shutter will be closed in ascom don't talk with the board within xxx minutes (computer crash safety)
+~~Enable closing in case of missing connection - If selected the shutter will be closed in ascom don't talk with the board within xxx minutes (computer crash safety)~~ not developed yet
 
 Save you store the configuration on the board
 Download Configurazione - you can download the Dome configuration for backup.
