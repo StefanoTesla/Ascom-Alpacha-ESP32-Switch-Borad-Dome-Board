@@ -198,3 +198,66 @@ Once is green, open the list and you will see New Device:
 
  ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/086f4dca-93f2-4ef5-b666-e2169b2c0f78)
 
+
+# Board web server
+
+To acces to the Board page, type on your browser the IP of the board.
+
+## Home Page
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/a20259d2-73a0-4fa2-9018-c8f9a32c4833)
+
+### Dome Section
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/7a9d54db-68db-4c6c-baf0-fb93c91187a9)
+
+From here we can see the state of our Dome cover and you can send Open Close or Halt commands.
+
+### Switch Section
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/e859d039-7b2a-40b7-af95-f8974efb7ab6)
+
+From here you can see the state of the switches and command it, for Input switch you cannot send any commands.
+For Output you can set ON/OFF state
+For PWM Output you can slide to the desired value.
+
+## Setup Page
+
+### Dome Section
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/c9d7de4f-d401-4f45-b726-0b0ab57f544b)
+
+Pin Start is the pin used to give the start to the motor
+Pin Halt is used to stop the motor
+
+Pin Shutter Open should be ON when the shutter is Open
+Pin Shutter Close  should be ON when the shutter is Closed
+
+The board does not allow having both inputs active.
+
+Enable closing in case of missing connection - If selected the shutter will be closed in ascom don't talk with the board within xxx minutes (computer crash safety)
+
+Save you store the configuration on the board
+Download Configurazione - you can download the Dome configuration for backup.
+
+
+### Switch Section
+
+Here you can setup all the Pin you want to use (MAX 16)
+
+You can give a name and a description (max lenght 32)
+
+You can choose the type of the switch (Input, Output, PWM or analog input)
+
+According to the esp32 datashet be sure of wich pin you want to use or you can you can run into problems, **any valditation rules are developed for the moment!**
+Read this article: https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
+If you need a PCB you can use a mine one: https://github.com/StefanoTesla/esp32-kraken as you can see the pin signed with S are Safe to use, and with the I the Imput only pin.
+From pin 16 to 33 are safe to use, pin 34 35 36 and 39 are input only.
+**Don't set pin from 6 to 11, you will brick the board!**
+
+If you click on Add new switch you can add a new switch setting.
+
+Save to store modification.
+**If you change the pin number or type, it will not work until a board reboot.++
+
+Save config file to have a configuration backup
