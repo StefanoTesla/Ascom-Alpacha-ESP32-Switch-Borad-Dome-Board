@@ -162,7 +162,7 @@ From this moment, the board will try yo connect everytime to your wifi without a
 
 
 
-#Using the board with Ascom driver.
+# Using the board with Ascom driver.
 
 First of all we need to install the last Ascom platform (version 6 or higher) from here: https://ascom-standards.org/Downloads/Index.htm
 
