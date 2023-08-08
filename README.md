@@ -150,7 +150,41 @@ Open your WiFi and you will have TeslaBoard wifi, connect to him
 ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/f0096d68-8f93-4f54-b429-013b7b53d3f6)
 
 Click your WiFi, type the password and click on save
-
 ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/df91e6dc-8caf-4447-b116-007b4646f0c4)
 
 In few seconds the board will be up and running, go to your route setting and check the board IP.
+From this moment, the board will try yo connect everytime to your wifi without asking nothing.
+
+#Using the board with Ascom driver.
+
+First of all we need to install the last Ascom platform (version 6 or higher) from here: https://ascom-standards.org/Downloads/Index.htm
+
+Not every software as ex. NINA, open the Ascom Device Selector, and the board cannot be founded, in this case we need to crate a new ascom dynamic driver:
+
+Open ASCOM Diagnostic:
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/efe40cad-6272-41a1-a1b3-73b77fd58456)
+
+Click on Choose Device>Choose device to connect:
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/2a0de3af-c08c-4fa6-8143-3d43818e0cda)
+
+Select the device type:
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/c156eceb-0ac8-461d-87d3-be287b078cc8)
+
+*This operation is needed to be performed for each device* Dome,Switch,Cover Calibrator (you can skip the device you are not planning to use.
+
+
+Click on Alpaca and then Enable Discovery
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/356bfcbb-e3b6-4f8d-93a5-c5efbb138800)
+
+Once is green, open the list and you will see New Device:
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/64e1040b-d89b-4d52-a70d-ce0e698ef7a2)
+
+ Open the setting menu, and check the Manage conncetion as well:
+
+ ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/96ba0fca-7145-4d60-b5c8-2a5ea826e505)
+
+ Click OK and then OK again.
+
+ The board is ready to use!
