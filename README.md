@@ -75,3 +75,82 @@ Knowed browser bugs:
 ## html_pages directory
 
 This folder contain a vite project with web browser pages, in this way I can have a clean and powerfull css by Taliwind 3.
+
+
+# How to use
+
+## First time board installation
+
+First of all we need to install Visual Studio Code and add Platformio extension.
+
+
+Download Visual Studio Code from: https://code.visualstudio.com/
+
+Install it.
+
+One installation is finish, Go to Extension and search Platformio, then install it.
+
+![platformio](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/d98877fb-aad2-4a95-8ed2-27ca3c7f2d11)
+
+And wait until restart vs code is needed:
+
+![restartvscode](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/cba04a24-7c34-466e-bf7c-61187920322d)
+
+At this point, download the software from this page, go up click on Code and click on Download Zip
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/3221a252-7aa6-4844-860c-6ff7f2ea973d)
+
+Extact the folder where you want, BE CAREFUL, don't extract the files inside the folder! extract directly the folder!
+
+Go to VsCode and click on the Platformio Icon, click on Pick a Folder and select the extracted folder
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/c3af02f5-2c4d-4720-97f1-36f7b6ec2528)
+
+At this point wait platformio will download all the necessary things needed to make the board work:
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/eaaf9c67-e40a-4d33-ac0d-ffbdfacbf22f)
+
+Once is finish on the right you will have this menu:
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/9bd040e0-7b05-466a-8a48-5ec8335a7ceb)
+
+Click build and wait until you will not have this message:
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/5eb184d7-bb6e-44c9-9231-a6a07f06b311)
+
+Now we are ready to upload the firmware!
+
+If it is your first time connecting an esp32 to the pc you need to install serial driver depending on your bard serial chip:
+
+CH340 driver: https://learn.sparkfun.com/tutorials/how-to-install-ch340-drivers/all (download at the buttom of the page)
+CP210x driver: https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads
+
+(check the video on the CH340 page to see wich COM port is used by your device)
+
+Connect your esp32 board to a usb port 
+On the menu we seen before we need to click:
+
+Upload Filesystem Image
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/58f7db3d-f677-45a6-93cd-fa3bf2e5c8f1)
+
+After some while the board will rebot.
+
+Now we need to click on Upload
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/8e8e496e-f380-4362-937a-61dd0c350b40)
+
+Wait for success printed out.
+
+### Connect the board to your own wifi
+
+If is your first time setup, you need to connct the board to your wifi, don't check into the code, the board will manage everything for you!
+Open your WiFi and you will have TeslaBoard wifi, connect to him
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/f0096d68-8f93-4f54-b429-013b7b53d3f6)
+
+Click your WiFi, type the password and click on save
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/df91e6dc-8caf-4447-b116-007b4646f0c4)
+
+In few seconds the board will be up and running, go to your route setting and check the board IP.
