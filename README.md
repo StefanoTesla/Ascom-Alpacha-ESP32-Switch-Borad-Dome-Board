@@ -254,8 +254,7 @@ Read this article: https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
 If you need a PCB you can use a mine one: https://github.com/StefanoTesla/esp32-kraken as you can see the pin signed with S are Safe to use, and with the I the Imput only pin.
 From pin 16 to 33 are safe to use, pin 34 35 36 and 39 are input only.
 **Don't set pin from 6 to 11, you will brick the board!**
-
-If you click on Add new switch you can add a new switch setting.
+All the PWN singals are automatically setted up with a range from 0 to 8192.
 
 Save to store modification.
 **If you change the pin number or type, it will not work until a board reboot.++
