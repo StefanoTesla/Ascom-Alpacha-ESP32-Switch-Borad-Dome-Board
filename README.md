@@ -149,11 +149,18 @@ Open your WiFi and you will have TeslaBoard wifi, connect to him
 
 ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/f0096d68-8f93-4f54-b429-013b7b53d3f6)
 
-Click your WiFi, type the password and click on save
+Open a brwoser and type http://192.168.4.1, once the portal is ready click on Configure Wifi
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/203cae3e-81f9-41d2-933e-44e7b4567d60)
+
+Click on your WiFi, type the password and click on save
 ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/df91e6dc-8caf-4447-b116-007b4646f0c4)
 
 In few seconds the board will be up and running, go to your route setting and check the board IP.
 From this moment, the board will try yo connect everytime to your wifi without asking nothing.
+
+
+
+
 
 #Using the board with Ascom driver.
 
