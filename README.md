@@ -170,8 +170,7 @@ Click on Choose Device>Choose device to connect:
 Select the device type:
 ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/c156eceb-0ac8-461d-87d3-be287b078cc8)
 
-*This operation is needed to be performed for each device* Dome,Switch,Cover Calibrator (you can skip the device you are not planning to use.
-
+This operation is needed for each device Dome,Switch,Cover Calibrator (you can skip the device you are not planning to use.
 
 Click on Alpaca and then Enable Discovery
 
@@ -187,4 +186,7 @@ Once is green, open the list and you will see New Device:
 
  Click OK and then OK again.
 
- The board is ready to use!
+ The board is ready to use! Go to your software (in my case N.I.N.A) and the device will appear:
+
+ ![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/086f4dca-93f2-4ef5-b666-e2169b2c0f78)
+
