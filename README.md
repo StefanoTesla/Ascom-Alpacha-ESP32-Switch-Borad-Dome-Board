@@ -262,3 +262,33 @@ Save to store modification.
 **If you change the pin number or type, it will not work until a board reboot.++
 
 Save config file to have a configuration backup
+
+# Update the firmware in the future
+
+Only if you have download the firmware from the usb port, you are able to upload the firmware via wifi
+
+To do this from your browser you can go on http://your.ip.add.ress/update
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/2e3f86bd-afa3-4a6b-b529-7c55002b9298)
+
+You can choose if you want to upload a new firmware or filesystem, the difference is: firmware change only the software, filesystem write webpages and configuration files.
+
+## Use a backup of your configuration files
+
+From setup page download each configuration files.
+Go to the project folder and open the folder data
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/566f4e4f-8df5-49f0-9cfd-fab0ae6f1ccb)
+
+Paste here your configuration files and override the existing one.
+
+## Upload the firmware via OTA
+
+Open the project with platformio and click in the right menu on build
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/10e58df4-045f-4d91-87dd-a524a817fadd)
+
+Now open your browser and go to http://your.ip.add.ress/update
+
+And select the file firmware.bin that you can find in yourProjectFolder/.pio/build/esp32doit-devkit-v1
+
