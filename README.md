@@ -41,6 +41,7 @@ Actually Ascom Switch function is tested with:
 - N.I.N.A.
 
 16 Switch can be configurated as output or input, pwm signal or analog input.
+PWN singals are automatically setted up with a range from 0 to 8192.
 
 Error sended to ascom alpaca:
 
