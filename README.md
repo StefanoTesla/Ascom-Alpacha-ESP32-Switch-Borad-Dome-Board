@@ -286,9 +286,21 @@ Paste here your configuration files and override the existing one.
 
 Open the project with platformio and click in the right menu on build
 
-![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/10e58df4-045f-4d91-87dd-a524a817fadd)
-
-Now open your browser and go to http://your.ip.add.ress/update
+Now open your browser and go to http://your.ip.add.ress/update choose firmware
 
 And select the file firmware.bin that you can find in yourProjectFolder/.pio/build/esp32doit-devkit-v1
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/10e58df4-045f-4d91-87dd-a524a817fadd)
+
+## Upload the filesystem via OTA
+
+**Read "Use of a backup of your configuration files** 
+
+Open the project with platformio and click in the right menu on Build Filesystem Image
+
+Now open your browser and go to http://your.ip.add.ress/update choose filesystem
+
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/3700331a-a55b-4b55-8622-d515e6c34758)
+
+And select the file spiffs.bin file that you can find in yourProjectFolder/.pio/build/esp32doit-devkit-v1
+![image](https://github.com/StefanoTesla/Ascom-Alpacha-ES32-Switch-Borad-Dome-Board/assets/92517402/10e58df4-045f-4d91-87dd-a524a817fadd)
 
