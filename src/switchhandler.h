@@ -26,7 +26,7 @@ https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
 /* automatic setup for Switch */
 
   for (i=0;i<_MAX_SWITCH_ID_;i++){
-    if((Switch[i].pin == 0 || Switch[i].pin == 99) || Switch[i].type == 0 ){
+    if(Switch[i].pin == 0 || Switch[i].type == 0 ){
         Switch[i].Name ="";
         Switch[i].Description ="";
     }

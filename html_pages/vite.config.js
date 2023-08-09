@@ -1,6 +1,8 @@
 const { resolve } = require('path')
+import viteCompression from 'vite-plugin-compression';
 
 module.exports = {
+  plugins: [viteCompression({algorithm: 'gzip', deleteOriginFile: true })],
   build: {
     rollupOptions: {
       input: {

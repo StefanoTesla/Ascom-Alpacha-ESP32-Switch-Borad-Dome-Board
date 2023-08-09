@@ -44,6 +44,35 @@ void saveDomeConfig(){
     file.close();
 }
 
+void readCoverCalibConfig(){
+    const size_t capacity = JSON_OBJECT_SIZE(200);
+    DynamicJsonDocument doc(capacity);
+    File file = SPIFFS.open("/ccalibconfig.txt", FILE_READ);
+    if (!file) {
+        Serial.println("Reading Cover Calibrator config error");
+        return;
+    }
+    DeserializationError error = deserializeJson(doc, file);
+
+    if(error){
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.c_str());
+    } else {
+        setting.coverCalibration.pin = doc["pin"];
+    }
+    file.close();
+}
+
+void saveCoverCalibConfig(){
+    const size_t capacity = JSON_OBJECT_SIZE(120);
+    String datasetup;
+    DynamicJsonDocument doc(capacity);
+    doc["pin"] = setting.coverCalibration.pin;
+    serializeJson(doc, datasetup);
+    File file = SPIFFS.open("/ccalibconfig.txt", FILE_WRITE);
+    file.print(datasetup);
+    file.close();
+}
 
 void readSwitchConfig(){
     const size_t capacity = JSON_OBJECT_SIZE(5000);
@@ -88,15 +117,11 @@ void readSwitchConfig(){
                         Switch[i].CanSet = true;
                         Switch[i].analog = true;
                         Switch[i].pin = pin;
-                        Switch[i].minValue = elem["min"].as<unsigned int>();
-                        Switch[i].maxValue = elem["max"].as<unsigned int>();
                         break;
                 case 4: //Analog Input
                         Switch[i].CanSet = false;
                         Switch[i].analog = true;
                         Switch[i].pin = pin;
-                        Switch[i].minValue = elem["min"].as<unsigned int>();
-                        Switch[i].maxValue = elem["max"].as<unsigned int>();
                         break;
                 
                 default:
@@ -124,10 +149,6 @@ void saveSwitchConfig(){
         file.print(Switch[i].type);
         file.print(",\"pin\":");
         file.print(Switch[i].pin);
-        file.print(",\"min\":");
-        file.print(Switch[i].minValue);
-        file.print(",\"max\":");
-        file.print(Switch[i].maxValue);
         file.print("}");
         if(i != _MAX_SWITCH_ID_ - 1){
             file.print(",");
@@ -144,12 +165,21 @@ void fileLoop(){
         FileHandler.saveDomeSetting = false;
         saveDomeConfig();
         Serial.println("richiesta salvataggio dati dome");
+        if(FileHandler.restartNeeded){ESP.restart();}
     }
 
     if(FileHandler.saveSwitchSetting){
         FileHandler.saveSwitchSetting = false;
         saveSwitchConfig();
         Serial.println("richiesta salvataggio dati switch");
+        if(FileHandler.restartNeeded){ESP.restart();}
+    }
+    
+    if(FileHandler.saveCoverCalibratorSetting){
+        FileHandler.saveCoverCalibratorSetting = false;
+        saveCoverCalibConfig();
+        Serial.println("richiesta salvataggio CoverCalibrator");
+        if(FileHandler.restartNeeded){ESP.restart();}
     }
 }
 #endif

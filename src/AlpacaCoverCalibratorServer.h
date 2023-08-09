@@ -4,8 +4,8 @@
 void CoverCalibratorSetup()
 {
   ledcSetup(0, 5000, 13);
-  ledcAttachPin(2, 0);
-
+  if(setting.coverCalibration.pin){  ledcAttachPin(setting.coverCalibration.pin, 0); }
+  Serial.println(setting.coverCalibration.pin);
 }
 
 void CoverCalibratorServer()

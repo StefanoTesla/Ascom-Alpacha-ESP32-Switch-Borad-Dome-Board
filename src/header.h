@@ -1,7 +1,7 @@
 struct FileStruct{
   bool saveSwitchSetting = false;
   bool saveDomeSetting = false;
-  bool saveCoverCalibrator = false;
+  bool saveCoverCalibratorSetting = false;
   bool restartNeeded = false;
 };
 
@@ -77,7 +77,7 @@ struct SwtichStruct
 {
   String Name;
   String Description;
-  uint8_t pin = 99;
+  uint8_t pin = 0;
   int minValue = 0;
   int maxValue = 1;
   bool CanSet = false;
@@ -110,9 +110,15 @@ typedef struct{
   unsigned int maxSwitch;
 } switchSetting;
 
+typedef struct{
+  unsigned int pin = 0;
+} coverCalibrationSetting;
+
+
 typedef struct {
   domeSetting dome;
   switchSetting switches;
+  coverCalibrationSetting coverCalibration;
 }boardSetting;
 
 boardSetting setting;

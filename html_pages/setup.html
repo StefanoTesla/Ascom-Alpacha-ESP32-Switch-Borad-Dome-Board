@@ -54,10 +54,10 @@
 
       <div class="tab-content" x-show="open" x-transition>
         <div>
-          <p>Pin Start Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinstart"/></p>
-          <p>Pin Halt Shutter: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinhalt"/></p>
-          <p>Pin Shutter Open: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinopen"/></p>
-          <p>Pin Shutter Close: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinclose"/></p>
+          <p>Pin Start Shutter: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinstart"/></p>
+          <p>Pin Halt Shutter: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinhalt"/></p>
+          <p>Pin Shutter Open: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinopen"/></p>
+          <p>Pin Shutter Close: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinclose"/></p>
       </div>
         <div>
             <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.tout" x-model="dome.tout"/> Sec.</p>
@@ -70,6 +70,30 @@
         <div class="pt-2">
             <button @click="saveDomeSetting()" class="button button_green">Salva</button>
             <a href="/domeconfig.txt" download class="button button_green">Scarica Configurazione</a>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--DOME-->
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}"
+      >
+
+      <div class="tab-header" >
+        <div class="grow">Cover Calibration</div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+      </div>
+
+      <div class="tab-content" x-show="open" x-transition>
+        <div>
+          <p>Pin: <input x-on:change="validatePinNumber($event)" type="number" id="coverpin" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="cover.pin"/></p>
+      </div>
+
+        <div class="pt-2">
+            <button @click="saveCoverSetting()" class="button button_green">Salva</button>
+            <a href="/ccalibconfig.txt" download class="button button_green">Scarica Configurazione</a>
         </div>
 
       </div>
@@ -95,17 +119,14 @@
                 <div class="flex">
                   <p class="pt-2">Tipo: </p>
                   <select class="text-gray-800 px-2" x-model="swi.type">
+                    <option id="0" value="0">-- SELEZIONA --</option>
                     <option id="1" value="1">Digital Output</option>
                     <option id="2" value="2">Digital Input</option>
                     <option id="3" value="3">PWM Output</option>
                     <option id="4" value="4">Analog Input</option>
                   </select>
                 </div>
-                <p class="pt-2">Pin: <input x-on:change.debounce="validatePinNumber($event)" x-model="swi.pin" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
-                <div x-show="swi.type > 2">
-                  <p class="pt-2">Valore minimo: <input x-model="swi.min" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
-                  <p class="pt-2">Valore Massimo: <input x-model="swi.max" type="number" id="dometout" min="1" max="32" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
-                </div>
+                <p class="pt-2">Pin: <input x-on:change="validatePinNumber($event)" x-model="swi.pin" type="number" id="dometout" min="1" max="39" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
                 <button @click="removePin(index)" class=" mt-4 button button_red">Rimuovi</button>
             </div>
         </template>
@@ -121,6 +142,42 @@
     </div>
     </div>
 
+    <template x-if="relodRequest">
+      <div class="fixed top-0 left-0 h-full w-full backdrop-blur-sm flex align-middle items-center">
+        <div class="flex flex-col h-1/4 w-full lg:w-1/4 mx-auto justify-center items-center  rounded-md bg-white text-black">
+          <p>Riavvio della scheda in corso</p>
+          <p>Ricaricare la pagina tra 10 sec</p>
+        </div>
+      </div>
+    </template>
+
+    
+    <div
+    class="fixed inset-0 flex flex-col-reverse items-end justify-start h-screen w-screen"
+    @notice.window="addToast($event.detail)"
+    style="pointer-events:none">
+    <template x-for="notice of notices" :key="notice.id">
+      <div
+        x-show="visible.includes(notice)"
+        x-transition:enter="transition ease-in duration-200"
+        x-transition:enter-start="transform opacity-0 translate-y-2"
+        x-transition:enter-end="transform opacity-100"
+        x-transition:leave="transition ease-out duration-500"
+        x-transition:leave-start="transform translate-x-0 opacity-100"
+        x-transition:leave-end="transform translate-x-full opacity-0"
+        @click="removeToast(notice.id)"
+        class="rounded mb-4 mr-6 w-56 flex items-center justify-center text-white shadow-lg font-bold text-lg cursor-pointer"
+        :class="{
+          'bg-green-500': notice.type === 'success',
+          'bg-blue-500': notice.type === 'info',
+          'bg-orange-500': notice.type === 'warning',
+          'bg-red-500': notice.type === 'error',
+         }"
+        style="pointer-events:all"
+        x-text="notice.text">
+      </div>
+    </template>
+  </div>
 </div>
 
 
@@ -128,23 +185,32 @@
     function globalData() {
       return {
         dome: [],
+        cover: [],
         switches : [],
+        relodRequest : 0,
+        pinIdError:0,
+        notices: [],
+		    visible: [],
+        unusablePinForInput: [6,7,8,9,10,11,20,21,24,28,29,30,31,37,38],
+        unusablePinForOutput: [6,7,8,9,10,11,20,21,24,28,29,30,31,34,35,36,37,38,39],
+
         reload() {
           this.dome = [];
           this.switches = [];
+          relodRequest : 0;
+          pinIdError:0;
+          notices: [];
+		      visible: [];
         },
-        updateData(){fetch('/config').then(response => response.json()).then(response => {this.dome = response.dome; response.switches.forEach((element,index) => (this.switches.push(element)))});},
+        updateData(){fetch('http://192.168.69.104/config').then(response => response.json()).then(response => {this.dome = response.dome; this.cover = response.cover; response.switches.forEach((element,index) => (this.switches.push(element)))});},
         init() {this.updateData()},
-        validateString(event){
-            event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-        },
+        validateString(event){ event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ''); },
         validatePinNumber(event){
             let ionumber = parseInt(event.target.value);
-            if (typeof ionumber === 'number' && !Number.isNaN(ionumber) && ionumber > 0 && ionumber < 37){
-                this.switchNumber = ionumber
-            } else {
-                console.error("Errore di validazione", ionumber);
-                event.target.value = 36;
+            if (this.unusablePinForInput.includes(ionumber)){
+              this.addToast({type:"error", text:"PIN " + ionumber + " NON UTILIZZABILE"})
+            } else if (this.unusablePinForOutput.includes(ionumber)){
+              this.addToast({type:"info", text:"Il pin: " + ionumber + " non può essere utilizzato come uscita (avvertimento)"})
             }
         },
         saveDomeSetting(){
@@ -152,30 +218,107 @@
             this.dome.tout = parseInt(this.dome.tout);
             this.dome.pinstart = parseInt(this.dome.pinstart);
             this.dome.pinhalt = parseInt(this.dome.pinhalt);
-
+            this.dome.pinclose = parseInt(this.dome.pinclose);
+            this.dome.pinopen = parseInt(this.dome.pinopen);
+            if(this.unusablePinForInput.includes(this.dome.pinopen)){
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinopen + " NON UTILIZZABILE come Input"});
+              return;
+            }
+            if(this.unusablePinForInput.includes(this.dome.pinclose)){
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinclose + " NON UTILIZZABILE come Input"});
+              return;
+            }
+            if(this.unusablePinForOutput.includes(this.dome.pinstart)){
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinstart + " NON UTILIZZABILE come Output"});
+              return;
+            }
+            if(this.unusablePinForOutput.includes(this.dome.pinhalt)){
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinhalt + " NON UTILIZZABILE come Output"});
+              return;
+            }
             fetch('/domeconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.dome)
             })
             .then(response => response.json())
-            .then(response => {
-                  this.dome.error = response.error
-              });
+            .then(response => { if (response.reboot){this.pageRefresh();}});
+        },
+        saveCoverSetting(){
+            this.cover.pin = parseInt(this.cover.pin);
+            if(this.unusablePinForOutput.includes(this.cover.pin)){
+              this.addToast({type:"error", text:"CoverCalib Validation Error, PIN " + this.cover.pin + " NON UTILIZZABILE come Output"});
+              return;
+            }
+            fetch('/coverconfig',{ 
+              method: 'POST',
+              headers: {"Content-Type": "application/json",},
+              body: JSON.stringify(this.cover)
+            })
+            .then(response => response.json())
+            .then(response => { if (response.reboot){this.pageRefresh();}});
         },
         savePinSetting(){
+          let error;
+          let validation = JSON.parse(JSON.stringify(this.switches));
+          for(let i=0; i < validation.length; i++){
+            let y;
+            y = i+1;
+            if(validation[i].type==0 || validation[i].type>4){
+              this.addToast({type:"error", text:"SWITCH " + y + " - TIPO ERRATO"})
+            }
+            if(validation[i].type==1 || validation[i].type==3 && this.unusablePinForOutput.includes(validation[i].pin) ){
+              this.addToast({type:"error", text:"SWITCH " + y + " - pin non utilizzabile come uscita"})
+            }
+            if(validation[i].type==2 && this.unusablePinForInput.includes(validation[i].pin) ){
+              this.addToast({type:"error", text:"SWITCH " + y + " - pin non utilizzabile come ingresso"})
+            }
+          }
+
+          if(error){ this.addToast({type:"error", text:"Errore di Validazione"}); return; }
           fetch('/switchconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.switches)
             })
             .then(response => response.json())
-          console.log(JSON.stringify(this.switches))
+            .then(response => { if (response.reboot){this.pageRefresh();}});
         },
-        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: '1',pin: '',min:'0',max:'1',});} else { console.error("Limite Raggiunto")}},
-        removePin(index) {this.switches.splice(index, 1);}
+        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: 0,pin: 0});} else { console.error("Limite Raggiunto")}},
+        removePin(index) {this.switches.splice(index, 1);},
 
-    };
+        ioPinError(io){
+          pinError = 1;
+          pinIdError = io;
+          setTimeout(function(){
+                      pinError = 0;
+                      pinIdError = 0; 
+                    }, 2000);
+        },
+        pageRefresh(){
+          this.relodRequest = 1;
+                    setTimeout(function(){
+                        location.reload();
+                    }, 10000);
+        },
+        addToast(notice) {
+          notice.id = Date.now()
+          this.notices.push(notice)
+          this.fireToast(notice.id)
+        },
+        fireToast(id) {
+          this.visible.push(this.notices.find(notice => notice.id == id))
+          const timeShown = 3000 * this.visible.length
+          setTimeout(() => {
+            this.removeToast(id)
+          }, timeShown)
+        },
+        removeToast(id) {
+          const notice = this.visible.find(notice => notice.id == id)
+          const index = this.visible.indexOf(notice)
+          this.visible.splice(index, 1)
+        },
+      };
   }
 
 

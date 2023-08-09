@@ -107,7 +107,9 @@ void browserServer(){
             response->print(",\"lastCommand\":");
             response->print(Dome.LastDomeCommand);
         response->print("},");
-
+        response->printf("\"cover\":{ \"value\":");
+            response->print(ledcRead(0));
+        response->print("},");
         response->print("\"switches\": [");
         for (i=0;i<setting.switches.maxSwitch;i++){
             response->print("{\"id\":");
@@ -179,11 +181,10 @@ void browserServer(){
         int pin = 0;
         bool err = false;
         bool reboot = false;
-
         for (JsonObject elem : json.as<JsonArray>()) {
             type = elem["type"].as<unsigned int>();
             pin = elem["pin"].as<unsigned int>();
-            if(type != 0 && pin != 0 && pin !=99){
+            if(type != 0 && pin != 0){
                 switch(type){
 
                     case 1: //Digital Output
@@ -211,8 +212,6 @@ void browserServer(){
                             Switch[i].CanSet = true;
                             Switch[i].analog = true;
                             Switch[i].pin = pin;
-                            Switch[i].minValue = elem["min"].as<unsigned int>();
-                            Switch[i].maxValue = elem["max"].as<unsigned int>();
                             break;
 
                     case 4: //Analog Input
@@ -221,8 +220,6 @@ void browserServer(){
                             Switch[i].CanSet = false;
                             Switch[i].analog = true;
                             Switch[i].pin = pin;
-                            Switch[i].minValue = elem["min"].as<unsigned int>();
-                            Switch[i].maxValue = elem["max"].as<unsigned int>();
                             break;
                     
                     default:
@@ -235,32 +232,48 @@ void browserServer(){
                 Switch[i].Description = elem["desc"].as<String>();
             } else {
                 err = true;
-                return;
+                continue;
             }
             i++;
         }
         if(err){
             request->send(200, "application/json", "{\"error\": \"some type or input are wrong\"}");
             return;
-        } 
+        }
         for(x=i;x<_MAX_SWITCH_ID_;x++){
             Switch[x].Name = "";
             Switch[x].Description = "";
-            Switch[x].pin = 99;
+            Switch[x].pin = 0;
             Switch[x].type = 0;
             Switch[x].minValue = 0;
             Switch[x].maxValue = 1;
         }
         if (reboot){
+            FileHandler.restartNeeded = true;
+            FileHandler.saveSwitchSetting = true;
             request->send(200, "application/json", "{\"reboot\": \"1\"}");
-            FileHandler.saveSwitchSetting = true;
         } else {
-            request->send(200, "application/json", "{\"accept\": \"ok\"}");
             FileHandler.saveSwitchSetting = true;
+            request->send(200, "application/json", "{\"accept\": \"ok\"}");
         }
 
     });
     server.addHandler(switchConfig);
+
+    AsyncCallbackJsonWebHandler *covercfg = new AsyncCallbackJsonWebHandler("/coverconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
+        const size_t capacity = JSON_OBJECT_SIZE(200);
+        DynamicJsonDocument doc(capacity);
+        doc = json.as<JsonObject>();
+        if (setting.coverCalibration.pin == doc["pin"]){
+            request->send(200, "application/json", "{\"accept\": \"ok\"}");
+        } else {
+            setting.coverCalibration.pin = doc["pin"];
+            FileHandler.saveCoverCalibratorSetting = true;
+            FileHandler.restartNeeded = true;
+            request->send(200, "application/json", "{\"reboot\": \"1\"}");
+        }
+    });
+    server.addHandler(covercfg);
 
     server.on("/config",                HTTP_GET, [](AsyncWebServerRequest *request) {
         int i;
@@ -280,6 +293,9 @@ void browserServer(){
         response->print(",\"autoclose\":");
         response->print(setting.dome.autoCloseTimeOut);
         response->print("},");
+        response->print("\"cover\":{ \"pin\":");
+        response->print(setting.coverCalibration.pin);
+        response->print("},");
         response->print("\"switches\":[");
         for(i=0;i<setting.switches.maxSwitch;i++){
             response->print("{\"name\":\"");
@@ -290,10 +306,6 @@ void browserServer(){
             response->print(Switch[i].type);
             response->print(",\"pin\":");
             response->print(Switch[i].pin);
-            response->print(",\"min\":");
-            response->print(Switch[i].minValue);
-            response->print(",\"max\":");
-            response->print(Switch[i].maxValue);
             response->print("}");
             if (i != setting.switches.maxSwitch - 1 ){
                 response->print(",");
@@ -305,6 +317,7 @@ void browserServer(){
 
     server.serveStatic("/domeconfig.txt", SPIFFS, "/domeconfig.txt");
     server.serveStatic("/switchconfig.txt", SPIFFS, "/switchconfig.txt");
+    server.serveStatic("/ccalibconfig.txt", SPIFFS, "/ccalibconfig.txt");
     server.serveStatic("/favicon.ico", SPIFFS, "/favicon.ico").setCacheControl("max-age=31536000");
     server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 

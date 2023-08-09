@@ -90,6 +90,24 @@
 
     </div>
 
+    <!-- COVER CALIBRATOR -->
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}"
+      >
+
+      <div class="tab-header" >
+        <div class="grow">Cover Calibrator</div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+      </div>
+
+      <div class="tab-content" x-show="open" x-transition>
+
+        <input type="range" min=0 max=8192 x-bind:value="cover.value" class="py-2" />
+
+      </div>
+
+    </div>
+
     <!--SWITCH-->
     <div class="main-tab bg-slate-600"
       x-data="{open:false}">
@@ -167,6 +185,7 @@
     function globalData() {
       return {
         dome: [],
+        cover: [],
         switches: [],
         reload() {
           this.dome = [];
@@ -177,7 +196,9 @@
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
+              this.cover = response.cover;
               this.switches =  response.switches;
+              
               });
         },
         init() {  
@@ -229,7 +250,7 @@
             .then(response => response.json())
             .then(response => {
               if (response.done){
-                  this.switches[id].actualValue = value;
+                  this.switches[id].actualValue = event.target.value;
                 }
               if (response.error ){
                   console.error(response.error)
