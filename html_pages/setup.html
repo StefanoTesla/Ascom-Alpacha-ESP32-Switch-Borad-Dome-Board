@@ -193,7 +193,6 @@
 		    visible: [],
         unusablePinForInput: [6,7,8,9,10,11,20,21,24,28,29,30,31,37,38],
         unusablePinForOutput: [6,7,8,9,10,11,20,21,24,28,29,30,31,34,35,36,37,38,39],
-
         reload() {
           this.dome = [];
           this.switches = [];
@@ -202,7 +201,7 @@
           notices: [];
 		      visible: [];
         },
-        updateData(){fetch('http://192.168.69.104/config').then(response => response.json()).then(response => {this.dome = response.dome; this.cover = response.cover; response.switches.forEach((element,index) => (this.switches.push(element)))});},
+        updateData(){fetch('/config').then(response => response.json()).then(response => {this.dome = response.dome; this.cover = response.cover; response.switches.forEach((element,index) => (this.switches.push(element)))});},
         init() {this.updateData()},
         validateString(event){ event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ''); },
         validatePinNumber(event){
@@ -210,7 +209,7 @@
             if (this.unusablePinForInput.includes(ionumber)){
               this.addToast({type:"error", text:"PIN " + ionumber + " NON UTILIZZABILE"})
             } else if (this.unusablePinForOutput.includes(ionumber)){
-              this.addToast({type:"info", text:"Il pin: " + ionumber + " non può essere utilizzato come uscita (avvertimento)"})
+              this.addToast({type:"info", text:"Il pin: " + ionumber + " non può essere utilizzato come uscita (solo avvertimento)"})
             }
         },
         saveDomeSetting(){
