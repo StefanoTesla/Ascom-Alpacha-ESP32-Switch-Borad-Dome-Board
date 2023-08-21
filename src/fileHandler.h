@@ -133,6 +133,7 @@ void readSwitchConfig(){
         }
         i++;
     }
+    doc.clear();
     file.close();
 }
 
@@ -157,7 +158,6 @@ void saveSwitchConfig(){
     file.print("]");
     file.close();
 }
-
 
 void fileLoop(){
 

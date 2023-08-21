@@ -149,8 +149,16 @@ void browserServer(){
                 response->printf(",");
             }
         }
-        response->printf("],\"free\":");
+        response->printf("],\"freeHeap\":");
         response->print(ESP.getFreeHeap());
+        response->printf(",\"minFreeHeap\":");
+        response->print(ESP.getMinFreeHeap());
+        response->printf(",\"totalHeap\":");
+        response->print(ESP.getHeapSize());
+        response->printf(",\"upTime\":");
+        response->print(upTimeESP32);
+        response->printf(",\"upWiFiTime\":");
+        response->print(upTimeWiFi);
         response->print("}");
         request->send(response);
     });

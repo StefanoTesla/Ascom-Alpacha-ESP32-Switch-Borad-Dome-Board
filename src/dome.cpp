@@ -13,15 +13,20 @@
 AsyncWebServer server(80);
 AsyncWebServer Alpserver(4567);
 
+unsigned long previousWifiMillis = 0;
+unsigned long previousUpTimeWifi = 0;
+unsigned long previousUpTimeESP32 = 0;
+unsigned long upTimeInterval = 60000;
+unsigned long wifiInterval = 30000;
+unsigned long upTimeWiFi = 0;
+unsigned long upTimeESP32 = 0;
+
 #include "AlpacaManageFunction.h"
 #include "AlpacaDomeServer.h"
 #include "AlpacaSwitchServer.h"
 #include "AlpacaCoverCalibratorServer.h"
 #include "browserServer.h"
 #include "fileHandler.h"
-
-unsigned long previousMillis = 0;
-unsigned long interval = 30000;
 DNSServer dns;
 ///////enter your sensitive data in the Secret tab/arduino_secrets.h
 
@@ -99,15 +104,22 @@ void loop()
 
 
   unsigned long currentMillis = millis();
-  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
+  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousWifiMillis >=wifiInterval)) {
     WiFi.disconnect();
     WiFi.reconnect();
-    previousMillis = currentMillis;
+    previousWifiMillis = currentMillis;
+    upTimeWiFi = 0;
   }
 
-  if(WiFi.status() == WL_CONNECTED ){
-    //digitalWrite(2, HIGH);
-  } else {
-    //digitalWrite(2, LOW);
-  }
+
+
+  //one minute clock
+  if (currentMillis - previousUpTimeESP32 > upTimeInterval){
+    upTimeESP32 +=1;
+    if(WiFi.status() == WL_CONNECTED ){
+      upTimeWiFi +=1;
+    }
+    previousUpTimeESP32 = currentMillis;
+  } 
+  
 }

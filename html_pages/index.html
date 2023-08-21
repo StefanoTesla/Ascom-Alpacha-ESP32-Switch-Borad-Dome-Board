@@ -178,6 +178,30 @@
     </div>
     </div>
 
+      <!--STATISTIC-->
+      <div class="main-tab bg-slate-600"
+      x-data="{open:false}"
+      >
+
+      <div class="tab-header" >
+        <div class="grow">Statistics</div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+      </div>
+
+      <div class="tab-content" x-show="open" x-transition>
+
+        <div class="flex flex-col pt-6">
+          <p>ESP32 is running since: <span x-text="upTime"></span></p>
+          <p>Last WiFi connection since: <span x-text="upTimeWiFi"></span></p>
+          <p>Free Heap Size: <span x-text="freeHeap"></span><span>%</span></p>
+          <p>min Free Heap Size: <span x-text="minFreeHeap"></span><span>%</span></p>
+        </div>
+
+
+      </div>
+
+    </div>
+
   </div>
 
 
@@ -187,23 +211,31 @@
         dome: [],
         cover: [],
         switches: [],
+        upTime : 0,
+        upTimeWiFi: 0,
+        freeHeap: 0,
+        minFreeHeap: 0,
         reload() {
           this.dome = [];
           this.switches = [];
+          this.cover = [];
         },
         updateData(){
-          fetch('/status')
+          fetch('http://192.168.1.226/status')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
               this.cover = response.cover;
               this.switches =  response.switches;
-              
+              this.upTime = this.toHoursAndMinutes(response.upTime);
+              this.upTimeWiFi = this.toHoursAndMinutes(response.upWiFiTime);
+              this.freeHeap = ((response.freeHeap * 100) / response.totalHeap).toFixed(2);
+              this.minFreeHeap = ((response.minFreeHeap * 100) / response.totalHeap).toFixed(2);
+
               });
         },
         init() {  
-          this.updateData()
-
+          this.updateData();
           setInterval(() => {
                 this.updateData();
               }, 1000);
@@ -256,6 +288,11 @@
                   console.error(response.error)
                 }
               });
+        },
+        toHoursAndMinutes(totalMinutes) {
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
         }
       }
     };
