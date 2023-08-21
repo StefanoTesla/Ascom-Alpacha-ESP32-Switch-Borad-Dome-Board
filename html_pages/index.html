@@ -221,7 +221,7 @@
           this.cover = [];
         },
         updateData(){
-          fetch('http://192.168.1.226/status')
+          fetch('/status')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
