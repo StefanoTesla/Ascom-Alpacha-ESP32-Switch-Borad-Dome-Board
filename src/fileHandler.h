@@ -2,8 +2,7 @@
 #define FILE_HAND
 
 void readDomeConfig(){
-    const size_t capacity = JSON_OBJECT_SIZE(200);
-    DynamicJsonDocument doc(capacity);
+    JsonDocument doc;
     File file = SPIFFS.open("/domeconfig.txt", FILE_READ);
     if (!file) {
         Serial.println("Reading Dome config error");
@@ -28,9 +27,8 @@ void readDomeConfig(){
 
 
 void saveDomeConfig(){
-    const size_t capacity = JSON_OBJECT_SIZE(120);
     String datasetup;
-    DynamicJsonDocument doc(capacity);
+    JsonDocument doc;
     doc["pinstart"] = setting.dome.pinStart;
     doc["pinhalt"] = setting.dome.pinHalt;
     doc["pinopen"] = setting.dome.pinOpen;
@@ -45,8 +43,7 @@ void saveDomeConfig(){
 }
 
 void readCoverCalibConfig(){
-    const size_t capacity = JSON_OBJECT_SIZE(200);
-    DynamicJsonDocument doc(capacity);
+    JsonDocument doc;
     File file = SPIFFS.open("/ccalibconfig.txt", FILE_READ);
     if (!file) {
         Serial.println("Reading Cover Calibrator config error");
@@ -64,9 +61,8 @@ void readCoverCalibConfig(){
 }
 
 void saveCoverCalibConfig(){
-    const size_t capacity = JSON_OBJECT_SIZE(120);
     String datasetup;
-    DynamicJsonDocument doc(capacity);
+    JsonDocument doc;
     doc["pin"] = setting.coverCalibration.pin;
     serializeJson(doc, datasetup);
     File file = SPIFFS.open("/ccalibconfig.txt", FILE_WRITE);
@@ -75,8 +71,7 @@ void saveCoverCalibConfig(){
 }
 
 void readSwitchConfig(){
-    const size_t capacity = JSON_OBJECT_SIZE(5000);
-    DynamicJsonDocument doc(capacity);
+    JsonDocument doc;
     File file = SPIFFS.open("/switchconfig.txt", FILE_READ);
     if (!file) {
         Serial.println(F("Reading Switch config error"));

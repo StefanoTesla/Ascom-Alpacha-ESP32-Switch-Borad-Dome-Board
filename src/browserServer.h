@@ -98,6 +98,24 @@ void browserServer(){
     
     });
 
+    server.on("/covercmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
+        int value = -1;
+
+        if (request->hasParam("value")){ 
+            value = request->getParam("value")->value().toInt();
+        } else {
+            request->send(200, "application/json", "{\"error\" : \"Missing Value\"}");
+            return;
+        }
+        if (value < 0 || value > 8192){
+            request->send(200, "application/json", "{\"error\" : \"Out of Range Value\"}");
+            return;
+        }
+        ledcWrite(0 ,value);
+        request->send(200, "text/html", "{\"done\" : 1}");
+    
+    });
+
     server.on("/status",                HTTP_GET, [](AsyncWebServerRequest *request) {
         int i;
         AsyncResponseStream *response = request->beginResponseStream("application/json");
@@ -164,8 +182,7 @@ void browserServer(){
     });
 
     AsyncCallbackJsonWebHandler *domecfg = new AsyncCallbackJsonWebHandler("/domeconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
-        const size_t capacity = JSON_OBJECT_SIZE(200);
-        DynamicJsonDocument doc(capacity);
+        JsonDocument doc;
         doc = json.as<JsonObject>();
         setting.dome.pinStart = doc["pinstart"];
         setting.dome.pinHalt = doc["pinhalt"];
@@ -181,8 +198,7 @@ void browserServer(){
 
 
     AsyncCallbackJsonWebHandler *switchConfig = new AsyncCallbackJsonWebHandler("/switchconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
-        const size_t capacity = JSON_OBJECT_SIZE(5000);
-        DynamicJsonDocument doc(capacity);
+        JsonDocument doc;
         int i=0;
         int x=0;
         int type = 0;
@@ -269,8 +285,7 @@ void browserServer(){
     server.addHandler(switchConfig);
 
     AsyncCallbackJsonWebHandler *covercfg = new AsyncCallbackJsonWebHandler("/coverconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
-        const size_t capacity = JSON_OBJECT_SIZE(200);
-        DynamicJsonDocument doc(capacity);
+        JsonDocument doc;
         doc = json.as<JsonObject>();
         if (setting.coverCalibration.pin == doc["pin"]){
             request->send(200, "application/json", "{\"accept\": \"ok\"}");
