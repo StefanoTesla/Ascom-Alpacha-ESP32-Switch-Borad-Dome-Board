@@ -18,7 +18,7 @@
 </div>
 <!-- Primary Navbar items -->
 <div class="hidden md:flex items-center space-x-1">
-  <a href="/" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Home</a>
+  <a href="/" class="py-4 px-2 font-semibold text-green-800 transition duration-300">Home</a>
   <a href="/setup" class="py-4 px-2 font-semibold hover:text-green-500 transition duration-300">Setup</a>
 </div>
 <!-- Mobile menu button -->
@@ -34,7 +34,7 @@
 <!-- mobile menu -->
 <div x-show="open" class="mobile-menu">
 <ul class="">
-  <li><a href="/" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Home</a></li>
+  <li><a href="/" class="block text-sm px-2 py-4 bg-green-800 transition duration-300">Home</a></li>
   <li><a href="/setup" class="block text-sm px-2 py-4 hover:bg-green-500 transition duration-300">Setup</a></li>
 </ul>
 </div>
@@ -102,7 +102,7 @@
 
       <div class="tab-content" x-show="open" x-transition>
 
-        <input type="range" min=0 max=8192 x-bind:value="cover.value" class="py-2" />
+        <input type="range" min=0 max=8192 class="py-2" x-model="cover.value" @change="coverCmd(cover.value)" />
 
       </div>
 
@@ -265,6 +265,14 @@
               });
         },
 
+        coverCmd(value){
+          fetch('/covercmd?value='+value,{ method: 'PUT'})
+            .then(response => response.json())
+            .then(response => {
+                  this.cover.error = response.error;
+              });
+        },
+
         setDigitalSwValue(id,value){
           fetch('/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
             .then(response => response.json())
@@ -289,11 +297,22 @@
                 }
               });
         },
-        toHoursAndMinutes(totalMinutes) {
-          const hours = Math.floor(totalMinutes / 60);
-          const minutes = totalMinutes % 60;
-          return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
+        toHoursAndMinutes(minutes) {
+          if (minutes < 0) {
+              return "Please enter a positive value.";
+          }
+
+          const days = Math.floor(minutes / (24 * 60));
+          const hours = Math.floor((minutes % (24 * 60)) / 60);
+          const remainingMinutes = minutes % 60;
+
+          const daysString = days === 1 ? "day" : "days";
+          const hoursString = hours === 1 ? "hour" : "hours";
+          const minutesString = remainingMinutes === 1 ? "minute" : "minutes";
+
+          return `${days} ${daysString}, ${hours} ${hoursString}, ${remainingMinutes} ${minutesString}`;
         }
+        
       }
     };
 
